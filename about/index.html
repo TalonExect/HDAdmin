@@ -65,6 +65,10 @@
     <link rel="stylesheet" href="../assets/fonts/material-icons.css">
     
     
+      <link rel="stylesheet" href="../stylesheets/dark_theme.css">
+    
+      <link rel="stylesheet" href="../stylesheets/monokai.css">
+    
     
       
     
@@ -73,7 +77,7 @@
   
     
     
-    <body dir="ltr" data-md-color-primary="black" data-md-color-accent="black">
+    <body dir="ltr" data-md-color-primary="black" data-md-color-accent="grey">
   
     <svg class="md-svg">
       <defs>
@@ -382,12 +386,37 @@
     
     <input class="md-toggle md-nav__toggle" data-md-toggle="toc" type="checkbox" id="__toc">
     
-      
     
+      <label class="md-nav__link md-nav__link--active" for="__toc">
+        Modules
+      </label>
     
     <a href="./" title="Modules" class="md-nav__link md-nav__link--active">
       Modules
     </a>
+    
+      
+<nav class="md-nav md-nav--secondary">
+  
+  
+  
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#coming-soon" class="md-nav__link">
+    Coming soon
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
+  
+</nav>
     
   </li>
 
@@ -426,11 +455,11 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-1" type="checkbox" id="nav-4-1">
     
     <label class="md-nav__link" for="nav-4-1">
-      MainModule
+      Core
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="2">
       <label class="md-nav__title" for="nav-4-1">
-        MainModule
+        Core
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -664,7 +693,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../module_docs/projects/datastoreplus/about/" title="About" class="md-nav__link">
+    <a href="../projects/datastoreplus/about/" title="About" class="md-nav__link">
       About
     </a>
   </li>
@@ -676,7 +705,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../module_docs/projects/datastoreplus/userservice/" title="UserService" class="md-nav__link">
+    <a href="../projects/datastoreplus/userservice/" title="UserService" class="md-nav__link">
       UserService
     </a>
   </li>
@@ -688,7 +717,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../module_docs/projects/datastoreplus/user/" title="User" class="md-nav__link">
+    <a href="../projects/datastoreplus/user/" title="User" class="md-nav__link">
       User
     </a>
   </li>
@@ -709,11 +738,11 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-2-2" type="checkbox" id="nav-4-2-2">
     
     <label class="md-nav__link" for="nav-4-2-2">
-      SomeEventThing+
+      Table+
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="3">
       <label class="md-nav__title" for="nav-4-2-2">
-        SomeEventThing+
+        Table+
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -724,8 +753,20 @@
 
 
   <li class="md-nav__item">
-    <a href="../module_docs/projects/signalplus/about/" title="About" class="md-nav__link">
+    <a href="../projects/tableplus/about/" title="About" class="md-nav__link">
       About
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../projects/tableplus/table/" title="Table" class="md-nav__link">
+      Table
     </a>
   </li>
 
@@ -745,11 +786,11 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-2-3" type="checkbox" id="nav-4-2-3">
     
     <label class="md-nav__link" for="nav-4-2-3">
-      Table+
+      Topbar+
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="3">
       <label class="md-nav__title" for="nav-4-2-3">
-        Table+
+        Topbar+
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
         
@@ -760,7 +801,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../module_docs/projects/tableplus/about/" title="About" class="md-nav__link">
+    <a href="../projects/topbarplus/about/" title="About" class="md-nav__link">
       About
     </a>
   </li>
@@ -772,8 +813,20 @@
 
 
   <li class="md-nav__item">
-    <a href="../module_docs/projects/tableplus/table/" title="Table" class="md-nav__link">
-      Table
+    <a href="../projects/topbarplus/iconcontroller/" title="IconController" class="md-nav__link">
+      IconController
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../projects/topbarplus/icon/" title="Icon" class="md-nav__link">
+      Icon
     </a>
   </li>
 
@@ -793,70 +846,10 @@
       <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-2-4" type="checkbox" id="nav-4-2-4">
     
     <label class="md-nav__link" for="nav-4-2-4">
-      Topbar+
-    </label>
-    <nav class="md-nav" data-md-component="collapsible" data-md-level="3">
-      <label class="md-nav__title" for="nav-4-2-4">
-        Topbar+
-      </label>
-      <ul class="md-nav__list" data-md-scrollfix>
-        
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../module_docs/projects/topbarplus/about/" title="About" class="md-nav__link">
-      About
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../module_docs/projects/topbarplus/iconcontroller/" title="IconController" class="md-nav__link">
-      IconController
-    </a>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item">
-    <a href="../module_docs/projects/topbarplus/icon/" title="Icon" class="md-nav__link">
-      Icon
-    </a>
-  </li>
-
-        
-      </ul>
-    </nav>
-  </li>
-
-        
-          
-          
-          
-
-
-  <li class="md-nav__item md-nav__item--nested">
-    
-      <input class="md-toggle md-nav__toggle" data-md-toggle="nav-4-2-5" type="checkbox" id="nav-4-2-5">
-    
-    <label class="md-nav__link" for="nav-4-2-5">
       Zone+
     </label>
     <nav class="md-nav" data-md-component="collapsible" data-md-level="3">
-      <label class="md-nav__title" for="nav-4-2-5">
+      <label class="md-nav__title" for="nav-4-2-4">
         Zone+
       </label>
       <ul class="md-nav__list" data-md-scrollfix>
@@ -868,7 +861,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../module_docs/projects/zoneplus/about/" title="About" class="md-nav__link">
+    <a href="../projects/zoneplus/about/" title="About" class="md-nav__link">
       About
     </a>
   </li>
@@ -880,7 +873,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../module_docs/projects/zoneplus/zoneservice/" title="ZoneService" class="md-nav__link">
+    <a href="../projects/zoneplus/zoneservice/" title="ZoneService" class="md-nav__link">
       ZoneService
     </a>
   </li>
@@ -892,7 +885,7 @@
 
 
   <li class="md-nav__item">
-    <a href="../module_docs/projects/zoneplus/zone/" title="Zone" class="md-nav__link">
+    <a href="../projects/zoneplus/zone/" title="Zone" class="md-nav__link">
       Zone
     </a>
   </li>
@@ -927,8 +920,22 @@
 <nav class="md-nav md-nav--secondary">
   
   
-    
   
+    <label class="md-nav__title" for="__toc">Table of contents</label>
+    <ul class="md-nav__list" data-md-scrollfix>
+      
+        <li class="md-nav__item">
+  <a href="#coming-soon" class="md-nav__link">
+    Coming soon
+  </a>
+  
+</li>
+      
+      
+      
+      
+      
+    </ul>
   
 </nav>
                   </div>
@@ -940,10 +947,27 @@
             <article class="md-content__inner md-typeset">
               
                 
-                  <a href="https://github.com/1ForeverHD/HDAdmin/edit/master/docs/about.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
+                  <a href="https://github.com/1ForeverHD/HDAdmin/edit/master/mkdocs/docs/about.md" title="Edit this page" class="md-icon md-content__icon">&#xE3C9;</a>
                 
                 
-                <h1 id="coming-soon">Coming soon</h1>
+                  <h1>Modules</h1>
+                
+                <h2 id="coming-soon">Coming soon<a class="headerlink" href="#coming-soon" title="Permanent link">&para;</a></h2>
+<details>
+  <summary>Click to expand</summary>
+
+This is an expandable message
+
+</details>
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This is a warning</p>
+</div>
+<div class="admonition info info">
+<p class="admonition-title">Info</p>
+<p>This is an Info box</p>
+</div>
                 
                   
                 
