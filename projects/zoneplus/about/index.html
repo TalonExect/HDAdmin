@@ -91,7 +91,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#topbar" tabindex="1" class="md-skip">
+      <a href="#zone" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -854,8 +854,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#topbar" class="md-nav__link">
-    Topbar+
+  <a href="#zone" class="md-nav__link">
+    Zone+
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencing" class="md-nav__link">
+    Referencing
   </a>
   
 </li>
@@ -929,8 +936,15 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#topbar" class="md-nav__link">
-    Topbar+
+  <a href="#zone" class="md-nav__link">
+    Zone+
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#referencing" class="md-nav__link">
+    Referencing
   </a>
   
 </li>
@@ -956,7 +970,27 @@
                 
                   <h1>About</h1>
                 
-                <h2 id="topbar">Topbar+<a class="headerlink" href="#topbar" title="Permanent link">&para;</a></h2>
+                <h2 id="zone">Zone+<a class="headerlink" href="#zone" title="Permanent link">&para;</a></h2>
+<h2 id="referencing">Referencing<a class="headerlink" href="#referencing" title="Permanent link">&para;</a></h2>
+<p>Zone+ modules can be required on the client under the HD Admin directory in ReplicatedStorage, and server in ServerStorage or directly from the MainModule.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Location</th>
+<th align="left">Pathway</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left">Client</td>
+<td align="left"><code>ReplicatedStorage:WaitForChild("HDAdmin"):WaitForChild("Zone+")</code></td>
+</tr>
+<tr>
+<td align="left">Server</td>
+<td align="left"><code>MainModule</code> or <code>ServerStorage:WaitForChild("HDAdmin"):WaitForChild("Zone+")</code></td>
+</tr>
+</tbody>
+</table>
                 
                   
                 
