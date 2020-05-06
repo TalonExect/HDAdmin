@@ -91,7 +91,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#topbar" tabindex="1" class="md-skip">
+      <a href="#api" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -830,9 +830,43 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#topbar" class="md-nav__link">
-    Topbar+
+  <a href="#api" class="md-nav__link">
+    API
   </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#createzone" class="md-nav__link">
+    createZone
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geticon" class="md-nav__link">
+    getIcon
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#getallicons" class="md-nav__link">
+    getAllIcons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removeicon" class="md-nav__link">
+    removeIcon
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -893,9 +927,43 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#topbar" class="md-nav__link">
-    Topbar+
+  <a href="#api" class="md-nav__link">
+    API
   </a>
+  
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#createzone" class="md-nav__link">
+    createZone
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#geticon" class="md-nav__link">
+    getIcon
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#getallicons" class="md-nav__link">
+    getAllIcons
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#removeicon" class="md-nav__link">
+    removeIcon
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
   
 </li>
       
@@ -920,7 +988,35 @@
                 
                   <h1>ZoneService</h1>
                 
-                <h2 id="topbar">Topbar+<a class="headerlink" href="#topbar" title="Permanent link">&para;</a></h2>
+                <h2 id="api">API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h2>
+<hr />
+<h4 id="createzone">createZone<a class="headerlink" href="#createzone" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">ZoneService</span><span class="p">:</span><span class="n">createZone</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">additionalHeight</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Creates, stores and returns a zone.</p>
+<hr />
+<h4 id="geticon">getIcon<a class="headerlink" href="#geticon" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">ZoneService</span><span class="p">:</span><span class="n">getZone</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Returns a zone of the corresponding name.</p>
+<hr />
+<h4 id="getallicons">getAllIcons<a class="headerlink" href="#getallicons" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">ZoneService</span><span class="p">:</span><span class="n">getAllZones</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Returns an array containing every zone.</p>
+<hr />
+<h4 id="removeicon">removeIcon<a class="headerlink" href="#removeicon" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">ZoneService</span><span class="p">:</span><span class="n">removeZone</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Destroys and removes references of the corresponding zone.</p>
                 
                   
                 
