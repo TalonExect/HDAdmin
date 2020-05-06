@@ -871,8 +871,50 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#groupparts" class="md-nav__link">
+    groupParts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clusters" class="md-nav__link">
+    clusters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#additionalheight" class="md-nav__link">
     additionalHeight
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#region" class="md-nav__link">
+    region
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#boundmin" class="md-nav__link">
+    boundMin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#boundmax" class="md-nav__link">
+    boundMax
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#regionheight" class="md-nav__link">
+    regionHeight
   </a>
   
 </li>
@@ -1066,8 +1108,50 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#groupparts" class="md-nav__link">
+    groupParts
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#clusters" class="md-nav__link">
+    clusters
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#additionalheight" class="md-nav__link">
     additionalHeight
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#region" class="md-nav__link">
+    region
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#boundmin" class="md-nav__link">
+    boundMin
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#boundmax" class="md-nav__link">
+    boundMax
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#regionheight" class="md-nav__link">
+    regionHeight
   </a>
   
 </li>
@@ -1215,14 +1299,14 @@
 </pre></div>
 
 
-<p>desc.</p>
+<p>A bool deciding whether the zone should automatically update when its group parts change.</p>
 <hr />
 <h4 id="respectupdatequeue">respectUpdateQueue<a class="headerlink" href="#respectupdatequeue" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">respectUpdateQueue</span>
 </pre></div>
 
 
-<p>desc.</p>
+<p>A bool that when set to <code>true</code> delays the automatic updating of the zone, preventing multiple calls within a short time period.</p>
 <hr />
 <h4 id="group">group<a class="headerlink" href="#group" title="Permanent link">&para;</a></h4>
 <p><em>(read only)</em></p>
@@ -1230,7 +1314,51 @@
 </pre></div>
 
 
-<p>desc.</p>
+<p>The container instance originally passed when constructing the zone.</p>
+<hr />
+<h4 id="groupparts">groupParts<a class="headerlink" href="#groupparts" title="Permanent link">&para;</a></h4>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">groupParts</span>
+</pre></div>
+
+
+<p>An array of all BaseParts within <code>group</code>. </p>
+<hr />
+<h4 id="clusters">clusters<a class="headerlink" href="#clusters" title="Permanent link">&para;</a></h4>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">clusters</span>
+</pre></div>
+
+
+<p>An array of clusters.</p>
+<p><strong><em>Cluster</em></strong></p>
+<p>A dictionary describing a collection of touching parts within the zone.</p>
+<table>
+<thead>
+<tr>
+<th align="left">Key</th>
+<th align="left">Value</th>
+<th align="left">Desc</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td align="left"><strong>parts</strong></td>
+<td align="left"><em>Array</em></td>
+<td align="left">A collection of touching parts that form the cluster</td>
+</tr>
+<tr>
+<td align="left"><strong>region</strong></td>
+<td align="left"><em>Region3</em></td>
+<td align="left">A region formed from the clusters parts.</td>
+</tr>
+<tr>
+<td align="left"><strong>volume</strong></td>
+<td align="left"><em>Number</em></td>
+<td align="left">The volume calculated from <code>region.Size</code></td>
+</tr>
+</tbody>
+</table>
 <hr />
 <h4 id="additionalheight">additionalHeight<a class="headerlink" href="#additionalheight" title="Permanent link">&para;</a></h4>
 <p><em>(read only)</em></p>
@@ -1238,7 +1366,39 @@
 </pre></div>
 
 
-<p>desc.</p>
+<p>The number originally passed when constructing the zone, or 0. Describes how far to extend the zone in the global Y direction.</p>
+<hr />
+<h4 id="region">region<a class="headerlink" href="#region" title="Permanent link">&para;</a></h4>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">region</span>
+</pre></div>
+
+
+<p>A Region3 formed from <code>groupParts</code>.</p>
+<hr />
+<h4 id="boundmin">boundMin<a class="headerlink" href="#boundmin" title="Permanent link">&para;</a></h4>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">boundMin</span>
+</pre></div>
+
+
+<p>A Vector3 used to form <code>region</code>, describing the zones minimum point.</p>
+<hr />
+<h4 id="boundmax">boundMax<a class="headerlink" href="#boundmax" title="Permanent link">&para;</a></h4>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">boundMax</span>
+</pre></div>
+
+
+<p>A Vector3 used to form <code>region</code>, describing the zones maximum point.</p>
+<hr />
+<h4 id="regionheight">regionHeight<a class="headerlink" href="#regionheight" title="Permanent link">&para;</a></h4>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">regionHeight</span>
+</pre></div>
+
+
+<p>A number describing the difference between <code>boundMin</code> and <code>boundMax</code>.</p>
 <p><br></p>
 <h2 id="events">Events<a class="headerlink" href="#events" title="Permanent link">&para;</a></h2>
 <hr />
@@ -1247,7 +1407,11 @@
 </pre></div>
 
 
-<p>desc.</p>
+<p>Fired when a player enters the zone.</p>
+<div class="admonition info info">
+<p class="admonition-title">Info</p>
+<p><code>Zone:getPlayers()</code> must be called at frequent intervals, or Zone:initLoop() once (which calls this repeatedly), for this event to function.</p>
+</div>
 <div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">playerAdded</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">))</span>
 
 <span class="kr">end</span><span class="p">)</span>
@@ -1260,7 +1424,11 @@
 </pre></div>
 
 
-<p>desc.</p>
+<p>Fired when a player leaves the zone.</p>
+<div class="admonition info info">
+<p class="admonition-title">Info</p>
+<p><code>Zone:getPlayers()</code> must be called at frequent intervals, or Zone:initLoop() once (which calls this repeatedly), for this event to function.</p>
+</div>
 <div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">playerRemoving</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">))</span>
 
 <span class="kr">end</span><span class="p">)</span>
@@ -1273,7 +1441,7 @@
 </pre></div>
 
 
-<p>desc.</p>
+<p>Fired when the zone updates (i.e. a group part is changed, such as its position or size, or a part is added or removed from the group).</p>
 <div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">updated</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">())</span>
 
 <span class="kr">end</span><span class="p">)</span>
@@ -1284,67 +1452,71 @@
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <hr />
 <h4 id="update">update<a class="headerlink" href="#update" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">update</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">update</span><span class="p">()</span>
 </pre></div>
 
 
-<p>desc.</p>
+<p>Reconstructs the region and clusters forming the zone.</p>
 <hr />
 <h4 id="displaybounds">displayBounds<a class="headerlink" href="#displaybounds" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">displayBounds</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">displayBounds</span><span class="p">()</span>
 </pre></div>
 
 
-<p>desc.</p>
+<p>Creates two parts representing the zones minimum and maximum boundaries.</p>
 <hr />
 <h4 id="getplayersinregion">getPlayersInRegion<a class="headerlink" href="#getplayersinregion" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">getPlayersInRegion</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">getPlayersInRegion</span><span class="p">()</span>
 </pre></div>
 
 
-<p>desc.</p>
+<p>Returns an array of players within the zones region (the rough area surrounding the zone).</p>
 <hr />
 <h4 id="getplayer">getPlayer<a class="headerlink" href="#getplayer" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">getPlayer</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">getPlayer</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
 </pre></div>
 
 
-<p>desc.</p>
+<p>Returns the group part the player is standing on or within if in the zone, otherwise <code>false</code>.</p>
 <hr />
 <h4 id="getplayers">getPlayers<a class="headerlink" href="#getplayers" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">getPlayers</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">getPlayers</span><span class="p">()</span>
 </pre></div>
 
 
-<p>desc.</p>
+<p>Returns an array of players within the zone.</p>
 <hr />
 <h4 id="initloop">initLoop<a class="headerlink" href="#initloop" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">initLoop</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">initLoop</span><span class="p">()</span>
 </pre></div>
 
 
-<p>desc.</p>
+<p>Automatically initiates a loop which calls <code>Zone:getPlayers()</code> every x second, defaults to <code>0.5</code>.</p>
 <hr />
 <h4 id="endloop">endLoop<a class="headerlink" href="#endloop" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">endLoop</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">endLoop</span><span class="p">()</span>
 </pre></div>
 
 
-<p>desc.</p>
+<p>Cancels any loop created with <code>Zone:initLoop()</code>.</p>
 <hr />
 <h4 id="getrandompoint">getRandomPoint<a class="headerlink" href="#getrandompoint" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">getRandomPoint</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">getRandomPoint</span><span class="p">()</span>
 </pre></div>
 
 
-<p>desc.</p>
+<p>Returns a random point, a CFrame value, within the zone, along with the group part directly below, and its intersection vector relative to the point.</p>
+<div class="codehilite"><pre><span></span>local randomCFrame, hitPart, hitIntersection = zone:getRandomPoint()
+</pre></div>
+
+
 <hr />
 <h4 id="destroy">destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">destroy</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">destroy</span><span class="p">()</span>
 </pre></div>
 
 
-<p>desc.</p>
+<p>Destroys all instances, connections and signals associcated with the zone, and ends any loop running.</p>
 <hr />
                 
                   
