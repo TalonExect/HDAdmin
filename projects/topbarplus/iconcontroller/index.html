@@ -91,7 +91,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#api" tabindex="1" class="md-skip">
+      <a href="#methods" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -770,8 +770,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#api" class="md-nav__link">
-    API
+  <a href="#methods" class="md-nav__link">
+    Methods
   </a>
   
     <nav class="md-nav">
@@ -927,8 +927,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#api" class="md-nav__link">
-    API
+  <a href="#methods" class="md-nav__link">
+    Methods
   </a>
   
     <nav class="md-nav">
@@ -988,14 +988,14 @@
                 
                   <h1>IconController</h1>
                 
-                <h2 id="api">API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h2>
+                <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <hr />
 <h4 id="createicon">createIcon<a class="headerlink" href="#createicon" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">IconController</span><span class="p">:</span><span class="n">createIcon</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">imageId</span><span class="p">,</span> <span class="n">order</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Creates, stores and returns an icon.</p>
+<p>Creates, stores and returns an icon, where <code>name</code> is a unique string identifying the icon, <code>imageId</code> an int representing the icons image, and <code>order</code>, a number defining how the icon should be positioned in relation to neighbouring icons, greater values being shifted rightward.</p>
 <hr />
 <h4 id="geticon">getIcon<a class="headerlink" href="#geticon" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">IconController</span><span class="p">:</span><span class="n">getIcon</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>

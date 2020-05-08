@@ -857,6 +857,40 @@
     Uses
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#safe-zone-1" class="md-nav__link">
+    Safe Zone (1)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#safe-zone-2" class="md-nav__link">
+    Safe Zone (2)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coin-spawner" class="md-nav__link">
+    Coin Spawner
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#voting-pads" class="md-nav__link">
+    Voting Pads
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
       
@@ -967,6 +1001,40 @@
     Uses
   </a>
   
+    <nav class="md-nav">
+      <ul class="md-nav__list">
+        
+          <li class="md-nav__item">
+  <a href="#safe-zone-1" class="md-nav__link">
+    Safe Zone (1)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#safe-zone-2" class="md-nav__link">
+    Safe Zone (2)
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#coin-spawner" class="md-nav__link">
+    Coin Spawner
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#voting-pads" class="md-nav__link">
+    Voting Pads
+  </a>
+  
+</li>
+        
+      </ul>
+    </nav>
+  
 </li>
       
       
@@ -1000,7 +1068,7 @@
 <li><a href="https://www.npmjs.com/package/@rbxts/zone-plus">TypeScript Port by DanzLua</a></li>
 </ul>
 <h2 id="collaborate">Collaborate<a class="headerlink" href="#collaborate" title="Permanent link">&para;</a></h2>
-<p>Zone+ is an open-source project; all contributions are much appreciated. You're welcome to report bugs, suggest features and make pull requests at <a href="https://github.com/1ForeverHD/HDAdmin/tree/master/Projects">our repository</a>.</p>
+<p>Zone+ is an open-source project; all contributions are much appreciated. You're welcome to report bugs, suggest features and make pull requests at our repository.</p>
 <h2 id="referencing">Referencing<a class="headerlink" href="#referencing" title="Permanent link">&para;</a></h2>
 <p>After requiring the MainModule, Zone+ modules can be referenced on the server and client under the HDAdmin directory in ReplicatedStorage.</p>
 <table>
@@ -1047,263 +1115,22 @@
 
 
 <h2 id="uses">Uses<a class="headerlink" href="#uses" title="Permanent link">&para;</a></h2>
-<details>
-  <summary>Safe Zone (using additionalHeight, a loop and 2000 randomly generated parts)</summary>
-
-<div class="codehilite"><pre><span></span><span class="c1">-- Get ZoneService</span>
-<span class="kd">local</span> <span class="n">ZonePlus</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="mi">4664437268</span><span class="p">)</span>
-<span class="kd">local</span> <span class="n">ZoneService</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">ZonePlus</span><span class="p">.</span><span class="n">ZoneService</span><span class="p">)</span>
-
-
-<span class="c1">-- Setup zone</span>
-<span class="kd">local</span> <span class="n">group</span> <span class="o">=</span> <span class="n">workspace</span><span class="p">.</span><span class="n">SafeZone1</span>
-<span class="kd">local</span> <span class="n">zone</span> <span class="o">=</span> <span class="n">ZoneService</span><span class="p">:</span><span class="n">createZone</span><span class="p">(</span><span class="s2">&quot;SafeZone1&quot;</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
-
-
-<span class="c1">-- Generate 2000 random parts within zone - not necessary, it just looks cool :)</span>
-<span class="kr">for</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span><span class="mi">2000</span> <span class="kr">do</span>
-    <span class="kd">local</span> <span class="n">randomCFrame</span> <span class="o">=</span> <span class="n">zone</span><span class="p">:</span><span class="n">getRandomPoint</span><span class="p">()</span>
-    <span class="kd">local</span> <span class="n">part</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;Part&quot;</span><span class="p">)</span>
-    <span class="n">part</span><span class="p">.</span><span class="n">Anchored</span> <span class="o">=</span> <span class="kc">true</span>
-    <span class="n">part</span><span class="p">.</span><span class="n">CanCollide</span> <span class="o">=</span> <span class="kc">false</span>
-    <span class="n">part</span><span class="p">.</span><span class="n">Transparency</span> <span class="o">=</span> <span class="mf">0.5</span>
-    <span class="n">part</span><span class="p">.</span><span class="n">Size</span> <span class="o">=</span> <span class="n">Vector3</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">,</span><span class="mi">1</span><span class="p">)</span>
-    <span class="n">part</span><span class="p">.</span><span class="n">Color</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">.</span><span class="n">fromRGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
-    <span class="n">part</span><span class="p">.</span><span class="n">CFrame</span> <span class="o">=</span> <span class="n">randomCFrame</span>
-    <span class="n">part</span><span class="p">.</span><span class="n">Parent</span> <span class="o">=</span> <span class="n">workspace</span>
-<span class="kr">end</span>
-
-
-<span class="c1">-- Create a safe zone by checking for players within the zone every X seconds</span>
-<span class="kd">local</span> <span class="n">players</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;Players&quot;</span><span class="p">)</span>
-<span class="kd">local</span> <span class="n">safeZoneCheckInterval</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="kd">local</span> <span class="n">forceFieldName</span> <span class="o">=</span> <span class="s2">&quot;PineappleDoesNotGoOnPizza&quot;</span>
-<span class="kd">local</span> <span class="n">forceFieldTemplate</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;ForceField&quot;</span><span class="p">)</span>
-<span class="n">forceFieldTemplate</span><span class="p">.</span><span class="n">Name</span> <span class="o">=</span> <span class="n">forceFieldName</span>
-
-<span class="kr">while</span> <span class="kc">true</span> <span class="kr">do</span>
-    <span class="n">wait</span><span class="p">(</span><span class="n">safeZoneCheckInterval</span><span class="p">)</span>
-
-    <span class="c1">-- Get players in zone</span>
-    <span class="kd">local</span> <span class="n">playersInZone</span> <span class="o">=</span> <span class="n">zone</span><span class="p">:</span><span class="n">getPlayers</span><span class="p">()</span>
-    <span class="kd">local</span> <span class="n">playersInZoneDictionary</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="kr">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">plr</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">playersInZone</span><span class="p">)</span> <span class="kr">do</span>
-        <span class="n">playersInZoneDictionary</span><span class="p">[</span><span class="n">plr</span><span class="p">]</span> <span class="o">=</span> <span class="kc">true</span>
-    <span class="kr">end</span>
-
-    <span class="c1">-- Add/remove forcefield accordingly</span>
-    <span class="kr">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">plr</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">players</span><span class="p">:</span><span class="n">GetPlayers</span><span class="p">())</span> <span class="kr">do</span>
-        <span class="kd">local</span> <span class="n">char</span> <span class="o">=</span> <span class="n">plr</span><span class="p">.</span><span class="n">Character</span>
-        <span class="kd">local</span> <span class="n">forceField</span> <span class="o">=</span> <span class="n">char</span> <span class="ow">and</span> <span class="n">char</span><span class="p">:</span><span class="n">FindFirstChild</span><span class="p">(</span><span class="n">forceFieldName</span><span class="p">)</span>
-        <span class="kr">if</span> <span class="n">playersInZoneDictionary</span><span class="p">[</span><span class="n">plr</span><span class="p">]</span> <span class="kr">then</span>
-            <span class="kr">if</span> <span class="ow">not</span> <span class="n">forceField</span> <span class="kr">then</span>
-                <span class="n">forceField</span> <span class="o">=</span> <span class="n">forceFieldTemplate</span><span class="p">:</span><span class="n">Clone</span><span class="p">()</span>
-                <span class="n">forceField</span><span class="p">.</span><span class="n">Parent</span> <span class="o">=</span> <span class="n">char</span>
-            <span class="kr">end</span>
-        <span class="kr">elseif</span> <span class="n">forceField</span> <span class="kr">then</span>
-            <span class="n">forceField</span><span class="p">:</span><span class="n">Destroy</span><span class="p">()</span>
-        <span class="kr">end</span>
-    <span class="kr">end</span>
-
-<span class="kr">end</span>
-</pre></div>
-
-
-
-</details>
-
+<p>For coded examples, visit the Zone+ Playground.</p>
+<hr />
+<h4 id="safe-zone-1">Safe Zone (1)<a class="headerlink" href="#safe-zone-1" title="Permanent link">&para;</a></h4>
+<p>Setup a zone with an arbitrary space (using the <code>additionalHeight</code> parameter), retrieve all players within the zone at frequent intervals, and apply or remove a forcefield accordingly. This example also generates 2000 random parts as a visual representation of <code>additionalHeight</code>.</p>
 <p><a><img src="https://i.imgur.com/rhAnDH7.gif" width="100%"/></a></p>
-<details>
-  <summary>Safe Zone (using uncancollided parts and zone events)</summary>
-
-<div class="codehilite"><pre><span></span><span class="c1">-- Get ZoneService</span>
-<span class="kd">local</span> <span class="n">ZonePlus</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="mi">4664437268</span><span class="p">)</span>
-<span class="kd">local</span> <span class="n">ZoneService</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">ZonePlus</span><span class="p">.</span><span class="n">ZoneService</span><span class="p">)</span>
-
-
-<span class="c1">-- Setup zone</span>
-<span class="kd">local</span> <span class="n">group</span> <span class="o">=</span> <span class="n">workspace</span><span class="p">.</span><span class="n">SafeZone2</span>
-<span class="kd">local</span> <span class="n">zone</span> <span class="o">=</span> <span class="n">ZoneService</span><span class="p">:</span><span class="n">createZone</span><span class="p">(</span><span class="s2">&quot;SafeZone2&quot;</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-
-
-<span class="c1">-- Create a safe zone by listening for players entering and leaving the zone</span>
-<span class="kd">local</span> <span class="n">safeZoneCheckInterval</span> <span class="o">=</span> <span class="mf">0.2</span>
-<span class="kd">local</span> <span class="n">forceFieldName</span> <span class="o">=</span> <span class="s2">&quot;PineapplesForLife&quot;</span>
-<span class="kd">local</span> <span class="n">forceFieldTemplate</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;ForceField&quot;</span><span class="p">)</span>
-<span class="n">forceFieldTemplate</span><span class="p">.</span><span class="n">Name</span> <span class="o">=</span> <span class="n">forceFieldName</span>
-
-<span class="kd">local</span> <span class="n">connectionAdded</span> <span class="o">=</span> <span class="n">zone</span><span class="p">.</span><span class="n">playerAdded</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
-    <span class="kd">local</span> <span class="n">char</span> <span class="o">=</span> <span class="n">player</span><span class="p">.</span><span class="n">Character</span>
-    <span class="kd">local</span> <span class="n">forceField</span> <span class="o">=</span> <span class="n">char</span> <span class="ow">and</span> <span class="n">char</span><span class="p">:</span><span class="n">FindFirstChild</span><span class="p">(</span><span class="n">forceFieldName</span><span class="p">)</span>
-    <span class="kr">if</span> <span class="ow">not</span> <span class="n">forceField</span> <span class="kr">then</span>
-        <span class="n">forceField</span> <span class="o">=</span> <span class="n">forceFieldTemplate</span><span class="p">:</span><span class="n">Clone</span><span class="p">()</span>
-        <span class="n">forceField</span><span class="p">.</span><span class="n">Parent</span> <span class="o">=</span> <span class="n">char</span>
-    <span class="kr">end</span>
-<span class="kr">end</span><span class="p">)</span>
-<span class="kd">local</span> <span class="n">connectionRemoving</span> <span class="o">=</span> <span class="n">zone</span><span class="p">.</span><span class="n">playerRemoving</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
-    <span class="kd">local</span> <span class="n">char</span> <span class="o">=</span> <span class="n">player</span><span class="p">.</span><span class="n">Character</span>
-    <span class="kd">local</span> <span class="n">forceField</span> <span class="o">=</span> <span class="n">char</span> <span class="ow">and</span> <span class="n">char</span><span class="p">:</span><span class="n">FindFirstChild</span><span class="p">(</span><span class="n">forceFieldName</span><span class="p">)</span>
-    <span class="kr">if</span> <span class="n">forceField</span> <span class="kr">then</span>
-        <span class="n">forceField</span><span class="p">:</span><span class="n">Destroy</span><span class="p">()</span>
-    <span class="kr">end</span>
-<span class="kr">end</span><span class="p">)</span>
-<span class="n">zone</span><span class="p">:</span><span class="n">initLoop</span><span class="p">(</span><span class="n">safeZoneCheckInterval</span><span class="p">)</span>
-</pre></div>
-
-
-
-</details>
-
+<hr />
+<h4 id="safe-zone-2">Safe Zone (2)<a class="headerlink" href="#safe-zone-2" title="Permanent link">&para;</a></h4>
+<p>Detect and apply a forcefield to players within an uncancollided red zone using the <code>playerAdded</code> and <code>playerRemoving</code> events.</p>
 <p><a><img src="https://i.imgur.com/IHt0Ozf.gif" width="100%"/></a></p>
-<details>
-  <summary>Coin Spawner</summary>
-
-<div class="codehilite"><pre><span></span><span class="c1">-- Get ZoneService</span>
-<span class="kd">local</span> <span class="n">ZonePlus</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="mi">4664437268</span><span class="p">)</span>
-<span class="kd">local</span> <span class="n">ZoneService</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">ZonePlus</span><span class="p">.</span><span class="n">ZoneService</span><span class="p">)</span>
-
-
-<span class="c1">-- Setup zone</span>
-<span class="kd">local</span> <span class="n">group</span> <span class="o">=</span> <span class="n">workspace</span><span class="p">.</span><span class="n">CoinSpawner</span>
-<span class="kd">local</span> <span class="n">zone</span> <span class="o">=</span> <span class="n">ZoneService</span><span class="p">:</span><span class="n">createZone</span><span class="p">(</span><span class="s2">&quot;CoinSpawner&quot;</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
-
-
-<span class="c1">-- Spawn coins within a random position in the zone, and position equal distances above the ground</span>
-<span class="kd">local</span> <span class="n">distanceAboveGround</span> <span class="o">=</span> <span class="mi">4</span>
-<span class="kd">local</span> <span class="n">totalCoins</span> <span class="o">=</span> <span class="mi">40</span>
-
-<span class="kd">local</span> <span class="n">coinTemplate</span> <span class="o">=</span> <span class="n">Instance</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="s2">&quot;Part&quot;</span><span class="p">)</span>
-<span class="n">coinTemplate</span><span class="p">.</span><span class="n">Name</span> <span class="o">=</span> <span class="s2">&quot;Coin&quot;</span>
-<span class="n">coinTemplate</span><span class="p">.</span><span class="n">Anchored</span> <span class="o">=</span> <span class="kc">true</span>
-<span class="n">coinTemplate</span><span class="p">.</span><span class="n">CanCollide</span> <span class="o">=</span> <span class="kc">false</span>
-<span class="n">coinTemplate</span><span class="p">.</span><span class="n">Transparency</span> <span class="o">=</span> <span class="mi">0</span>
-<span class="n">coinTemplate</span><span class="p">.</span><span class="n">Size</span> <span class="o">=</span> <span class="n">Vector3</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">1</span><span class="p">,</span><span class="mi">4</span><span class="p">,</span><span class="mi">4</span><span class="p">)</span>
-<span class="n">coinTemplate</span><span class="p">.</span><span class="n">Color</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">.</span><span class="n">fromRGB</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">176</span><span class="p">,</span> <span class="mi">0</span><span class="p">)</span>
-<span class="n">coinTemplate</span><span class="p">.</span><span class="n">Reflectance</span> <span class="o">=</span> <span class="mf">0.3</span>
-<span class="n">coinTemplate</span><span class="p">.</span><span class="n">Shape</span> <span class="o">=</span> <span class="n">Enum</span><span class="p">.</span><span class="n">PartType</span><span class="p">.</span><span class="n">Cylinder</span>
-<span class="n">coinTemplate</span><span class="p">.</span><span class="n">Parent</span> <span class="o">=</span> <span class="kc">nil</span>
-
-<span class="kd">local</span> <span class="kr">function</span> <span class="nf">spawnCoin</span><span class="p">()</span>
-    <span class="kd">local</span> <span class="n">randomCFrame</span><span class="p">,</span> <span class="n">hitPart</span><span class="p">,</span> <span class="n">hitIntersection</span> <span class="o">=</span> <span class="n">zone</span><span class="p">:</span><span class="n">getRandomPoint</span><span class="p">()</span>
-    <span class="kd">local</span> <span class="n">coin</span> <span class="o">=</span> <span class="n">coinTemplate</span><span class="p">:</span><span class="n">Clone</span><span class="p">()</span>
-    <span class="n">coin</span><span class="p">.</span><span class="n">CFrame</span> <span class="o">=</span> <span class="n">CFrame</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">hitIntersection</span> <span class="o">+</span> <span class="n">Vector3</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="n">distanceAboveGround</span><span class="p">,</span> <span class="mi">0</span><span class="p">))</span>
-    <span class="n">coin</span><span class="p">.</span><span class="n">Touched</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
-        <span class="n">spawnCoin</span><span class="p">()</span>
-        <span class="n">coin</span><span class="p">:</span><span class="n">Destroy</span><span class="p">()</span>
-    <span class="kr">end</span><span class="p">)</span>
-    <span class="n">coin</span><span class="p">.</span><span class="n">Parent</span> <span class="o">=</span> <span class="n">workspace</span>
-<span class="kr">end</span>
-
-<span class="kr">for</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">totalCoins</span> <span class="kr">do</span>
-    <span class="n">spawnCoin</span><span class="p">()</span>
-<span class="kr">end</span>
-</pre></div>
-
-
-
-</details>
-
+<hr />
+<h4 id="coin-spawner">Coin Spawner<a class="headerlink" href="#coin-spawner" title="Permanent link">&para;</a></h4>
+<p>Randomly generate coins a few studs above any surface within the zone.</p>
 <p><a><img src="https://i.imgur.com/ZUS5xhQ.gif" width="100%"/></a></p>
-<details>
-  <summary>Voting Pads</summary>
-
-<div class="codehilite"><pre><span></span><span class="c1">-- Get ZoneService</span>
-<span class="kd">local</span> <span class="n">ZonePlus</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="mi">4664437268</span><span class="p">)</span>
-<span class="kd">local</span> <span class="n">ZoneService</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">ZonePlus</span><span class="p">.</span><span class="n">ZoneService</span><span class="p">)</span>
-
-
-<span class="c1">-- Config</span>
-<span class="kd">local</span> <span class="n">voteTime</span> <span class="o">=</span> <span class="mi">10</span>
-
-
-<span class="c1">-- Vote</span>
-<span class="kd">local</span> <span class="n">votePads</span> <span class="o">=</span> <span class="n">workspace</span><span class="p">.</span><span class="n">VotingPads</span>
-<span class="kd">local</span> <span class="n">voteMachine</span> <span class="o">=</span> <span class="n">workspace</span><span class="p">.</span><span class="n">VoteMachine9000</span>
-<span class="kd">local</span> <span class="n">container</span> <span class="o">=</span> <span class="n">voteMachine</span><span class="p">.</span><span class="n">SurfaceGui</span><span class="p">.</span><span class="n">Container</span>
-<span class="kd">local</span> <span class="n">votes</span> <span class="o">=</span> <span class="n">container</span><span class="p">.</span><span class="n">Votes</span>
-<span class="kd">local</span> <span class="n">status</span> <span class="o">=</span> <span class="n">container</span><span class="p">.</span><span class="n">Status</span>
-
-<span class="kd">local</span> <span class="kr">function</span> <span class="nf">beginVote</span><span class="p">()</span>
-
-    <span class="c1">-- Setup voting zones</span>
-    <span class="kd">local</span> <span class="n">zones</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="kr">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">group</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">votePads</span><span class="p">:</span><span class="n">GetChildren</span><span class="p">())</span> <span class="kr">do</span>
-        <span class="kd">local</span> <span class="n">zoneName</span> <span class="o">=</span> <span class="n">group</span><span class="p">.</span><span class="n">Name</span>
-        <span class="kd">local</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">votes</span><span class="p">[</span><span class="n">zoneName</span><span class="p">]</span>
-        <span class="kd">local</span> <span class="n">zone</span> <span class="o">=</span> <span class="n">ZoneService</span><span class="p">:</span><span class="n">createZone</span><span class="p">(</span><span class="n">zoneName</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
-        <span class="kd">local</span> <span class="kr">function</span> <span class="nf">updateVote</span><span class="p">(</span><span class="n">increment</span><span class="p">)</span>
-            <span class="n">zone</span><span class="p">.</span><span class="n">votes</span> <span class="o">=</span> <span class="n">zone</span><span class="p">.</span><span class="n">votes</span> <span class="o">+</span> <span class="n">increment</span>
-            <span class="n">frame</span><span class="p">.</span><span class="n">TextLabel</span><span class="p">.</span><span class="n">Text</span> <span class="o">=</span> <span class="n">zone</span><span class="p">.</span><span class="n">votes</span>
-        <span class="kr">end</span>
-        <span class="n">zone</span><span class="p">.</span><span class="n">votes</span> <span class="o">=</span> <span class="mi">0</span>
-        <span class="n">zone</span><span class="p">.</span><span class="n">playerAdded</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
-            <span class="n">updateVote</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-        <span class="kr">end</span><span class="p">)</span>
-        <span class="n">zone</span><span class="p">.</span><span class="n">playerRemoving</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
-            <span class="n">updateVote</span><span class="p">(</span><span class="o">-</span><span class="mi">1</span><span class="p">)</span>
-        <span class="kr">end</span><span class="p">)</span>
-        <span class="n">zone</span><span class="p">:</span><span class="n">initLoop</span><span class="p">(</span><span class="mf">0.1</span><span class="p">)</span>
-        <span class="n">updateVote</span><span class="p">(</span><span class="mi">0</span><span class="p">)</span>
-        <span class="n">frame</span><span class="p">.</span><span class="n">Visible</span> <span class="o">=</span> <span class="kc">true</span>
-        <span class="nb">table.insert</span><span class="p">(</span><span class="n">zones</span><span class="p">,</span> <span class="n">zone</span><span class="p">)</span>
-    <span class="kr">end</span>
-
-    <span class="c1">-- Countdown</span>
-    <span class="kr">for</span> <span class="n">i</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span> <span class="n">voteTime</span> <span class="kr">do</span>
-        <span class="n">status</span><span class="p">.</span><span class="n">Text</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;Vote! (%s)&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">voteTime</span><span class="o">+</span><span class="mi">1</span><span class="o">-</span><span class="n">i</span><span class="p">)</span>
-        <span class="n">wait</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-    <span class="kr">end</span>
-
-    <span class="c1">-- Determine winner</span>
-    <span class="kd">local</span> <span class="n">winners</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="kd">local</span> <span class="n">winningScore</span> <span class="o">=</span> <span class="mi">0</span>
-    <span class="kr">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">zone</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">zones</span><span class="p">)</span> <span class="kr">do</span>
-        <span class="kd">local</span> <span class="n">score</span> <span class="o">=</span> <span class="n">zone</span><span class="p">.</span><span class="n">votes</span>
-        <span class="kr">if</span> <span class="n">score</span> <span class="o">&gt;</span> <span class="n">winningScore</span> <span class="kr">then</span>
-            <span class="n">winningScore</span> <span class="o">=</span> <span class="n">score</span>
-        <span class="kr">end</span>
-    <span class="kr">end</span>
-    <span class="kr">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">zone</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">zones</span><span class="p">)</span> <span class="kr">do</span>
-        <span class="kd">local</span> <span class="n">score</span> <span class="o">=</span> <span class="n">zone</span><span class="p">.</span><span class="n">votes</span>
-        <span class="kd">local</span> <span class="n">frame</span> <span class="o">=</span> <span class="n">votes</span><span class="p">[</span><span class="n">zone</span><span class="p">.</span><span class="n">name</span><span class="p">]</span>
-        <span class="kr">if</span> <span class="n">score</span> <span class="o">==</span> <span class="n">winningScore</span> <span class="kr">then</span>
-            <span class="n">frame</span><span class="p">.</span><span class="n">Visible</span> <span class="o">=</span> <span class="kc">true</span>
-            <span class="nb">table.insert</span><span class="p">(</span><span class="n">winners</span><span class="p">,</span> <span class="n">zone</span><span class="p">)</span>
-        <span class="kr">else</span>
-            <span class="n">frame</span><span class="p">.</span><span class="n">Visible</span> <span class="o">=</span> <span class="kc">false</span>
-        <span class="kr">end</span>
-        <span class="n">ZoneService</span><span class="p">:</span><span class="n">removeZone</span><span class="p">(</span><span class="n">zone</span><span class="p">.</span><span class="n">name</span><span class="p">)</span>
-    <span class="kr">end</span>
-
-    <span class="c1">-- Display results</span>
-    <span class="kr">if</span> <span class="n">winningScore</span> <span class="o">==</span> <span class="mi">0</span> <span class="kr">then</span>
-        <span class="n">status</span><span class="p">.</span><span class="n">Text</span> <span class="o">=</span> <span class="s2">&quot;No votes were made.&quot;</span>
-    <span class="kr">elseif</span> <span class="o">#</span><span class="n">winners</span> <span class="o">&gt;</span> <span class="mi">1</span> <span class="kr">then</span>
-        <span class="n">status</span><span class="p">.</span><span class="n">Text</span> <span class="o">=</span> <span class="s2">&quot;It&#39;s a tie!&quot;</span>
-    <span class="kr">else</span>
-        <span class="n">status</span><span class="p">.</span><span class="n">Text</span> <span class="o">=</span> <span class="p">(</span><span class="s2">&quot;The winner is %s!&quot;</span><span class="p">):</span><span class="n">format</span><span class="p">(</span><span class="n">winners</span><span class="p">[</span><span class="mi">1</span><span class="p">].</span><span class="n">name</span><span class="p">)</span>
-    <span class="kr">end</span>
-    <span class="n">wait</span><span class="p">(</span><span class="mi">3</span><span class="p">)</span>
-
-    <span class="c1">-- Hide frames and restart</span>
-    <span class="n">status</span><span class="p">.</span><span class="n">Text</span> <span class="o">=</span> <span class="s2">&quot;Beginning new round...&quot;</span>
-    <span class="kr">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">frame</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">votes</span><span class="p">:</span><span class="n">GetChildren</span><span class="p">())</span> <span class="kr">do</span>
-        <span class="n">frame</span><span class="p">.</span><span class="n">Visible</span> <span class="o">=</span> <span class="kc">false</span>
-    <span class="kr">end</span>
-    <span class="n">wait</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-
-<span class="kr">end</span>
-
-<span class="kr">while</span> <span class="kc">true</span> <span class="kr">do</span>
-    <span class="n">beginVote</span><span class="p">()</span>
-    <span class="n">wait</span><span class="p">(</span><span class="mi">1</span><span class="p">)</span>
-<span class="kr">end</span>
-</pre></div>
-
-
-
-</details>
-
+<hr />
+<h4 id="voting-pads">Voting Pads<a class="headerlink" href="#voting-pads" title="Permanent link">&para;</a></h4>
+<p>Utilise zones to determine the amount of players on a particular pad.</p>
 <p><a><img src="https://i.imgur.com/rJlHmEv.gif" width="100%"/></a></p>
                 
                   

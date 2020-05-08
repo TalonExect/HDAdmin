@@ -91,7 +91,7 @@
     <input class="md-toggle" data-md-toggle="search" type="checkbox" id="__search" autocomplete="off">
     <label class="md-overlay" data-md-component="overlay" for="__drawer"></label>
     
-      <a href="#api" tabindex="1" class="md-skip">
+      <a href="#methods" tabindex="1" class="md-skip">
         Skip to content
       </a>
     
@@ -830,8 +830,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#api" class="md-nav__link">
-    API
+  <a href="#methods" class="md-nav__link">
+    Methods
   </a>
   
     <nav class="md-nav">
@@ -927,8 +927,8 @@
     <ul class="md-nav__list" data-md-scrollfix>
       
         <li class="md-nav__item">
-  <a href="#api" class="md-nav__link">
-    API
+  <a href="#methods" class="md-nav__link">
+    Methods
   </a>
   
     <nav class="md-nav">
@@ -988,14 +988,14 @@
                 
                   <h1>ZoneService</h1>
                 
-                <h2 id="api">API<a class="headerlink" href="#api" title="Permanent link">&para;</a></h2>
+                <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <hr />
 <h4 id="createzone">createZone<a class="headerlink" href="#createzone" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">ZoneService</span><span class="p">:</span><span class="n">createZone</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">additionalHeight</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Creates, stores and returns a zone.</p>
+<p>Creates, stores and returns a zone, where <code>name</code> is a unique string identifying the zone, <code>group</code>, an instance (such as a Model or Folder) containing parts to represent the zone, and <code>additionalHeight</code>, a number defining how many studs to extend the zone upwards, defaulting to <code>0</code>.</p>
 <hr />
 <h4 id="getzone">getZone<a class="headerlink" href="#getzone" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">ZoneService</span><span class="p">:</span><span class="n">getZone</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
