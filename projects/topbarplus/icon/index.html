@@ -824,8 +824,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setimagescale" class="md-nav__link">
-    setImageScale
+  <a href="#setimagesize" class="md-nav__link">
+    setImageSize
   </a>
   
 </li>
@@ -840,6 +840,13 @@
           <li class="md-nav__item">
   <a href="#settogglefunction" class="md-nav__link">
     setToggleFunction
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sethoverfunction" class="md-nav__link">
+    setHoverFunction
   </a>
   
 </li>
@@ -976,8 +983,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#imagescale" class="md-nav__link">
-    imageScale
+  <a href="#imagesize" class="md-nav__link">
+    imageSize
   </a>
   
 </li>
@@ -1006,6 +1013,13 @@
           <li class="md-nav__item">
   <a href="#togglefunction" class="md-nav__link">
     toggleFunction
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hoverfunction" class="md-nav__link">
+    hoverFunction
   </a>
   
 </li>
@@ -1169,8 +1183,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setimagescale" class="md-nav__link">
-    setImageScale
+  <a href="#setimagesize" class="md-nav__link">
+    setImageSize
   </a>
   
 </li>
@@ -1185,6 +1199,13 @@
           <li class="md-nav__item">
   <a href="#settogglefunction" class="md-nav__link">
     setToggleFunction
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#sethoverfunction" class="md-nav__link">
+    setHoverFunction
   </a>
   
 </li>
@@ -1321,8 +1342,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#imagescale" class="md-nav__link">
-    imageScale
+  <a href="#imagesize" class="md-nav__link">
+    imageSize
   </a>
   
 </li>
@@ -1351,6 +1372,13 @@
           <li class="md-nav__item">
   <a href="#togglefunction" class="md-nav__link">
     toggleFunction
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hoverfunction" class="md-nav__link">
+    hoverFunction
   </a>
   
 </li>
@@ -1413,12 +1441,12 @@
 
 <p>Sets the icons priority order, determining whether it will appear before or after other icons.</p>
 <hr />
-<h4 id="setimagescale">setImageScale<a class="headerlink" href="#setimagescale" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">setImageScale</span><span class="p">(</span><span class="n">scale</span><span class="p">)</span>
+<h4 id="setimagesize">setImageSize<a class="headerlink" href="#setimagesize" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">setImageSize</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Sets the scale of the image based on a value between 0 and 1.</p>
+<p>Sets the image size in pixels. Height will equal width if not specified.</p>
 <hr />
 <h4 id="setenabled">setEnabled<a class="headerlink" href="#setenabled" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">setEnabled</span><span class="p">(</span><span class="n">bool</span><span class="p">)</span>
@@ -1433,6 +1461,16 @@
 
 
 <p>Sets a function that is called every time the icon is selected and deslected.</p>
+<hr />
+<h4 id="sethoverfunction">setHoverFunction<a class="headerlink" href="#sethoverfunction" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">setHoverFunction</span><span class="p">(</span><span class="n">hoverFunction</span><span class="p">)</span>
+</pre></div>
+
+
+<div class="admonition warning">
+<p class="admonition-title">Warning</p>
+<p>This method is likely to change. It's recommended not to use for the time being.</p>
+</div>
 <hr />
 <h4 id="settheme">setTheme<a class="headerlink" href="#settheme" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">setTheme</span><span class="p">(</span><span class="n">themeDetails</span><span class="p">)</span>
@@ -1731,13 +1769,13 @@
 
 <p>The icons imageId. To change, use <code>Icon:setImage()</code>.</p>
 <hr />
-<h4 id="imagescale">imageScale<a class="headerlink" href="#imagescale" title="Permanent link">&para;</a></h4>
+<h4 id="imagesize">imageSize<a class="headerlink" href="#imagesize" title="Permanent link">&para;</a></h4>
 <p><em>(read only)</em></p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">imageScale</span>
+<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">imageSize</span>
 </pre></div>
 
 
-<p>The scale of the icon image. A value between 0 and 1. Defaults to <code>0.7</code>. To change, use <code>Icon:setImageScale()</code>.</p>
+<p>A Vector2 representing the images size. To change, use <code>Icon:setImageSize()</code>.</p>
 <hr />
 <h4 id="order">order<a class="headerlink" href="#order" title="Permanent link">&para;</a></h4>
 <p><em>(read only)</em></p>
@@ -1770,6 +1808,14 @@
 
 
 <p>A custom function called during <code>Icon:select()</code> and <code>Icon:deselect()</code>. To change, use <code>Icon:setToggleFunction()</code>.</p>
+<hr />
+<h4 id="hoverfunction">hoverFunction<a class="headerlink" href="#hoverfunction" title="Permanent link">&para;</a></h4>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">hoverFunction</span> 
+</pre></div>
+
+
+<p>A custom function called when the icon is (un)highlighted. To change, use <code>Icon:setHoverFunction()</code>.</p>
 <hr />
 <h4 id="deselectwhenothericonselected">deselectWhenOtherIconSelected<a class="headerlink" href="#deselectwhenothericonselected" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">toggleFunction</span> 
