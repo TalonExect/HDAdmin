@@ -1036,11 +1036,42 @@
 
 
 <h2 id="themes">Themes<a class="headerlink" href="#themes" title="Permanent link">&para;</a></h2>
-<p>Themes are easily adaptable tables of information that can be applied to icons to ehance their appearance and behaviour. For details on setting up a theme, visit the Icon docs. A theme can be applied by simply doing:</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">setTheme</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
+<p>Themes are easily adaptable tables of information that can be applied to icons to ehance their appearance and behaviour.</p>
+<p>You can break down a theme into three sections:</p>
+<ol>
+<li>The appearance of the icon when 'selected'  (i.e. <code>objectName.selected</code>)</li>
+<li>The appearance of the icon when 'deselected'  (i.e. <code>objectName.deselected</code>)</li>
+<li>How the icon transitions between these appearances when toggled (i.e. <code>toggleTweenInfo</code>)</li>
+</ol>
+<p>An 'object' is simply a gui component that makes up the icon, such as the icons background (an ImageButton), its image (an ImageLabel), its notification background, etc. You can view the names and description of these <a href="https://1foreverhd.github.io/HDAdmin/projects/topbarplus/icon/#objects">here</a>.</p>
+<p>For example, to make an icon have a blue background, we simply say 'I want the icon to look blue (i.e. <code>Color3.fromRGB(0, 170, 255)</code>) when it's selected and deselected':</p>
+<div class="codehilite"><pre><span></span><span class="p">[</span><span class="s2">&quot;button&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+    <span class="n">selected</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">ImageColor3</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">.</span><span class="n">fromRGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="p">},</span>
+    <span class="n">deselected</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">ImageColor3</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">.</span><span class="n">fromRGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+    <span class="p">},</span>
+<span class="p">},</span>
 </pre></div>
 
 
+<p><a><img src="https://doy2mn9upadnk.cloudfront.net/uploads/default/original/4X/d/b/5/db58739e7ff8395d5d00b4615d0d88e5b3fc165a.png" width="30%"/></a></p>
+<p>If a property is not specified for a 'toggle state' (i.e. the <code>selected</code> and <code>deselected</code> dictionaries), then it's automatically filled in with the default topbar properties.</p>
+<p>You then apply this theme by doing:</p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setTheme</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
+</pre></div>
+
+
+<p>A theme can also be applied to all icons at once by doing:</p>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">icons</span> <span class="o">=</span> <span class="n">iconController</span><span class="p">:</span><span class="n">getAllIcons</span><span class="p">()</span>
+<span class="kr">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">icon</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">icons</span><span class="p">)</span> <span class="kr">do</span>
+    <span class="n">icon</span><span class="p">:</span><span class="n">setTheme</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
+<span class="kr">end</span>
+</pre></div>
+
+
+<p>For further details, visit the Icon docs.</p>
 <p>Here's some examples of custom themes you can create:</p>
 <details>
   <summary>Roblox-mimic</summary>
