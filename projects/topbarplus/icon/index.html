@@ -1488,7 +1488,10 @@
 </pre></div>
 
 
-<p>Binds the GuiObject so that its visibility is toggled on and off accordingly when <code>Icon:select()</code> and <code>Icon:deselect()</code> are called (i.e. when the icon is selected and deselected).</p>
+<div class="admonition info info">
+<p class="admonition-title">Info</p>
+<p>You must ensure the GuiObject has 'ResetOnSpawn' set to <code>false</code>, or that you are calling <code>Icon:setToggleMenu(guiObject)</code> every time the player respawns, for the menu to persist.</p>
+</div>
 <hr />
 <h4 id="settogglefunction">setToggleFunction<a class="headerlink" href="#settogglefunction" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">:</span><span class="n">setToggleFunction</span><span class="p">(</span><span class="n">toggleFunction</span><span class="p">)</span>
@@ -1558,7 +1561,7 @@
 
 
 <p>Fired when the icon causes a position shift of other icons.</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">updated</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">())</span>
+<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">updated</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
 
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
@@ -1571,7 +1574,7 @@
 
 
 <p>Fired when the icon is selected.</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">selected</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">())</span>
+<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">selected</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
 
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
@@ -1584,7 +1587,7 @@
 
 
 <p>Fired when the icon is deselected.</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">deselected</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">())</span>
+<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">deselected</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
 
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
@@ -1597,7 +1600,7 @@
 
 
 <p>Fired when the icons notifcations are cleared.</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">endNotifications</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">())</span>
+<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">endNotifications</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
 
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
