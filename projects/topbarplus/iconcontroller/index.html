@@ -792,6 +792,27 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#removefakechat" class="md-nav__link">
+    removeFakeChat
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#settopbarenabled" class="md-nav__link">
+    setTopbarEnabled
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setdisplayorder" class="md-nav__link">
+    setDisplayOrder
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geticon" class="md-nav__link">
     getIcon
   </a>
@@ -956,6 +977,27 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#removefakechat" class="md-nav__link">
+    removeFakeChat
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#settopbarenabled" class="md-nav__link">
+    setTopbarEnabled
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setdisplayorder" class="md-nav__link">
+    setDisplayOrder
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#geticon" class="md-nav__link">
     getIcon
   </a>
@@ -1016,7 +1058,28 @@
 </pre></div>
 
 
-<p>Disables the default core chat icon, and creates and returns a new icon imitating it.</p>
+<p>Disables the default core chat icon, and creates and returns a new icon imitating it. The icon can be enabled and disabled by doing <code>icon:setEnabled(bool)</code> <em>or</em> <code>StarterGui:SetCoreGuiEnabled("Chat", bool)</code>.</p>
+<hr />
+<h4 id="removefakechat">removeFakeChat<a class="headerlink" href="#removefakechat" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">IconController</span><span class="p">:</span><span class="n">removeFakeChat</span><span class="p">()</span>
+</pre></div>
+
+
+<p>Destroys and removes references of the fake chat icon.</p>
+<hr />
+<h4 id="settopbarenabled">setTopbarEnabled<a class="headerlink" href="#settopbarenabled" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">IconController</span><span class="p">:</span><span class="n">setTopbarEnabled</span><span class="p">(</span><span class="n">bool</span><span class="p">)</span>
+</pre></div>
+
+
+<p>When set to false, hides all icons created with Topbar+. This can also be achieved by doing <code>StarterGui:SetCore("TopbarEnabled", bool)</code>.</p>
+<hr />
+<h4 id="setdisplayorder">setDisplayOrder<a class="headerlink" href="#setdisplayorder" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">IconController</span><span class="p">:</span><span class="n">setDisplayOrder</span><span class="p">(</span><span class="n">int</span><span class="p">)</span>
+</pre></div>
+
+
+<p>xxxx</p>
 <hr />
 <h4 id="geticon">getIcon<a class="headerlink" href="#geticon" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">IconController</span><span class="p">:</span><span class="n">getIcon</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
