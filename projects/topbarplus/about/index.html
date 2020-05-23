@@ -1133,8 +1133,13 @@
 </pre></div>
 
 
-<p>A theme can also be applied to all icons at once by doing:</p>
-<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">icons</span> <span class="o">=</span> <span class="n">iconController</span><span class="p">:</span><span class="n">getAllIcons</span><span class="p">()</span>
+<p>A theme can be applied to all icons at once by doing:</p>
+<div class="codehilite"><pre><span></span><span class="n">IconController</span><span class="p">:</span><span class="n">setGameTheme</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
+</pre></div>
+
+
+<p>or</p>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">icons</span> <span class="o">=</span> <span class="n">IconController</span><span class="p">:</span><span class="n">getAllIcons</span><span class="p">()</span>
 <span class="kr">for</span> <span class="n">_</span><span class="p">,</span> <span class="n">icon</span> <span class="kr">in</span> <span class="nb">pairs</span><span class="p">(</span><span class="n">icons</span><span class="p">)</span> <span class="kr">do</span>
     <span class="n">icon</span><span class="p">:</span><span class="n">setTheme</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
 <span class="kr">end</span>
