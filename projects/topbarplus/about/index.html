@@ -1107,11 +1107,11 @@
 
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>The topbar client (local script) has to go within StarterPlayerScripts or a gui that has ‘ResetOnSpawn’ set to false, otherwise it won’t persist when the player respawns.</p>
+<p>The topbar client (local script) has to go within StarterPlayerScripts or a ScreenGui that has ‘ResetOnSpawn’ set to false, otherwise it won’t persist when the player respawns.</p>
 </div>
 <div class="admonition warning">
 <p class="admonition-title">Warning</p>
-<p>Likewise, if you use a 'toggle menu', you must ensure its ScreenGui has <code>ResetOnSpawn</code> set to <code>false</code>, or that you are calling Icon:setToggleMenu(guiObject) every time the player respawns, for the menu to persist.</p>
+<p>Likewise, if using a 'toggle menu', you must ensure its ScreenGui has <code>ResetOnSpawn</code> set to <code>false</code>, or that you are calling Icon:setToggleMenu(guiObject) every time the player respawns, for the menu to persist.</p>
 </div>
 <h2 id="themes">Themes<a class="headerlink" href="#themes" title="Permanent link">&para;</a></h2>
 <p>Themes are easily adaptable tables of information that can be applied to icons to ehance their appearance and behaviour.</p>
