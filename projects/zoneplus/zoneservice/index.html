@@ -65,6 +65,8 @@
     <link rel="stylesheet" href="../../../assets/fonts/material-icons.css">
     
     
+      <link rel="stylesheet" href="../../../stylesheets/tags.css">
+    
       <link rel="stylesheet" href="../../../stylesheets/dark_theme.css">
     
       <link rel="stylesheet" href="../../../stylesheets/monokai.css">
@@ -763,6 +765,18 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../topbarplus/dropdown/" title="Dropdown" class="md-nav__link">
+      Dropdown
+    </a>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -991,21 +1005,21 @@
                 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <hr />
 <h4 id="createzone">createZone<a class="headerlink" href="#createzone" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">ZoneService</span><span class="p">:</span><span class="n">createZone</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">additionalHeight</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">zone</span> <span class="o">=</span> <span class="n">ZoneService</span><span class="p">:</span><span class="n">createZone</span><span class="p">(</span><span class="n">name</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="n">additionalHeight</span><span class="p">)</span>
 </pre></div>
 
 
 <p>Creates, stores and returns a zone, where <code>name</code> is a unique string identifying the zone, <code>group</code>, an instance (such as a Model or Folder) containing parts to represent the zone, and <code>additionalHeight</code>, a number defining how many studs to extend the zone upwards, defaulting to <code>0</code>.</p>
 <hr />
 <h4 id="getzone">getZone<a class="headerlink" href="#getzone" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">ZoneService</span><span class="p">:</span><span class="n">getZone</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">zone</span> <span class="o">=</span> <span class="n">ZoneService</span><span class="p">:</span><span class="n">getZone</span><span class="p">(</span><span class="n">name</span><span class="p">)</span>
 </pre></div>
 
 
 <p>Returns a zone of the corresponding name.</p>
 <hr />
 <h4 id="getallzones">getAllZones<a class="headerlink" href="#getallzones" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">ZoneService</span><span class="p">:</span><span class="n">getAllZones</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">zones</span> <span class="o">=</span> <span class="n">ZoneService</span><span class="p">:</span><span class="n">getAllZones</span><span class="p">()</span>
 </pre></div>
 
 
@@ -1090,6 +1104,8 @@
       <script src="../../../assets/javascripts/application.808e90bb.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:"../../.."}})</script>
+      
+        <script src="../../../javascripts/tags.js"></script>
       
     
   </body>

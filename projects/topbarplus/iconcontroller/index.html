@@ -65,6 +65,8 @@
     <link rel="stylesheet" href="../../../assets/fonts/material-icons.css">
     
     
+      <link rel="stylesheet" href="../../../stylesheets/tags.css">
+    
       <link rel="stylesheet" href="../../../stylesheets/dark_theme.css">
     
       <link rel="stylesheet" href="../../../stylesheets/monokai.css">
@@ -785,6 +787,20 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#settopbarenabled" class="md-nav__link">
+    setTopbarEnabled
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enablecontrollermode" class="md-nav__link">
+    enableControllerMode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#createfakechat" class="md-nav__link">
     createFakeChat
   </a>
@@ -794,13 +810,6 @@
           <li class="md-nav__item">
   <a href="#removefakechat" class="md-nav__link">
     removeFakeChat
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#settopbarenabled" class="md-nav__link">
-    setTopbarEnabled
   </a>
   
 </li>
@@ -864,6 +873,18 @@
   <li class="md-nav__item">
     <a href="../icon/" title="Icon" class="md-nav__link">
       Icon
+    </a>
+  </li>
+
+        
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dropdown/" title="Dropdown" class="md-nav__link">
+      Dropdown
     </a>
   </li>
 
@@ -977,6 +998,20 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#settopbarenabled" class="md-nav__link">
+    setTopbarEnabled
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#enablecontrollermode" class="md-nav__link">
+    enableControllerMode
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#createfakechat" class="md-nav__link">
     createFakeChat
   </a>
@@ -986,13 +1021,6 @@
           <li class="md-nav__item">
   <a href="#removefakechat" class="md-nav__link">
     removeFakeChat
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
-  <a href="#settopbarenabled" class="md-nav__link">
-    setTopbarEnabled
   </a>
   
 </li>
@@ -1067,6 +1095,23 @@
 
 <p>Creates, stores and returns an icon, where <code>name</code> is a unique string identifying the icon, <code>imageId</code> an int representing the icons image, and <code>order</code>, a number defining how the icon should be positioned in relation to neighbouring icons, greater values being shifted rightward.</p>
 <hr />
+<h4 id="settopbarenabled">setTopbarEnabled<a class="headerlink" href="#settopbarenabled" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">IconController</span><span class="p">:</span><span class="n">setTopbarEnabled</span><span class="p">(</span><span class="n">bool</span><span class="p">,</span><span class="n">forceBool</span><span class="p">)</span>
+</pre></div>
+
+
+<p>When set to false, hides all icons created with Topbar+. This can also be achieved by doing <code>starterGui:SetCore("TopbarEnabled", bool)</code>.
+<code>forceBool</code> forces topbar into going into the passed <code>bool</code> state, this does only affect the topbar when in controller mode.
+If in controller mode and <code>forceBool</code> is <code>false</code> then it will make the topbar move into/out of the screen, instead of making the topbar invisible.
+<code>forceBool</code> defaults to true.</p>
+<hr />
+<h4 id="enablecontrollermode">enableControllerMode<a class="headerlink" href="#enablecontrollermode" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">IconController</span><span class="p">:</span><span class="n">enableControllerMode</span><span class="p">(</span><span class="n">bool</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Used internally to enable/disable controller mode; can be used to force the controller display for a client.</p>
+<hr />
 <h4 id="createfakechat">createFakeChat<a class="headerlink" href="#createfakechat" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">IconController</span><span class="p">:</span><span class="n">createFakeChat</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
 </pre></div>
@@ -1080,13 +1125,6 @@
 
 
 <p>Destroys and removes references of the fake chat icon.</p>
-<hr />
-<h4 id="settopbarenabled">setTopbarEnabled<a class="headerlink" href="#settopbarenabled" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">IconController</span><span class="p">:</span><span class="n">setTopbarEnabled</span><span class="p">(</span><span class="n">bool</span><span class="p">)</span>
-</pre></div>
-
-
-<p>When set to false, hides all icons created with Topbar+. This can also be achieved by doing <code>StarterGui:SetCore("TopbarEnabled", bool)</code>.</p>
 <hr />
 <h4 id="setgametheme">setGameTheme<a class="headerlink" href="#setgametheme" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">IconController</span><span class="p">:</span><span class="n">setGameTheme</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
@@ -1195,6 +1233,8 @@
       <script src="../../../assets/javascripts/application.808e90bb.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:"../../.."}})</script>
+      
+        <script src="../../../javascripts/tags.js"></script>
       
     
   </body>

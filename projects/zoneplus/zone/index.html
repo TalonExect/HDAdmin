@@ -65,6 +65,8 @@
     <link rel="stylesheet" href="../../../assets/fonts/material-icons.css">
     
     
+      <link rel="stylesheet" href="../../../stylesheets/tags.css">
+    
       <link rel="stylesheet" href="../../../stylesheets/dark_theme.css">
     
       <link rel="stylesheet" href="../../../stylesheets/monokai.css">
@@ -763,6 +765,18 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../../topbarplus/dropdown/" title="Dropdown" class="md-nav__link">
+      Dropdown
+    </a>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -1321,7 +1335,7 @@
                 <h2 id="constructors">Constructors<a class="headerlink" href="#constructors" title="Permanent link">&para;</a></h2>
 <hr />
 <h4 id="new">new<a class="headerlink" href="#new" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">additionalHeight</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">zone</span> <span class="o">=</span> <span class="n">Zone</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">group</span><span class="p">,</span> <span class="n">additionalHeight</span><span class="p">)</span>
 </pre></div>
 
 
@@ -1330,60 +1344,56 @@
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <hr />
 <h4 id="update">update<a class="headerlink" href="#update" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">update</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">:</span><span class="n">update</span><span class="p">()</span>
 </pre></div>
 
 
-<p>Reconstructs the region and clusters forming the zone.</p>
+<p>Reconstructs the region and clusters forming the zone. Zones are dynamic (they listen for changes in children, such as the adding or removing of a part, and the resizing and positioning of these children), therefore will update automatically for you.</p>
 <hr />
 <h4 id="getplayersinregion">getPlayersInRegion<a class="headerlink" href="#getplayersinregion" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">getPlayersInRegion</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">players</span> <span class="o">=</span> <span class="n">zone</span><span class="p">:</span><span class="n">getPlayersInRegion</span><span class="p">()</span>
 </pre></div>
 
 
 <p>Returns an array of players within the zones region (the rough area surrounding the zone).</p>
 <hr />
 <h4 id="getplayer">getPlayer<a class="headerlink" href="#getplayer" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">getPlayer</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">hitPart</span><span class="p">,</span> <span class="n">intersection</span> <span class="o">=</span> <span class="n">zone</span><span class="p">:</span><span class="n">getPlayer</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Returns the group part the player is standing on or within if in the zone, otherwise <code>false</code>.</p>
+<p>If within the zone, returns the group part the player is standing on or within (a <code>BasePart</code>) and the intersection point (a <code>Vector3</code>), otherwise <code>false</code>.</p>
 <hr />
 <h4 id="getplayers">getPlayers<a class="headerlink" href="#getplayers" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">getPlayers</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">players</span> <span class="o">=</span> <span class="n">zone</span><span class="p">:</span><span class="n">getPlayers</span><span class="p">()</span>
 </pre></div>
 
 
 <p>Returns an array of players within the zone.</p>
 <hr />
 <h4 id="initloop">initLoop<a class="headerlink" href="#initloop" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">initLoop</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">:</span><span class="n">initLoop</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Automatically initiates a loop which calls <code>Zone:getPlayers()</code> every x second, defaults to <code>0.5</code>.</p>
+<p>Automatically initiates a loop which calls <code>zone:getPlayers()</code> every x second, defaults to <code>0.5</code>.</p>
 <hr />
 <h4 id="endloop">endLoop<a class="headerlink" href="#endloop" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">endLoop</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">:</span><span class="n">endLoop</span><span class="p">()</span>
 </pre></div>
 
 
-<p>Cancels any loop created with <code>Zone:initLoop()</code>.</p>
+<p>Cancels any loop created with <code>zone:initLoop()</code>.</p>
 <hr />
 <h4 id="getrandompoint">getRandomPoint<a class="headerlink" href="#getrandompoint" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">getRandomPoint</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">randomCFrame</span><span class="p">,</span> <span class="n">hitPart</span><span class="p">,</span> <span class="n">hitIntersection</span> <span class="o">=</span> <span class="n">zone</span><span class="p">:</span><span class="n">getRandomPoint</span><span class="p">()</span>
 </pre></div>
 
 
-<p>Returns a random point, a CFrame value, within the zone, along with the group part directly below, and its intersection vector relative to the point.</p>
-<div class="codehilite"><pre><span></span>local randomCFrame, hitPart, hitIntersection = zone:getRandomPoint()
-</pre></div>
-
-
+<p>Returns a random point ( a<code>CFrame</code>), within the zone, along with the group part (a <code>BasePart</code>) directly below, and its intersection vector relative to the point (a <code>Vector3</code>).</p>
 <hr />
 <h4 id="destroy">destroy<a class="headerlink" href="#destroy" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">:</span><span class="n">destroy</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">:</span><span class="n">destroy</span><span class="p">()</span>
 </pre></div>
 
 
@@ -1393,16 +1403,16 @@
 <h2 id="events">Events<a class="headerlink" href="#events" title="Permanent link">&para;</a></h2>
 <hr />
 <h4 id="playeradded">playerAdded<a class="headerlink" href="#playeradded" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">playerAdded</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">playerAdded</span>
 </pre></div>
 
 
 <p>Fired when a player enters the zone.</p>
 <div class="admonition info info">
 <p class="admonition-title">Info</p>
-<p><code>Zone:getPlayers()</code> must be called at frequent intervals, or Zone:initLoop() once (which calls this repeatedly), for this event to function.</p>
+<p><code>zone:getPlayers()</code> must be called at frequent intervals, or zone:initLoop() once (which calls this repeatedly), for this event to function.</p>
 </div>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">playerAdded</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">playerAdded</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
 
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
@@ -1410,16 +1420,16 @@
 
 <hr />
 <h4 id="playerremoving">playerRemoving<a class="headerlink" href="#playerremoving" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">playerRemoving</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">playerRemoving</span>
 </pre></div>
 
 
 <p>Fired when a player leaves the zone.</p>
 <div class="admonition info info">
 <p class="admonition-title">Info</p>
-<p><code>Zone:getPlayers()</code> must be called at frequent intervals, or Zone:initLoop() once (which calls this repeatedly), for this event to function.</p>
+<p><code>zone:getPlayers()</code> must be called at frequent intervals, or zone:initLoop() once (which calls this repeatedly), for this event to function.</p>
 </div>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">playerRemoving</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">playerRemoving</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
 
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
@@ -1427,12 +1437,12 @@
 
 <hr />
 <h4 id="updated">updated<a class="headerlink" href="#updated" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">updated</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">updated</span>
 </pre></div>
 
 
 <p>Fired when the zone updates (i.e. a group part is changed, such as its position or size, or a part is added or removed from the group).</p>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">updated</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">updated</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
 
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
@@ -1442,14 +1452,14 @@
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <hr />
 <h4 id="autoupdate">autoUpdate<a class="headerlink" href="#autoupdate" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">autoUpdate</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">autoUpdate</span>
 </pre></div>
 
 
 <p>A bool deciding whether the zone should automatically update when its group parts change.</p>
 <hr />
 <h4 id="respectupdatequeue">respectUpdateQueue<a class="headerlink" href="#respectupdatequeue" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">respectUpdateQueue</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">respectUpdateQueue</span>
 </pre></div>
 
 
@@ -1457,7 +1467,7 @@
 <hr />
 <h4 id="group">group<a class="headerlink" href="#group" title="Permanent link">&para;</a></h4>
 <p><em>(read only)</em></p>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">group</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">group</span>
 </pre></div>
 
 
@@ -1465,7 +1475,7 @@
 <hr />
 <h4 id="groupparts">groupParts<a class="headerlink" href="#groupparts" title="Permanent link">&para;</a></h4>
 <p><em>(read only)</em></p>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">groupParts</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">groupParts</span>
 </pre></div>
 
 
@@ -1473,7 +1483,7 @@
 <hr />
 <h4 id="clusters">clusters<a class="headerlink" href="#clusters" title="Permanent link">&para;</a></h4>
 <p><em>(read only)</em></p>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">clusters</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">clusters</span>
 </pre></div>
 
 
@@ -1509,7 +1519,7 @@
 <hr />
 <h4 id="additionalheight">additionalHeight<a class="headerlink" href="#additionalheight" title="Permanent link">&para;</a></h4>
 <p><em>(read only)</em></p>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">additionalHeight</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">additionalHeight</span>
 </pre></div>
 
 
@@ -1517,7 +1527,7 @@
 <hr />
 <h4 id="region">region<a class="headerlink" href="#region" title="Permanent link">&para;</a></h4>
 <p><em>(read only)</em></p>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">region</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">region</span>
 </pre></div>
 
 
@@ -1525,7 +1535,7 @@
 <hr />
 <h4 id="boundmin">boundMin<a class="headerlink" href="#boundmin" title="Permanent link">&para;</a></h4>
 <p><em>(read only)</em></p>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">boundMin</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">boundMin</span>
 </pre></div>
 
 
@@ -1533,7 +1543,7 @@
 <hr />
 <h4 id="boundmax">boundMax<a class="headerlink" href="#boundmax" title="Permanent link">&para;</a></h4>
 <p><em>(read only)</em></p>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">boundMax</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">boundMax</span>
 </pre></div>
 
 
@@ -1541,7 +1551,7 @@
 <hr />
 <h4 id="regionheight">regionHeight<a class="headerlink" href="#regionheight" title="Permanent link">&para;</a></h4>
 <p><em>(read only)</em></p>
-<div class="codehilite"><pre><span></span><span class="n">Zone</span><span class="p">.</span><span class="n">regionHeight</span>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">regionHeight</span>
 </pre></div>
 
 
@@ -1605,6 +1615,8 @@
       <script src="../../../assets/javascripts/application.808e90bb.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:"../../.."}})</script>
+      
+        <script src="../../../javascripts/tags.js"></script>
       
     
   </body>

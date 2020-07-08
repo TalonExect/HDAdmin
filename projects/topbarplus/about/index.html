@@ -65,6 +65,8 @@
     <link rel="stylesheet" href="../../../assets/fonts/material-icons.css">
     
     
+      <link rel="stylesheet" href="../../../stylesheets/tags.css">
+    
       <link rel="stylesheet" href="../../../stylesheets/dark_theme.css">
     
       <link rel="stylesheet" href="../../../stylesheets/monokai.css">
@@ -861,6 +863,18 @@
   </li>
 
         
+          
+          
+          
+
+
+  <li class="md-nav__item">
+    <a href="../dropdown/" title="Dropdown" class="md-nav__link">
+      Dropdown
+    </a>
+  </li>
+
+        
       </ul>
     </nav>
   </li>
@@ -1355,6 +1369,33 @@
 </details>
 
 <p><a><img src="https://i.imgur.com/zTf9IFa.png" width="100%"/></a></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">createDropdown</span><span class="p">({</span>
+    <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;About&quot;</span><span class="p">,</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;http://www.roblox.com/asset/?id=4943948171&quot;</span><span class="p">,</span>
+        <span class="n">clicked</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Navigate to About&quot;</span><span class="p">)</span>
+        <span class="kr">end</span><span class="p">,</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Commands&quot;</span><span class="p">,</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;http://www.roblox.com/asset/?id=4943948171&quot;</span><span class="p">,</span>
+        <span class="n">clicked</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Navigate to Commands&quot;</span><span class="p">)</span>
+        <span class="kr">end</span><span class="p">,</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Roles&quot;</span><span class="p">,</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;http://www.roblox.com/asset/?id=4943948171&quot;</span><span class="p">,</span>
+        <span class="n">clicked</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Navigate to Roles&quot;</span><span class="p">)</span>
+        <span class="kr">end</span><span class="p">,</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="p">},</span>
+<span class="p">})</span>
+</pre></div>
                 
                   
                 
@@ -1428,6 +1469,8 @@
       <script src="../../../assets/javascripts/application.808e90bb.js"></script>
       
       <script>app.initialize({version:"1.0.4",url:{base:"../../.."}})</script>
+      
+        <script src="../../../javascripts/tags.js"></script>
       
     
   </body>
