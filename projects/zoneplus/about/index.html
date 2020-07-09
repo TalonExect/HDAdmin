@@ -902,6 +902,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#ambient-areas" class="md-nav__link">
+    Ambient Areas
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1046,6 +1053,13 @@
   
 </li>
         
+          <li class="md-nav__item">
+  <a href="#ambient-areas" class="md-nav__link">
+    Ambient Areas
+  </a>
+  
+</li>
+        
       </ul>
     </nav>
   
@@ -1110,21 +1124,40 @@
 <span class="kd">local</span> <span class="n">group</span> <span class="o">=</span> <span class="n">workspace</span><span class="p">.</span><span class="n">YourGroupHere</span> <span class="c1">-- A container (i.e. Model or Folder) of parts that represent the zone</span>
 <span class="kd">local</span> <span class="n">zone</span> <span class="o">=</span> <span class="n">ZoneService</span><span class="p">:</span><span class="n">createZone</span><span class="p">(</span><span class="s2">&quot;ZoneName&quot;</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span> <span class="c1">-- Construct a zone called &#39;ZoneName&#39; using &#39;group&#39; and with an extended height of 15 </span>
 <span class="kd">local</span> <span class="n">playersInZone</span> <span class="o">=</span> <span class="n">zone</span><span class="p">:</span><span class="n">getPlayers</span><span class="p">()</span> <span class="c1">-- Retrieves an array of players within the zone</span>
+
+<span class="n">zone</span><span class="p">.</span><span class="n">playerAdded</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">)</span> <span class="c1">-- Fires when a player enters the zone</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">player</span><span class="p">.</span><span class="n">Name</span><span class="o">..</span><span class="s2">&quot; entered!&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+<span class="n">zone</span><span class="p">.</span><span class="n">playerRemoving</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>  <span class="c1">-- Fires when a player exits the zone</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">player</span><span class="p">.</span><span class="n">Name</span><span class="o">..</span><span class="s2">&quot; left!&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+<span class="n">zone</span><span class="p">:</span><span class="n">initLoop</span><span class="p">()</span> <span class="c1">-- Initiates loop (default 0.5) which enables the events to work</span>
 </pre></div>
 
 
 <h2 id="example-client-sided">Example (client-sided)<a class="headerlink" href="#example-client-sided" title="Permanent link">&para;</a></h2>
-<p>Zone+ is primarily intended for server-sided use, however also supports client use.</p>
 <p>On the server:</p>
 <div class="codehilite"><pre><span></span><span class="nb">require</span><span class="p">(</span><span class="mi">4664437268</span><span class="p">)</span> <span class="c1">-- Initiate Zone+</span>
 </pre></div>
 
 
-<p>On the client:</p>
-<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">ZoneService</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">):</span><span class="n">WaitForChild</span><span class="p">(</span><span class="s2">&quot;HDAdmin&quot;</span><span class="p">):</span><span class="n">WaitForChild</span><span class="p">(</span><span class="s2">&quot;Zone+&quot;</span><span class="p">).</span><span class="n">ZoneService</span><span class="p">)</span>
+<div class="admonition info info">
+<p class="admonition-title">Info</p>
+<p>It's important you use methods such as <code>zone:getPlayer(localPlayer)</code> and <code>zone:initClientLoop()</code> (instead of <code>zone:getPlayers()</code> and <code>zone:initLoop()</code>) if you only intend to check for the local player.</p>
+</div>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">localPlayer</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;Players&quot;</span><span class="p">).</span><span class="n">LocalPlayer</span>
+<span class="kd">local</span> <span class="n">ZoneService</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">):</span><span class="n">WaitForChild</span><span class="p">(</span><span class="s2">&quot;HDAdmin&quot;</span><span class="p">):</span><span class="n">WaitForChild</span><span class="p">(</span><span class="s2">&quot;Zone+&quot;</span><span class="p">).</span><span class="n">ZoneService</span><span class="p">)</span>
 <span class="kd">local</span> <span class="n">group</span> <span class="o">=</span> <span class="n">workspace</span><span class="p">.</span><span class="n">YourGroupHere</span>
 <span class="kd">local</span> <span class="n">zone</span> <span class="o">=</span> <span class="n">ZoneService</span><span class="p">:</span><span class="n">createZone</span><span class="p">(</span><span class="s2">&quot;ZoneName&quot;</span><span class="p">,</span> <span class="n">group</span><span class="p">,</span> <span class="mi">15</span><span class="p">)</span>
-<span class="kd">local</span> <span class="n">playersInZone</span> <span class="o">=</span> <span class="n">zone</span><span class="p">:</span><span class="n">getPlayers</span><span class="p">()</span>
+<span class="kd">local</span> <span class="n">isClientInZone</span> <span class="o">=</span> <span class="n">zone</span><span class="p">:</span><span class="n">getPlayer</span><span class="p">(</span><span class="n">localPlayer</span><span class="p">)</span>
+
+<span class="n">zone</span><span class="p">.</span><span class="n">playerAdded</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span> <span class="c1">-- Fires when the localPlayer enters the zone</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">localPlayer</span><span class="p">.</span><span class="n">Name</span><span class="o">..</span><span class="s2">&quot; entered!&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+<span class="n">zone</span><span class="p">.</span><span class="n">playerRemoving</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>  <span class="c1">-- Fires when the localPlayer exits the zone</span>
+    <span class="nb">print</span><span class="p">(</span><span class="n">localPlayer</span><span class="p">.</span><span class="n">Name</span><span class="o">..</span><span class="s2">&quot; left!&quot;</span><span class="p">)</span>
+<span class="kr">end</span><span class="p">)</span>
+<span class="n">zone</span><span class="p">:</span><span class="n">initClientLoop</span><span class="p">()</span> <span class="c1">-- Initiates loop (default 0.5) which *only* checks for the local player, enabling events to work</span>
 </pre></div>
 
 
@@ -1146,6 +1179,10 @@
 <h4 id="voting-pads">Voting Pads<a class="headerlink" href="#voting-pads" title="Permanent link">&para;</a></h4>
 <p>Utilise zones to determine the amount of players on a particular pad.</p>
 <p><a><img src="https://i.imgur.com/rJlHmEv.gif" width="100%"/></a></p>
+<hr />
+<h4 id="ambient-areas">Ambient Areas<a class="headerlink" href="#ambient-areas" title="Permanent link">&para;</a></h4>
+<p>Play sounds within specific areas.</p>
+<p><a><img src="https://thumbs.gfycat.com/TangibleFamiliarBufeo-mobile.mp4" width="100%"/></a></p>
                 
                   
                 

@@ -919,6 +919,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#initloop_1" class="md-nav__link">
+    initLoop
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#endloop" class="md-nav__link">
     endLoop
   </a>
@@ -1169,6 +1176,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#initloop_1" class="md-nav__link">
+    initLoop
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#endloop" class="md-nav__link">
     endLoop
   </a>
@@ -1376,7 +1390,14 @@
 </pre></div>
 
 
-<p>Automatically initiates a loop which calls <code>zone:getPlayers()</code> every x second, defaults to <code>0.5</code>.</p>
+<p>Initiates a loop which calls <code>zone:getPlayers()</code> every x second, defaults to <code>0.5</code>.</p>
+<hr />
+<h4 id="initloop_1">initLoop<a class="headerlink" href="#initloop_1" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">:</span><span class="n">initClientLoop</span><span class="p">(</span><span class="n">interval</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Initiates a loop which calls <code>zone:getPlayer(localPlayer)</code> every x second, defaults to <code>0.5</code>.</p>
 <hr />
 <h4 id="endloop">endLoop<a class="headerlink" href="#endloop" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">:</span><span class="n">endLoop</span><span class="p">()</span>
@@ -1410,7 +1431,7 @@
 <p>Fired when a player enters the zone.</p>
 <div class="admonition info info">
 <p class="admonition-title">Info</p>
-<p><code>zone:getPlayers()</code> must be called at frequent intervals, or zone:initLoop() once (which calls this repeatedly), for this event to function.</p>
+<p><code>zone:getPlayer(player)</code> (or <code>zone:getPlayers()</code> which calls this) must be called at frequent intervals, or <code>zone:initLoop()</code> (or <code>zone:initClientLoop()</code> for the local player) once (which calls this repeatedly), for this event to function.</p>
 </div>
 <div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">playerAdded</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
 
@@ -1427,7 +1448,7 @@
 <p>Fired when a player leaves the zone.</p>
 <div class="admonition info info">
 <p class="admonition-title">Info</p>
-<p><code>zone:getPlayers()</code> must be called at frequent intervals, or zone:initLoop() once (which calls this repeatedly), for this event to function.</p>
+<p><code>zone:getPlayer(player)</code> (or <code>zone:getPlayers()</code> which calls this) must be called at frequent intervals, or <code>zone:initLoop()</code> (or <code>zone:initClientLoop()</code> for the local player) once (which calls this repeatedly), for this event to function.</p>
 </div>
 <div class="codehilite"><pre><span></span><span class="n">zone</span><span class="p">.</span><span class="n">playerRemoving</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">(</span><span class="n">player</span><span class="p">)</span>
 
