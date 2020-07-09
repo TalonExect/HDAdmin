@@ -788,6 +788,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tips" class="md-nav__link">
+    Tips
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dropdowns" class="md-nav__link">
+    Dropdowns
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#themes" class="md-nav__link">
     Themes
   </a>
@@ -803,8 +817,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#soft-blue" class="md-nav__link">
-    Soft Blue
+  <a href="#blue-gradient" class="md-nav__link">
+    Blue Gradient
   </a>
   
 </li>
@@ -997,6 +1011,20 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#tips" class="md-nav__link">
+    Tips
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#dropdowns" class="md-nav__link">
+    Dropdowns
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#themes" class="md-nav__link">
     Themes
   </a>
@@ -1012,8 +1040,8 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#soft-blue" class="md-nav__link">
-    Soft Blue
+  <a href="#blue-gradient" class="md-nav__link">
+    Blue Gradient
   </a>
   
 </li>
@@ -1127,8 +1155,69 @@
 <p class="admonition-title">Warning</p>
 <p>Likewise, if using a 'toggle menu', you must ensure its ScreenGui has <code>ResetOnSpawn</code> set to <code>false</code>, or that you are calling Icon:setToggleMenu(guiObject) every time the player respawns, for the menu to persist.</p>
 </div>
+<h2 id="tips">Tips<a class="headerlink" href="#tips" title="Permanent link">&para;</a></h2>
+<p>A tip is a label containing a short message that appears when an icon is highlighted on computer and console.</p>
+<p><a><img src="https://i.ibb.co/0GszjkF/icon-tip.png" width="50%"/></a></p>
+<p>To apply a tip, simply do:</p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setTip</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+
+
+<p>To remove a tip, set its message to <code>""</code> or <code>nil</code>:</p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setTip</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+</pre></div>
+
+
+<p>To apply a specific message for controller mode, do:</p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setControllerTip</span><span class="p">(</span><span class="n">message</span><span class="p">)</span>
+</pre></div>
+
+
+<p><a><img src="https://i.ibb.co/ZxbR9yK/icon-controller-Tip.png" width="50%"/></a></p>
+<p>To test controller mode on PC, simply plug-in a controller and press the console icon that pops up to the right of the topbar.</p>
+<h2 id="dropdowns">Dropdowns<a class="headerlink" href="#dropdowns" title="Permanent link">&para;</a></h2>
+<p>A dropdown is a collection of 'options' that appear when an icon is right-clicked on PC or long-pressed on mobile:</p>
+<p><a><img src="https://i.ibb.co/2gvtccV/icon-dropdown.png" width="50%"/></a></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">createDropdown</span><span class="p">({</span>
+    <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;About&quot;</span><span class="p">,</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;rbxassetid://2746077483&quot;</span><span class="p">,</span>
+        <span class="n">clicked</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Navigate to About&quot;</span><span class="p">)</span>
+        <span class="kr">end</span><span class="p">,</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Commands&quot;</span><span class="p">,</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;rbxassetid://2746074974&quot;</span><span class="p">,</span>
+        <span class="n">clicked</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
+            <span class="n">icon</span><span class="p">:</span><span class="nb">select</span><span class="p">()</span>
+        <span class="kr">end</span><span class="p">,</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="p">{</span><span class="n">icon</span><span class="p">.</span><span class="n">selected</span><span class="p">}</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Roles&quot;</span><span class="p">,</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;rbxassetid://2746105644&quot;</span><span class="p">,</span>
+        <span class="n">clicked</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Navigate to Roles&quot;</span><span class="p">)</span>
+        <span class="kr">end</span><span class="p">,</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="p">},</span>
+    <span class="p">{</span>
+        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Settings&quot;</span><span class="p">,</span>
+        <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;rbxassetid://2746112353&quot;</span><span class="p">,</span>
+        <span class="n">clicked</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
+            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Navigate to Settings&quot;</span><span class="p">)</span>
+        <span class="kr">end</span><span class="p">,</span>
+        <span class="n">events</span> <span class="o">=</span> <span class="p">{}</span>
+    <span class="p">},</span>
+<span class="p">})</span>
+</pre></div>
+
+
+<p>For more information on creating and utilising a dropdown, see <code>Icon:createDropdown()</code>.</p>
 <h2 id="themes">Themes<a class="headerlink" href="#themes" title="Permanent link">&para;</a></h2>
-<p>Themes are easily adaptable tables of information that can be applied to icons to ehance their appearance and behaviour.</p>
+<p>Themes are easily adaptable tables of information that can be applied to icons to enhance their appearance and behaviour.</p>
 <p>You can break down a theme into three sections:</p>
 <ol>
 <li>The appearance of the icon when 'selected'  (i.e. <code>objectName.selected</code>)</li>
@@ -1203,22 +1292,22 @@
 
 <p><a><img src="https://i.imgur.com/BJOC952.gif" width="100%"/></a></p>
 <hr />
-<h4 id="soft-blue">Soft Blue<a class="headerlink" href="#soft-blue" title="Permanent link">&para;</a></h4>
+<h4 id="blue-gradient">Blue Gradient<a class="headerlink" href="#blue-gradient" title="Permanent link">&para;</a></h4>
 <details>
   <summary>View</summary>
 
-<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">theme</span> <span class="o">=</span> <span class="p">{</span>
+<div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">selectedColor</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">.</span><span class="n">fromRGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">selectedColorDarker</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">.</span><span class="n">fromRGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">120</span><span class="p">,</span> <span class="mi">180</span><span class="p">)</span>
+<span class="kd">local</span> <span class="n">theme</span> <span class="o">=</span> <span class="p">{</span>
+
     <span class="c1">-- TOGGLE EFFECT</span>
-    <span class="p">[</span><span class="s2">&quot;toggleTweenInfo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TweenInfo</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mf">0.35</span><span class="p">,</span> <span class="n">Enum</span><span class="p">.</span><span class="n">EasingStyle</span><span class="p">.</span><span class="n">Quad</span><span class="p">,</span> <span class="n">Enum</span><span class="p">.</span><span class="n">EasingDirection</span><span class="p">.</span><span class="n">Out</span><span class="p">),</span>
+    <span class="p">[</span><span class="s2">&quot;toggleTweenInfo&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="n">TweenInfo</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="mf">0.15</span><span class="p">,</span> <span class="n">Enum</span><span class="p">.</span><span class="n">EasingStyle</span><span class="p">.</span><span class="n">Quad</span><span class="p">,</span> <span class="n">Enum</span><span class="p">.</span><span class="n">EasingDirection</span><span class="p">.</span><span class="n">Out</span><span class="p">),</span>
 
     <span class="c1">-- OBJECT PROPERTIES</span>
     <span class="p">[</span><span class="s2">&quot;button&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">selected</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">ImageTransparency</span> <span class="o">=</span> <span class="mf">0.3</span><span class="p">,</span>
-            <span class="n">ImageColor3</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">.</span><span class="n">fromRGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
-        <span class="p">},</span>
-        <span class="n">deselected</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">ImageTransparency</span> <span class="o">=</span> <span class="mi">1</span><span class="p">,</span>
+            <span class="n">ImageTransparency</span> <span class="o">=</span> <span class="mf">0.1</span><span class="p">,</span>
+            <span class="n">ImageColor3</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">.</span><span class="n">fromRGB</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">)</span><span class="c1">--selectedColor,</span>
         <span class="p">},</span>
     <span class="p">},</span>
     <span class="p">[</span><span class="s2">&quot;image&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
@@ -1236,25 +1325,33 @@
         <span class="p">},</span>
         <span class="n">deselected</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">Image</span> <span class="o">=</span> <span class="s2">&quot;http://www.roblox.com/asset/?id=4882430005&quot;</span><span class="p">,</span>
-            <span class="n">ImageColor3</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">.</span><span class="n">fromRGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+            <span class="n">ImageColor3</span> <span class="o">=</span> <span class="n">selectedColor</span><span class="p">,</span>
+
         <span class="p">},</span>
     <span class="p">},</span>
     <span class="p">[</span><span class="s2">&quot;amount&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
         <span class="n">selected</span> <span class="o">=</span> <span class="p">{</span>
-            <span class="n">TextColor3</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">.</span><span class="n">fromRGB</span><span class="p">(</span><span class="mi">0</span><span class="p">,</span> <span class="mi">170</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
+            <span class="n">TextColor3</span> <span class="o">=</span> <span class="n">selectedColor</span><span class="p">,</span>
         <span class="p">},</span>
         <span class="n">deselected</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">TextColor3</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">.</span><span class="n">fromRGB</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
         <span class="p">},</span>
     <span class="p">},</span>
+    <span class="p">[</span><span class="s2">&quot;gradient&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">Color</span> <span class="o">=</span> <span class="n">ColorSequence</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">selectedColor</span><span class="p">,</span> <span class="n">selectedColorDarker</span><span class="p">),</span>
+            <span class="n">Rotation</span> <span class="o">=</span> <span class="mi">90</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
 <span class="p">}</span>
+<span class="n">iconController</span><span class="p">:</span><span class="n">setGameTheme</span><span class="p">(</span><span class="n">theme</span><span class="p">)</span>
 </pre></div>
 
 
 
 </details>
 
-<p><a><img src="https://i.imgur.com/Q5YnIuR.gif" width="100%"/></a></p>
+<p><a><img src="https://i.ibb.co/KDhcgC1/icon-gradient-example.png" width="100%"/></a></p>
 <hr />
 <h4 id="rainbow-pop">Rainbow Pop<a class="headerlink" href="#rainbow-pop" title="Permanent link">&para;</a></h4>
 <details>
@@ -1369,33 +1466,6 @@
 </details>
 
 <p><a><img src="https://i.imgur.com/zTf9IFa.png" width="100%"/></a></p>
-<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">createDropdown</span><span class="p">({</span>
-    <span class="p">{</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;About&quot;</span><span class="p">,</span>
-        <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;http://www.roblox.com/asset/?id=4943948171&quot;</span><span class="p">,</span>
-        <span class="n">clicked</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Navigate to About&quot;</span><span class="p">)</span>
-        <span class="kr">end</span><span class="p">,</span>
-        <span class="n">events</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Commands&quot;</span><span class="p">,</span>
-        <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;http://www.roblox.com/asset/?id=4943948171&quot;</span><span class="p">,</span>
-        <span class="n">clicked</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Navigate to Commands&quot;</span><span class="p">)</span>
-        <span class="kr">end</span><span class="p">,</span>
-        <span class="n">events</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="p">},</span>
-    <span class="p">{</span>
-        <span class="n">name</span> <span class="o">=</span> <span class="s2">&quot;Roles&quot;</span><span class="p">,</span>
-        <span class="n">icon</span> <span class="o">=</span> <span class="s2">&quot;http://www.roblox.com/asset/?id=4943948171&quot;</span><span class="p">,</span>
-        <span class="n">clicked</span> <span class="o">=</span> <span class="kr">function</span><span class="p">()</span>
-            <span class="nb">print</span><span class="p">(</span><span class="s2">&quot;Navigate to Roles&quot;</span><span class="p">)</span>
-        <span class="kr">end</span><span class="p">,</span>
-        <span class="n">events</span> <span class="o">=</span> <span class="p">{}</span>
-    <span class="p">},</span>
-<span class="p">})</span>
-</pre></div>
                 
                   
                 

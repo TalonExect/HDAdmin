@@ -875,13 +875,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setmid_1" class="md-nav__link">
-    setMid
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#setimagesize" class="md-nav__link">
     setImageSize
   </a>
@@ -933,6 +926,13 @@
           <li class="md-nav__item">
   <a href="#settheme" class="md-nav__link">
     setTheme
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disablestateoverlay" class="md-nav__link">
+    disableStateOverlay
   </a>
   
 </li>
@@ -1106,6 +1106,13 @@
           <li class="md-nav__item">
   <a href="#enabled" class="md-nav__link">
     enabled
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#hovering" class="md-nav__link">
+    hovering
   </a>
   
 </li>
@@ -1365,13 +1372,6 @@
 </li>
         
           <li class="md-nav__item">
-  <a href="#setmid_1" class="md-nav__link">
-    setMid
-  </a>
-  
-</li>
-        
-          <li class="md-nav__item">
   <a href="#setimagesize" class="md-nav__link">
     setImageSize
   </a>
@@ -1423,6 +1423,13 @@
           <li class="md-nav__item">
   <a href="#settheme" class="md-nav__link">
     setTheme
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#disablestateoverlay" class="md-nav__link">
+    disableStateOverlay
   </a>
   
 </li>
@@ -1601,6 +1608,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#hovering" class="md-nav__link">
+    hovering
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#alignment" class="md-nav__link">
     alignment
   </a>
@@ -1698,7 +1712,7 @@
 </pre></div>
 
 
-<p>Creates a dropdown that will be shown when the icon is right-clicked or long-pressed on mobile. Returns the dropdown created. If there already is an <code>Icon.dropdown</code>, <code>icon:removeDropdown()</code> will be called before creating a new one.</p>
+<p>Creates a dropdown that will be shown when the icon is right-clicked or long-pressed on mobile. Returns the dropdown created. If there already is an <code>icon.dropdown</code>, <code>icon:removeDropdown()</code> will be called before creating a new one.</p>
 <p>See <code>Dropdown.options</code> for more details, and <code>About</code> for an example.</p>
 <hr />
 <h4 id="removedropdown">removeDropdown<a class="headerlink" href="#removedropdown" title="Permanent link">&para;</a></h4>
@@ -1706,7 +1720,7 @@
 </pre></div>
 
 
-<p>Destroys and removes all references of <code>Icon.dropdown</code>.</p>
+<p>Destroys and removes all references of <code>icon.dropdown</code>.</p>
 <hr />
 <h4 id="setimage">setImage<a class="headerlink" href="#setimage" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setImage</span><span class="p">(</span><span class="n">imageId</span><span class="p">)</span>
@@ -1742,13 +1756,6 @@
 
 
 <p>Aligns the icon on the right-side of the topbar, next to the leaderboard/emotes/inventory toggle. The greater the <code>order</code>, the further rightward the icon will appear relative to other icons set-right.</p>
-<hr />
-<h4 id="setmid_1">setMid<a class="headerlink" href="#setmid_1" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setMid</span><span class="p">()</span>
-</pre></div>
-
-
-<p>Aligns the icon in the middle of the topbar. The greater the <code>order</code>, the further <em>rightward</em> the icon will appear relative to other icons set-middle.</p>
 <hr />
 <h4 id="setimagesize">setImageSize<a class="headerlink" href="#setimagesize" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setImageSize</span><span class="p">(</span><span class="n">width</span><span class="p">,</span> <span class="n">height</span><span class="p">)</span>
@@ -1800,21 +1807,28 @@
 </pre></div>
 
 
-<p>Whenver the icon gets highlighted or unhighlighted, the function set is called and a boolean is passed telling if the icon got highlighted or unhighlighted.</p>
+<p>A function that is called when the icon is highlighted and unhighlighted. The first argument passed is <code>icon.hovering</code>.</p>
 <hr />
 <h4 id="settheme">setTheme<a class="headerlink" href="#settheme" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setTheme</span><span class="p">(</span><span class="n">themeDetails</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Applies the specified theme to the icon. See <code>Icon.theme</code> for details on creating a theme.</p>
+<p>Applies the specified theme to the icon. See <code>icon.theme</code> for details on creating a theme.</p>
+<hr />
+<h4 id="disablestateoverlay">disableStateOverlay<a class="headerlink" href="#disablestateoverlay" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">disableStateOverlay</span><span class="p">(</span><span class="n">bool</span><span class="p">)</span>
+</pre></div>
+
+
+<p>If set to true, disables the state overlay (the color and transparency changes when an icon is hovered over and pressed).</p>
 <hr />
 <h4 id="applythemetoobject">applyThemeToObject<a class="headerlink" href="#applythemetoobject" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">applyThemeToObject</span><span class="p">(</span><span class="n">objectName</span><span class="p">,</span> <span class="n">toggleStatus</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Used internally to apply the theme set to the object, in <code>Icon.objects</code>, with the name passed.</p>
+<p>Used internally to apply the theme set to the object, in <code>icon.objects</code>, with the name passed.</p>
 <hr />
 <h4 id="applythemetoallobjects">applyThemeToAllObjects<a class="headerlink" href="#applythemetoallobjects" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">applyThemeToAllObjects</span><span class="p">()</span>
@@ -1842,7 +1856,7 @@
 </pre></div>
 
 
-<p>Prompts a notification that appears in the top-right corner of the icon. Specifiy <code>clearNoticeEvent</code> with an event to determine when to end the notifcation. If not specified, <code>clearNoticeEvent</code> defaults to <code>Icon.deselected</code>.</p>
+<p>Prompts a notification that appears in the top-right corner of the icon. Specifiy <code>clearNoticeEvent</code> with an event to determine when to end the notifcation. If not specified, <code>clearNoticeEvent</code> defaults to <code>icon.deselected</code>.</p>
 <hr />
 <h4 id="clearnotifications">clearNotifications<a class="headerlink" href="#clearnotifications" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">clearNotifications</span><span class="p">()</span>
@@ -1862,12 +1876,12 @@
 <h2 id="events">Events<a class="headerlink" href="#events" title="Permanent link">&para;</a></h2>
 <hr />
 <h4 id="updated">updated<a class="headerlink" href="#updated" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">updated</span>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">updated</span>
 </pre></div>
 
 
 <p>Fired when the icon causes a position shift of other icons.</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">updated</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">updated</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
 
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
@@ -1875,12 +1889,12 @@
 
 <hr />
 <h4 id="selected">selected<a class="headerlink" href="#selected" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">selected</span>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">selected</span>
 </pre></div>
 
 
 <p>Fired when the icon is selected.</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">selected</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">selected</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
 
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
@@ -1888,12 +1902,12 @@
 
 <hr />
 <h4 id="deselected">deselected<a class="headerlink" href="#deselected" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">deselected</span>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">deselected</span>
 </pre></div>
 
 
 <p>Fired when the icon is deselected.</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">deselected</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">deselected</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
 
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
@@ -1901,12 +1915,12 @@
 
 <hr />
 <h4 id="endnotifications">endNotifications<a class="headerlink" href="#endnotifications" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">endNotifications</span>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">endNotifications</span>
 </pre></div>
 
 
 <p>Fired when the icons notifcations are cleared.</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">endNotifications</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">endNotifications</span><span class="p">:</span><span class="n">Connect</span><span class="p">(</span><span class="kr">function</span><span class="p">()</span>
 
 <span class="kr">end</span><span class="p">)</span>
 </pre></div>
@@ -1917,7 +1931,7 @@
 <h2 id="properties">Properties<a class="headerlink" href="#properties" title="Permanent link">&para;</a></h2>
 <hr />
 <h4 id="objects">objects<a class="headerlink" href="#objects" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">objects</span>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">objects</span>
 </pre></div>
 
 
@@ -1965,8 +1979,8 @@
 </table>
 <hr />
 <h4 id="theme">theme<a class="headerlink" href="#theme" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">theme</span>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">theme</span>
 </pre></div>
 
 
@@ -2104,16 +2118,16 @@
 
 <hr />
 <h4 id="togglestatus">toggleStatus<a class="headerlink" href="#togglestatus" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">toggleStatus</span>
+<p>{read-only}{static}</p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">toggleStatus</span>
 </pre></div>
 
 
 <p>A string describing the toggle status: "selected" or "deselected". To change, use <code>icon:select()</code> and <code>icon:deselect()</code>.</p>
 <hr />
 <h4 id="name">name<a class="headerlink" href="#name" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">name</span>
+<p>{read-only}{static}{server-only}{client-only}{deprecated}</p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">name</span>
 </pre></div>
 
 
@@ -2121,31 +2135,31 @@
 <hr />
 <h4 id="tip">tip<a class="headerlink" href="#tip" title="Permanent link">&para;</a></h4>
 <p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">tip</span>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">tip</span>
 </pre></div>
 
 
-<p>The tip shown when the icon is highlighted (mouse hovering over the icon or gamepad selection has the icon selected).</p>
+<p>The tip (<code>string</code>) shown when the icon is highlighted (mouse hovering over the icon or gamepad selection has the icon selected).</p>
 <hr />
 <h4 id="controllertip">controllerTip<a class="headerlink" href="#controllertip" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">controllerTip</span>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">controllerTip</span>
 </pre></div>
 
 
 <p>The controller tip that overrides the normal tip when the player is in controller mode.</p>
 <hr />
 <h4 id="imageid">imageId<a class="headerlink" href="#imageid" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">imageId</span>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">imageId</span>
 </pre></div>
 
 
 <p>The icons imageId. To change, use <code>icon:setImage()</code>.</p>
 <hr />
 <h4 id="imagesize">imageSize<a class="headerlink" href="#imagesize" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">imageSize</span>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">imageSize</span>
 </pre></div>
 
 
@@ -2153,63 +2167,71 @@
 Default: 20px</p>
 <hr />
 <h4 id="order">order<a class="headerlink" href="#order" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">order</span>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">order</span>
 </pre></div>
 
 
 <p>The icons order. This determines whether the icon comes before or after other icons. Defaults to <code>1</code>. To change, use <code>icon:setOrder()</code>.</p>
 <hr />
 <h4 id="enabled">enabled<a class="headerlink" href="#enabled" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">order</span>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">order</span>
 </pre></div>
 
 
 <p>A bool describing whether the icon is enabled or not. To change, use <code>icon:setEnabled()</code>.</p>
 <hr />
+<h4 id="hovering">hovering<a class="headerlink" href="#hovering" title="Permanent link">&para;</a></h4>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">hovering</span>
+</pre></div>
+
+
+<p>A bool describing whether a mouse or controller is hovering over the icon.</p>
+<hr />
 <h4 id="alignment">alignment<a class="headerlink" href="#alignment" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">alignment</span>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">alignment</span>
 </pre></div>
 
 
 <p>A string describing the alignment of the icon, there are three alignments: <code>left</code>, <code>mid</code>, <code>right</code></p>
 <hr />
 <h4 id="totalnotifications">totalNotifications<a class="headerlink" href="#totalnotifications" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">totalNotifications</span>
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">totalNotifications</span>
 </pre></div>
 
 
 <p>An int representing the amount of active notifications.</p>
 <hr />
 <h4 id="togglemenu">toggleMenu<a class="headerlink" href="#togglemenu" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">toggleFunction</span> 
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">toggleFunction</span> 
 </pre></div>
 
 
 <p>A GuiObject binded by <code>icon:setToggleMenu()</code>.</p>
 <hr />
 <h4 id="togglefunction">toggleFunction<a class="headerlink" href="#togglefunction" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">toggleFunction</span> 
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">toggleFunction</span> 
 </pre></div>
 
 
 <p>A custom function called during <code>icon:select()</code> and <code>icon:deselect()</code>. To change, use <code>icon:setToggleFunction()</code>.</p>
 <hr />
 <h4 id="hoverfunction">hoverFunction<a class="headerlink" href="#hoverfunction" title="Permanent link">&para;</a></h4>
-<p>{read-only}</p>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">hoverFunction</span> 
+<p><em>(read only)</em></p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">hoverFunction</span> 
 </pre></div>
 
 
-<p>A custom function called when the icon is (un)highlighted. To change, use <code>icon:setHoverFunction()</code>.</p>
+<p>A custom function called when the icon is highlighted or unhighlighted. To change, use <code>icon:setHoverFunction()</code>.</p>
 <hr />
 <h4 id="deselectwhenothericonselected">deselectWhenOtherIconSelected<a class="headerlink" href="#deselectwhenothericonselected" title="Permanent link">&para;</a></h4>
-<div class="codehilite"><pre><span></span><span class="n">Icon</span><span class="p">.</span><span class="n">toggleFunction</span> 
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">toggleFunction</span> 
 </pre></div>
 
 
