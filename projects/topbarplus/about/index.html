@@ -1113,12 +1113,12 @@
 </tbody>
 </table>
 <h2 id="example">Example<a class="headerlink" href="#example" title="Permanent link">&para;</a></h2>
-<p>In a server script:</p>
+<p>In a <code>Script</code> on the server (i.e. within <code>ServerScriptService</code>)</p>
 <div class="codehilite"><pre><span></span><span class="nb">require</span><span class="p">(</span><span class="mi">4874365424</span><span class="p">)</span> <span class="c1">-- Initiate Topbar+</span>
 </pre></div>
 
 
-<p>In a local script:</p>
+<p>In a <code>LocalScript</code> on the client (i.e. within <code>StarterPlayerScripts</code>)</p>
 <div class="codehilite"><pre><span></span><span class="c1">-- Require the IconController</span>
 <span class="kd">local</span> <span class="n">replicatedStorage</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">)</span>
 <span class="kd">local</span> <span class="n">topbarPlus</span> <span class="o">=</span> <span class="n">replicatedStorage</span><span class="p">:</span><span class="n">WaitForChild</span><span class="p">(</span><span class="s2">&quot;HDAdmin&quot;</span><span class="p">):</span><span class="n">WaitForChild</span><span class="p">(</span><span class="s2">&quot;Topbar+&quot;</span><span class="p">)</span>
