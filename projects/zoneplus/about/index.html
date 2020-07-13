@@ -1142,10 +1142,6 @@
 
 
 <p>Then in a <code>LocalScript</code> within <code>StarterPlayerScripts</code>:</p>
-<div class="admonition info info">
-<p class="admonition-title">Info</p>
-<p>It's important you use methods such as <code>zone:getPlayer(localPlayer)</code> and <code>zone:initClientLoop()</code> (instead of <code>zone:getPlayers()</code> and <code>zone:initLoop()</code>) if you only intend to check for the local player.</p>
-</div>
 <div class="codehilite"><pre><span></span><span class="kd">local</span> <span class="n">localPlayer</span> <span class="o">=</span> <span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;Players&quot;</span><span class="p">).</span><span class="n">LocalPlayer</span>
 <span class="kd">local</span> <span class="n">ZoneService</span> <span class="o">=</span> <span class="nb">require</span><span class="p">(</span><span class="n">game</span><span class="p">:</span><span class="n">GetService</span><span class="p">(</span><span class="s2">&quot;ReplicatedStorage&quot;</span><span class="p">):</span><span class="n">WaitForChild</span><span class="p">(</span><span class="s2">&quot;HDAdmin&quot;</span><span class="p">):</span><span class="n">WaitForChild</span><span class="p">(</span><span class="s2">&quot;Zone+&quot;</span><span class="p">).</span><span class="n">ZoneService</span><span class="p">)</span>
 <span class="kd">local</span> <span class="n">group</span> <span class="o">=</span> <span class="n">workspace</span><span class="p">.</span><span class="n">YourGroupHere</span>
@@ -1162,6 +1158,10 @@
 </pre></div>
 
 
+<div class="admonition info info">
+<p class="admonition-title">Info</p>
+<p>It's important you use methods such as <code>zone:getPlayer(localPlayer)</code> and <code>zone:initClientLoop()</code> (instead of <code>zone:getPlayers()</code> and <code>zone:initLoop()</code>) if you only intend to check for the local player.</p>
+</div>
 <h2 id="uses">Uses<a class="headerlink" href="#uses" title="Permanent link">&para;</a></h2>
 <p>For coded examples, visit the Zone+ Playground.</p>
 <hr />
