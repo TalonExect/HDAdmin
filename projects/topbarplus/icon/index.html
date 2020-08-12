@@ -812,6 +812,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#setlabel" class="md-nav__link">
+    setLabel
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#settip" class="md-nav__link">
     setTip
   </a>
@@ -1309,6 +1316,13 @@
       <ul class="md-nav__list">
         
           <li class="md-nav__item">
+  <a href="#setlabel" class="md-nav__link">
+    setLabel
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#settip" class="md-nav__link">
     setTip
   </a>
@@ -1693,12 +1707,19 @@
 <p><br></p>
 <h2 id="methods">Methods<a class="headerlink" href="#methods" title="Permanent link">&para;</a></h2>
 <hr />
+<h4 id="setlabel">setLabel<a class="headerlink" href="#setlabel" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setLabel</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Expands the icon and sets a piece of text that appears next to the image. Setting to <code>nil</code> or <code>""</code> will remove the label.</p>
+<hr />
 <h4 id="settip">setTip<a class="headerlink" href="#settip" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
 </pre></div>
 
 
-<p>Sets a tip that is displayed when hovering over the icon. Setting a tip to <code>nil</code> or <code>""</code> will remove the tip.</p>
+<p>Sets a tip that is displayed when hovering over the icon. Setting to <code>nil</code> or <code>""</code> will remove the tip.</p>
 <hr />
 <h4 id="setcontrollertip">setControllerTip<a class="headerlink" href="#setcontrollertip" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setControllerTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
@@ -1959,6 +1980,16 @@
 <td align="left"><strong>image</strong></td>
 <td align="left"><em>ImageLabel</em></td>
 <td align="left">The icon image.</td>
+</tr>
+<tr>
+<td align="left"><strong>label</strong></td>
+<td align="left"><em>TextLabel</em></td>
+<td align="left">The icons label. Set using <code>icon:setLabel()</code>.</td>
+</tr>
+<tr>
+<td align="left"><strong>corner</strong></td>
+<td align="left"><em>UICorner</em></td>
+<td align="left">Decides the icons corner radius.</td>
 </tr>
 <tr>
 <td align="left"><strong>notification</strong></td>

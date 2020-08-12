@@ -802,6 +802,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#labels" class="md-nav__link">
+    Labels
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#themes" class="md-nav__link">
     Themes
   </a>
@@ -1025,6 +1032,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#labels" class="md-nav__link">
+    Labels
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#themes" class="md-nav__link">
     Themes
   </a>
@@ -1216,6 +1230,19 @@
 
 
 <p>For more information on creating and utilising a dropdown, see <code>Icon:createDropdown()</code>.</p>
+<h2 id="labels">Labels<a class="headerlink" href="#labels" title="Permanent link">&para;</a></h2>
+<p>A label is a piece of text that sits next to the icons image. </p>
+<p><a><img src="https://i.ibb.co/GvDkp8k/labele-xample.png" width="50%"/></a></p>
+<p>To apply a label, simply do:</p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setLabel</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+
+
+<p>To remove a label, set its text to <code>""</code> or <code>nil</code>:</p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setLabel</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+</pre></div>
+
+
 <h2 id="themes">Themes<a class="headerlink" href="#themes" title="Permanent link">&para;</a></h2>
 <p>Themes are easily adaptable tables of information that can be applied to icons to enhance their appearance and behaviour.</p>
 <p>You can break down a theme into three sections:</p>
@@ -1341,6 +1368,11 @@
         <span class="n">selected</span> <span class="o">=</span> <span class="p">{</span>
             <span class="n">Color</span> <span class="o">=</span> <span class="n">ColorSequence</span><span class="p">.</span><span class="n">new</span><span class="p">(</span><span class="n">selectedColor</span><span class="p">,</span> <span class="n">selectedColorDarker</span><span class="p">),</span>
             <span class="n">Rotation</span> <span class="o">=</span> <span class="mi">90</span><span class="p">,</span>
+        <span class="p">},</span>
+    <span class="p">},</span>
+    <span class="p">[</span><span class="s2">&quot;label&quot;</span><span class="p">]</span> <span class="o">=</span> <span class="p">{</span>
+        <span class="n">selected</span> <span class="o">=</span> <span class="p">{</span>
+            <span class="n">TextColor3</span> <span class="o">=</span> <span class="n">Color3</span><span class="p">.</span><span class="n">fromRGB</span><span class="p">(</span><span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">,</span> <span class="mi">255</span><span class="p">),</span>
         <span class="p">},</span>
     <span class="p">},</span>
 <span class="p">}</span>
