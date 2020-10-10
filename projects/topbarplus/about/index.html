@@ -699,8 +699,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../datastoreplus/tablemodifiers/" title="TableModifiers" class="md-nav__link">
-      TableModifiers
+    <a href="../../datastoreplus/state/" title="State" class="md-nav__link">
+      State
     </a>
   </li>
 
@@ -783,6 +783,13 @@
         <li class="md-nav__item">
   <a href="#example" class="md-nav__link">
     Example
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
+  <a href="#captions" class="md-nav__link">
+    Captions
   </a>
   
 </li>
@@ -1018,6 +1025,13 @@
 </li>
       
         <li class="md-nav__item">
+  <a href="#captions" class="md-nav__link">
+    Captions
+  </a>
+  
+</li>
+      
+        <li class="md-nav__item">
   <a href="#tips" class="md-nav__link">
     Tips
   </a>
@@ -1169,6 +1183,21 @@
 <p class="admonition-title">Warning</p>
 <p>Likewise, if using a 'toggle menu', you must ensure its ScreenGui has <code>ResetOnSpawn</code> set to <code>false</code>, or that you are calling Icon:setToggleMenu(guiObject) every time the player respawns, for the menu to persist.</p>
 </div>
+<hr />
+<h2 id="captions">Captions<a class="headerlink" href="#captions" title="Permanent link">&para;</a></h2>
+<p>A caption is a box that appears below the icon when highlighted on computer and console.</p>
+<p><a><img src="https://doy2mn9upadnk.cloudfront.net/uploads/default/optimized/4X/a/0/2/a02488b53cb7361458c9564686608342e4b615b6_2_828x452.gif" width="50%"/></a></p>
+<p>To apply a caption, simply do:</p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setCaption</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+
+
+<p>To remove a caption, set its text to <code>""</code> or <code>nil</code>:</p>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setCaption</span><span class="p">(</span><span class="kc">nil</span><span class="p">)</span>
+</pre></div>
+
+
+<hr />
 <h2 id="tips">Tips<a class="headerlink" href="#tips" title="Permanent link">&para;</a></h2>
 <p>A tip is a label containing a short message that appears when an icon is highlighted on computer and console.</p>
 <p><a><img src="https://i.ibb.co/0GszjkF/icon-tip.png" width="50%"/></a></p>
@@ -1189,6 +1218,7 @@
 
 <p><a><img src="https://i.ibb.co/ZxbR9yK/icon-controller-Tip.png" width="50%"/></a></p>
 <p>To test controller mode on PC, simply plug-in a controller and press the console icon that pops up to the right of the topbar.</p>
+<hr />
 <h2 id="dropdowns">Dropdowns<a class="headerlink" href="#dropdowns" title="Permanent link">&para;</a></h2>
 <p>A dropdown is a collection of 'options' that appear when an icon is right-clicked on PC or long-pressed on mobile:</p>
 <p><a><img src="https://i.ibb.co/2gvtccV/icon-dropdown.png" width="50%"/></a></p>
@@ -1230,6 +1260,7 @@
 
 
 <p>For more information on creating and utilising a dropdown, see <code>Icon:createDropdown()</code>.</p>
+<hr />
 <h2 id="labels">Labels<a class="headerlink" href="#labels" title="Permanent link">&para;</a></h2>
 <p>A label is a piece of text that sits next to the icons image. </p>
 <p><a><img src="https://i.imgur.com/TyDnzQg.png" width="50%"/></a></p>
@@ -1243,6 +1274,7 @@
 </pre></div>
 
 
+<hr />
 <h2 id="themes">Themes<a class="headerlink" href="#themes" title="Permanent link">&para;</a></h2>
 <p>Themes are easily adaptable tables of information that can be applied to icons to enhance their appearance and behaviour.</p>
 <p>You can break down a theme into three sections:</p>
@@ -1519,7 +1551,7 @@
     <div class="md-footer-nav">
       <nav class="md-footer-nav__inner md-grid">
         
-          <a href="../../datastoreplus/tablemodifiers/" title="TableModifiers" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
+          <a href="../../datastoreplus/state/" title="State" class="md-flex md-footer-nav__link md-footer-nav__link--prev" rel="prev">
             <div class="md-flex__cell md-flex__cell--shrink">
               <i class="md-icon md-icon--arrow-back md-footer-nav__button"></i>
             </div>
@@ -1528,7 +1560,7 @@
                 <span class="md-footer-nav__direction">
                   Previous
                 </span>
-                TableModifiers
+                State
               </span>
             </div>
           </a>

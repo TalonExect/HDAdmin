@@ -699,8 +699,8 @@
 
 
   <li class="md-nav__item">
-    <a href="../../datastoreplus/tablemodifiers/" title="TableModifiers" class="md-nav__link">
-      TableModifiers
+    <a href="../../datastoreplus/state/" title="State" class="md-nav__link">
+      State
     </a>
   </li>
 
@@ -814,6 +814,13 @@
           <li class="md-nav__item">
   <a href="#setlabel" class="md-nav__link">
     setLabel
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#setcaption" class="md-nav__link">
+    setCaption
   </a>
   
 </li>
@@ -1071,6 +1078,13 @@
           <li class="md-nav__item">
   <a href="#name" class="md-nav__link">
     name
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
+  <a href="#captiontween" class="md-nav__link">
+    captionTween
   </a>
   
 </li>
@@ -1323,6 +1337,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#setcaption" class="md-nav__link">
+    setCaption
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#settip" class="md-nav__link">
     setTip
   </a>
@@ -1580,6 +1601,13 @@
 </li>
         
           <li class="md-nav__item">
+  <a href="#captiontween" class="md-nav__link">
+    captionTween
+  </a>
+  
+</li>
+        
+          <li class="md-nav__item">
   <a href="#tip" class="md-nav__link">
     tip
   </a>
@@ -1713,6 +1741,13 @@
 
 
 <p>Expands the icon and sets a piece of text that appears next to the image. Setting to <code>nil</code> or <code>""</code> will remove the label.</p>
+<hr />
+<h4 id="setcaption">setCaption<a class="headerlink" href="#setcaption" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setCaption</span><span class="p">(</span><span class="n">text</span><span class="p">)</span>
+</pre></div>
+
+
+<p>Creates a box that appears below the icon when hovered over. Setting to <code>nil</code> or <code>""</code> will remove the caption.</p>
 <hr />
 <h4 id="settip">setTip<a class="headerlink" href="#settip" title="Permanent link">&para;</a></h4>
 <div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">:</span><span class="n">setTip</span><span class="p">(</span><span class="n">tip</span><span class="p">)</span>
@@ -2070,6 +2105,26 @@
 <td align="left"><em>ToggleDetails</em></td>
 <td align="left">(See below)</td>
 </tr>
+<tr>
+<td align="left"><strong>captionContainer</strong></td>
+<td align="left"><em>ToggleDetails</em></td>
+<td align="left">(See below)</td>
+</tr>
+<tr>
+<td align="left"><strong>captionBackground</strong></td>
+<td align="left"><em>ToggleDetails</em></td>
+<td align="left">(See below)</td>
+</tr>
+<tr>
+<td align="left"><strong>captionText</strong></td>
+<td align="left"><em>ToggleDetails</em></td>
+<td align="left">(See below)</td>
+</tr>
+<tr>
+<td align="left"><strong>captionOverline</strong></td>
+<td align="left"><em>ToggleDetails</em></td>
+<td align="left">(See below)</td>
+</tr>
 </tbody>
 </table>
 <p><strong><em>ToggleDetails</em></strong></p>
@@ -2180,7 +2235,15 @@
 
 <p>The icon creation name.</p>
 <hr />
+<h4 id="captiontween">captionTween<a class="headerlink" href="#captiontween" title="Permanent link">&para;</a></h4>
+<div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">captionTween</span>
+</pre></div>
+
+
+<p>A function that is called every time an icons caption is highlighted and unhighlighted to make it fade in or out.</p>
+<hr />
 <h4 id="tip">tip<a class="headerlink" href="#tip" title="Permanent link">&para;</a></h4>
+<p><em>(read only)</em></p>
 <div class="codehilite"><pre><span></span><span class="n">icon</span><span class="p">.</span><span class="n">tip</span>
 </pre></div>
 
