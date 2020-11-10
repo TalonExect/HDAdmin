@@ -1,16 +1,20 @@
--- BlueGradient by Ben
+-- BlueGradient by ForeverHD
 local selectedColor = Color3.fromRGB(0, 170, 255)
 local selectedColorDarker = Color3.fromRGB(0, 120, 180)
 local neutralColor = Color3.fromRGB(255, 255, 255)
 return {
     
     -- Settings which describe how an item behaves or transitions between states
-    action =  {},
+    action =  {
+        toggleTweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+    },
     
     -- Settings which describe how an item appears when 'deselected' and 'selected'
     toggleable = {
         -- How items appear normally (i.e. when they're 'deselected')
         deselected = {
+            iconGradientColor = ColorSequence.new(selectedColor, selectedColorDarker),
+            iconGradientRotation = 90,
             noticeCircleColor = selectedColor,
             noticeCircleImage = "http://www.roblox.com/asset/?id=4882430005",
             noticeTextColor = neutralColor,
@@ -23,6 +27,8 @@ return {
             iconBackgroundTransparency = 0.1,
             iconGradientColor = ColorSequence.new(selectedColor, selectedColorDarker),
             iconGradientRotation = 90,
+            iconImageColor =Color3.fromRGB(255, 255, 255),
+            iconTextColor = Color3.fromRGB(255, 255, 255),
             noticeCircleColor = neutralColor,
             noticeTextColor = selectedColor,
         }

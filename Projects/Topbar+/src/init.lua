@@ -33,15 +33,16 @@ iconContainer.Parent = topbarContainer
 local iconButton = Instance.new("TextButton")
 iconButton.Name = "IconButton"
 iconButton.Visible = true
+iconButton.Text = ""
 iconButton.ZIndex = 2
 iconButton.BorderSizePixel = 0
+iconButton.AutoButtonColor = false
 iconButton.Parent = iconContainer
 
 local iconImage = Instance.new("ImageLabel")
 iconImage.BackgroundTransparency = 1
 iconImage.Name = "IconImage"
-iconImage.AnchorPoint = Vector2.new(0.5, 0.5)
-iconImage.Position = UDim2.new(0.5, 0, 0.5, 0)
+iconImage.AnchorPoint = Vector2.new(0, 0.5)
 iconImage.Visible = true
 iconImage.ZIndex = 3
 iconImage.ScaleType = Enum.ScaleType.Fit
@@ -53,31 +54,29 @@ iconLabel.Name = "IconLabel"
 iconLabel.AnchorPoint = Vector2.new(0, 0.5)
 iconLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
 iconLabel.Text = ""
+--iconLabel.RichText = true
 iconLabel.TextXAlignment = Enum.TextXAlignment.Left
 iconLabel.TextScaled = true
 iconLabel.ZIndex = 3
 iconLabel.Parent = iconButton
 
 local iconGradient = Instance.new("UIGradient")
-iconGradient.Enabled = false
+iconGradient.Name = "IconGradient"
+iconGradient.Enabled = true
 iconGradient.Parent = iconButton
 
 local iconCorner = Instance.new("UICorner")
 iconCorner.Name = "IconCorner"
 iconCorner.Parent = iconButton
 
-local iconOverlay = Instance.new("ImageLabel")
+local iconOverlay = Instance.new("Frame")
 iconOverlay.Name = "IconOverlay"
 iconOverlay.BackgroundTransparency = 1
 iconOverlay.Position = iconButton.Position
-iconOverlay.Size = iconButton.Size
+iconOverlay.Size = UDim2.new(1, 0, 1, 0)
 iconOverlay.Visible = true
 iconOverlay.ZIndex = iconButton.ZIndex + 1
-iconOverlay.ImageTransparency = 1
-iconOverlay.ImageColor3 = Color3.new(1,1,1)
 iconOverlay.BorderSizePixel = 0
-iconOverlay.Image = "http://www.roblox.com/asset/?id=5540166883"
-iconOverlay.ScaleType = Enum.ScaleType.Crop
 iconOverlay.Parent = iconContainer
 
 local iconOverlayCorner = iconCorner:Clone()
@@ -131,7 +130,7 @@ captionFrame.ZIndex = 31
 captionFrame.Parent = captionContainer
 
 local captionLabel = Instance.new("TextLabel")
-captionFrame.Name = "CaptionLabel"
+captionLabel.Name = "CaptionLabel"
 captionLabel.BackgroundTransparency = 1
 captionLabel.TextScaled = true
 captionLabel.TextSize = 12
@@ -141,11 +140,11 @@ captionLabel.ZIndex = 32
 captionLabel.Parent = captionContainer
 
 local captionCorner = Instance.new("UICorner")
-captionFrame.Name = "CaptionCorner"
+captionCorner.Name = "CaptionCorner"
 captionCorner.Parent = captionFrame
 
 local captionOverlineContainer = Instance.new("Frame")
-captionFrame.Name = "CaptionOverlineContainer"
+captionOverlineContainer.Name = "CaptionOverlineContainer"
 captionOverlineContainer.BackgroundTransparency = 1
 captionOverlineContainer.AnchorPoint = Vector2.new(0.5,0.5)
 captionOverlineContainer.Position = UDim2.new(0.5,0,-0.5,3)
@@ -163,7 +162,7 @@ captionOverline.ZIndex = 34
 captionOverline.Parent = captionOverlineContainer
 
 local captionOverlineCorner = captionCorner:Clone()
-captionOverline.Name = "CaptionOverlineCorner"
+captionOverlineCorner.Name = "CaptionOverlineCorner"
 captionOverlineCorner.Parent = captionOverline
 
 
@@ -172,7 +171,7 @@ local tipFrame = Instance.new("Frame")
 tipFrame.Name = "TipFrame"
 tipFrame.BorderSizePixel = 0
 tipFrame.AnchorPoint = Vector2.new(0.5,0.5)
-tipFrame.Position = UDim2.new(0.5,0,0.5,0)
+tipFrame.Position = UDim2.new(0,50,0,50)
 tipFrame.Size = UDim2.new(1,0,1,-8)
 tipFrame.ZIndex = 40
 tipFrame.Parent = iconContainer
@@ -229,8 +228,8 @@ topRect.Parent = background
 local bottomRect = topRect:Clone()
 bottomRect.Name = "BottomRoundedRect"
 bottomRect.Image = "rbxasset://textures/ui/TopRoundedRect8px.png"
-topRect.AnchorPoint = Vector2.new(0,0)
-topRect.Position = UDim2.new(0,0,1,0)
+bottomRect.AnchorPoint = Vector2.new(0,0)--topRect
+bottomRect.Position = UDim2.new(0,0,1,0)--topRect
 bottomRect.Parent = background
 
 local uiSize = Instance.new("UISizeConstraint")

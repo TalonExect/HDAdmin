@@ -10,7 +10,7 @@ local player = game:GetService("Players").LocalPlayer
 local playerGui = player.PlayerGui
 local topbarPlusGui = playerGui:WaitForChild("Topbar+")
 local topbarContainer = topbarPlusGui.TopbarContainer
-local iconTemplate = topbarContainer["TopbarContainer"]
+local iconTemplate = topbarContainer["IconContainer"]
 local HDAdmin = replicatedStorage:WaitForChild("HDAdmin")
 local Signal = require(HDAdmin:WaitForChild("Signal"))
 local Maid = require(HDAdmin:WaitForChild("Maid"))
@@ -52,7 +52,7 @@ function Icon.new(name, order, imageId, labelText)
 	instances["captionContainer"] = iconContainer.CaptionContainer
 	instances["captionFrame"] = instances.captionContainer.CaptionFrame
 	instances["captionLabel"] = instances.captionContainer.CaptionLabel
-	instances["captionCorner"] = instances.captionContainer.CaptionCorner
+	instances["captionCorner"] = instances.captionFrame.CaptionCorner
 	instances["captionOverlineContainer"] = instances.captionContainer.CaptionOverlineContainer
 	instances["captionOverline"] = instances.captionOverlineContainer.CaptionOverline
 	instances["captionOverlineCorner"] = instances.captionOverline.CaptionOverlineCorner
@@ -68,43 +68,44 @@ function Icon.new(name, order, imageId, labelText)
 			["tipTweenInfo"] = {},
 		},
 		toggleable = {
-			["iconBackgroundColor"] = {instanceNames = {"iconButton"}, propertyName = "BackgroundColor"},
+			["iconBackgroundColor"] = {instanceNames = {"iconButton"}, propertyName = "BackgroundColor3"},
 			["iconBackgroundTransparency"] = {instanceNames = {"iconButton"}, propertyName = "BackgroundTransparency"},
 			["iconCornerRadius"] = {instanceNames = {"iconCorner", "iconOverlayCorner"}, propertyName = "CornerRadius"},
 			["iconGradientColor"] = {instanceNames = {"iconGradient"}, propertyName = "Color"},
 			["iconGradientRotation"] = {instanceNames = {"iconGradient"}, propertyName = "Rotation"},
 			["iconImage"] = {callMethod = self._updateIconSize, instanceNames = {"iconImage"}, propertyName = "Image"},
-			["iconImageColor"] = {instanceNames = {"iconImage"}, propertyName = "ImageColor"},
+			["iconImageColor"] = {instanceNames = {"iconImage"}, propertyName = "ImageColor3"},
 			["iconImageTransparency"] = {instanceNames = {"iconImage"}, propertyName = "ImageTransparency"},
-			["iconImageScale"] = {instanceNames = {"iconImage"}, propertyName = "Size"},
 			["iconScale"] = {instanceNames = {"iconButton"}, propertyName = "Size"},
-			["iconSize"] = {instanceNames = {"iconContainer"}, propertyName = "Size"},
+			["iconSize"] = {callMethod = self._updateIconSize, instanceNames = {"iconContainer"}, propertyName = "Size"},
 			["iconOffset"] = {instanceNames = {"iconButton"}, propertyName = "Position"},
 			["iconText"] = {callMethod = self._updateIconSize, instanceNames = {"iconLabel"}, propertyName = "Text"},
-			["iconTextColor"] = {instanceNames = {"iconLabel"}, propertyName = "TextColor"},
+			["iconTextColor"] = {instanceNames = {"iconLabel"}, propertyName = "TextColor3"},
 			["iconFont"] = {instanceNames = {"iconLabel"}, propertyName = "Font"},
-			["iconLabelSize"] = {instanceNames = {"iconLabel"}, propertyName = "Size"},
-			["noticeCircleColor"] = {instanceNames = {"noticeFrame"}, propertyName = "ImageColor"},
+			["iconImageYScale"] = {callMethod = self._updateIconSize},
+			["iconImageRatio"] = {callMethod = self._updateIconSize},
+			["iconLabelYScale"] = {callMethod = self._updateIconSize},
+			["noticeCircleColor"] = {instanceNames = {"noticeFrame"}, propertyName = "ImageColor3"},
 			["noticeCircleImage"] = {instanceNames = {"noticeFrame"}, propertyName = "Image"},
-			["noticeTextColor"] = {instanceNames = {"noticeLabel"}, propertyName = "TextColor"},
+			["noticeTextColor"] = {instanceNames = {"noticeLabel"}, propertyName = "TextColor3"},
 			["baseZIndex"] = {callMethod = self._updateBaseZIndex},
 			["order"] = {callSignal = self.updated},
 			["alignment"] = {callSignal = self.updated},
 		},
 		other = {
-			["captionBackgroundColor"] = {instanceNames = {"captionFrame"}, propertyName = "BackgroundColor"},
+			["captionBackgroundColor"] = {instanceNames = {"captionFrame"}, propertyName = "BackgroundColor3"},
 			["captionBackgroundTransparency"] = {instanceNames = {"captionFrame"}, propertyName = "BackgroundTransparency", unique = "caption"},
-			["captionOverlineColor"] = {instanceNames = {"captionOverline"}, propertyName = "BackgroundColor"},
+			["captionOverlineColor"] = {instanceNames = {"captionOverline"}, propertyName = "BackgroundColor3"},
 			["captionOverlineTransparency"] = {instanceNames = {"captionOverline"}, propertyName = "BackgroundTransparency", unique = "caption"},
-			["captionTextColor"] = {instanceNames = {"captionLabel"}, propertyName = "TextColor"},
+			["captionTextColor"] = {instanceNames = {"captionLabel"}, propertyName = "TextColor3"},
 			["captionTextTransparency"] = {instanceNames = {"captionLabel"}, propertyName = "TextTransparency", unique = "caption"},
 			["captionFont"] = {instanceNames = {"captionLabel"}, propertyName = "Font"},
 			["captionCornerRadius"] = {instanceNames = {"captionCorner", "captionOverlineCorner"}, propertyName = "CornerRadius"},
-			["tipBackgroundColor"] = {instanceNames = {"tipFrame"}, propertyName = "BackgroundColor"},
+			["tipBackgroundColor"] = {instanceNames = {"tipFrame"}, propertyName = "BackgroundColor3"},
 			["tipBackgroundTransparency"] = {instanceNames = {"tipFrame"}, propertyName = "BackgroundTransparency", unique = "tip"},
-			["tipTextColor"] = {instanceNames = {"tipLabel"}, propertyName = "TextColor"},
+			["tipTextColor"] = {instanceNames = {"tipLabel"}, propertyName = "TextColor3"},
 			["tipTextTransparency"] = {instanceNames = {"tipLabel"}, propertyName = "TextTransparency", unique = "tip"},
-			["tipFont"] = {instanceNames = {"tipLabel"}, propertyName = "TextTransparency", unique = "tip"},
+			["tipFont"] = {instanceNames = {"tipLabel"}, propertyName = "Font"},
 			["tipCornerRadius"] = {instanceNames = {"tipCorner", "captionOverlineCorner"}, propertyName = "CornerRadius"},
 		}
 	}
@@ -181,6 +182,7 @@ function Icon.new(name, order, imageId, labelText)
 	self._subIcons = {}
 	self._totalSubIcons = 0
 	self._parentIcons = {}
+	self._updatingIconSize = true
 	
 	-- Apply start values
 	self:setTheme(DEFAULT_THEME)
@@ -191,15 +193,12 @@ function Icon.new(name, order, imageId, labelText)
 	-- Input handlers
 	-- Calls deselect/select when the icon is clicked
 	instances.iconButton.MouseButton1Click:Connect(function()
-		if self._draggingFinger then return false end
-		if self.isSelected then
+		if self._draggingFinger then
+			return false
+		elseif self.isSelected then
 			self:deselect()
 			return true
 		end
-		if not self._isControllerMode then
-			topbarPlusGui.ToolTip.Visible = false
-		end
-		self.instances.captionContainer.Visible = false
 		self:select()
 	end)
 
@@ -217,8 +216,10 @@ function Icon.new(name, order, imageId, labelText)
 	self.hoverStarted:Connect(function(x, y)
 		self.hovering = true
 		self:_updateStateOverlay(0.9, Color3.fromRGB(255, 255, 255))
-		self:_displayTip(true)
-		self:_displayCaption(true)
+		if not self.isSelected then
+			self:_displayTip(true)
+			self:_displayCaption(true)
+		end
 	end)
 	self.hoverEnded:Connect(function()
 		self.hovering = false
@@ -254,24 +255,19 @@ function Icon.new(name, order, imageId, labelText)
 		-- this is important for determining the hoverStarted and hoverEnded events on mobile
 		local dragCount = 0
 		userInputService.TouchMoved:Connect(function(touch, touchingAnObject)
-			if touchingAnObject and not self._draggingFinger then
+			if touchingAnObject then
 				return
 			end
 			self._draggingFinger = true
-			dragCount = dragCount + 1
-			local finishTime = tick() + 0.15
-			local connection
-			connection = runService.Heartbeat:Connect(function()
-				if tick() > finishTime then
-					connection:Disconnect()
-					dragCount = dragCount - 1
-					if dragCount == 0 then
-						self._draggingFinger = false
-					end
-				end
-			end)
+		end)
+		userInputService.TouchEnded:Connect(function()
+			self._draggingFinger = false
 		end)
 	end
+
+	-- Finish
+	self._updatingIconSize = false
+	self:_updateIconSize()
 	
 	return self
 end
@@ -296,6 +292,7 @@ function Icon:set(settingName, value, toggleState, setAdditional)
 		else
 			table.insert(valuesToSet, "deselected")
 			table.insert(valuesToSet, "selected")
+			toggleState = nil
 		end
 		for i, v in pairs(valuesToSet) do
 			settingDetail.values[v] = value
@@ -313,13 +310,14 @@ function Icon:set(settingName, value, toggleState, setAdditional)
 	end
 	-- Update appearances of associated instances
 	local currentToggleState = self:getToggleState()
-	if settingDetail.instanceNames and currentToggleState == toggleState then
+	if settingDetail.instanceNames and (currentToggleState == toggleState or toggleState == nil) then
 		self:_update(settingName, currentToggleState, true)
 	end
 	-- Call any methods present
 	if settingDetail.callMethod then
 		settingDetail.callMethod(self, value)
 	end
+	
 	-- Call any signals present
 	if settingDetail.callSignal then
 		settingDetail.callSignal:Fire()
@@ -348,19 +346,23 @@ function Icon:_update(settingName, toggleState, applyInstantly)
 	local settingDetail = self._settingsDictionary[settingName]
 	assert(settingDetail ~= nil, ("setting '%s' does not exist"):format(settingName))
 	toggleState = toggleState or self:getToggleState()
-	local value = settingDetail.values[toggleState]
+	local value = settingDetail.value or settingDetail.values[toggleState]
 	local tweenInfo = (applyInstantly and TweenInfo.new(0)) or self._settings.action.toggleTweenInfo.value
 	local propertyName = settingDetail.propertyName
-	local invalidProperties = {
-		Image = true,
-		NumberSequence = true,
-		Text = true,
-		Font = true
+	local invalidPropertiesTypes = {
+		["string"] = true,
+		["NumberSequence"] = true,
+		["Text"] = true,
+		["EnumItem"] = true,
+		["ColorSequence"] = true,
+		--["Color3"] = true,
+		--["BrickColor"] = true,
 	}
 	local uniqueSetting = self._uniqueSettingsDictionary[settingName]
-	local cannotTweenProperty = invalidProperties[propertyName]
 	for _, instanceName in pairs(settingDetail.instanceNames) do
 		local instance = self.instances[instanceName]
+		local propertyType = typeof(instance[propertyName])
+		local cannotTweenProperty = invalidPropertiesTypes[propertyType]
 		if uniqueSetting then
 			uniqueSetting(instance, propertyName, value)
 		elseif cannotTweenProperty then
@@ -381,8 +383,8 @@ end
 
 function Icon:_updateStateOverlay(transparency, color)
 	local stateOverlay = self.instances.iconOverlay
-	stateOverlay.ImageTransparency = transparency or 1
-	stateOverlay.ImageColor3 = color or Color3.new(1, 1, 1)
+	stateOverlay.BackgroundTransparency = transparency or 1
+	stateOverlay.BackgroundColor3 = color or Color3.new(1, 1, 1)
 end
 
 function Icon:setTheme(theme)
@@ -417,6 +419,7 @@ function Icon:select()
 	for subIcon, _ in pairs(self._subIcons) do
 		subIcon:setEnabled(true)
 	end
+	self:_updateAll()
 	self.selected:Fire()
 end
 
@@ -429,6 +432,7 @@ function Icon:deselect()
 	for subIcon, _ in pairs(self._subIcons) do
 		subIcon:setEnabled(false)
 	end
+	self:_updateAll()
 	self.deselected:Fire()
 end
 
@@ -445,7 +449,7 @@ function Icon:notify(clearNoticeEvent)
 		self.instances.noticeFrame.Visible = true
 		
 		local notifComplete = Signal.new()
-		local endEvent = self.endNotices:Connect(function()
+		local endEvent = self._endNotices:Connect(function()
 			notifComplete:Fire()
 		end)
 		local customEvent = clearNoticeEvent:Connect(function()
@@ -467,7 +471,7 @@ function Icon:notify(clearNoticeEvent)
 end
 
 function Icon:clearNotices()
-	self.endNotices:Fire()
+	self._endNotices:Fire()
 end
 
 function Icon:disableStateOverlay(bool)
@@ -493,7 +497,7 @@ function Icon:setCornerRadius(scale, offset, toggleState)
 end
 
 function Icon:setImage(imageId, toggleState)
-	local textureId = (tonumber(imageId) and "http://www.roblox.com/asset/?id="..imageId) or imageId
+	local textureId = (tonumber(imageId) and "http://www.roblox.com/asset/?id="..imageId) or imageId or ""
 	self:set("iconImage", textureId, toggleState)
 end
 
@@ -514,11 +518,21 @@ function Icon:setRight(toggleState)
 	self:set("alignment", "right", toggleState)
 end
 
-function Icon:setImageScale(scale, toggleState)
-	local newScale = tonumber(scale) or 0.63
-	self:set("iconImageScale", UDim2.new(newScale, 0, newScale, 0), toggleState)
+function Icon:setImageYScale(YScale, toggleState)
+	local newYScale = tonumber(YScale) or 0.63
+	self:set("iconImageYScale", newYScale, toggleState)
 end
 
+function Icon:setImageRatio(ratio, toggleState)
+	local newRatio = tonumber(ratio) or 1
+	self:set("iconImageRatio", newRatio, toggleState)
+end
+
+function Icon:setLabelYScale(YScale, toggleState)
+	local newYScale = tonumber(YScale) or 0.45
+	self:set("iconLabelYScale", newYScale, toggleState)
+end
+	
 function Icon:setBaseZIndex(ZIndex, toggleState)
 	local newBaseZIndex = tonumber(ZIndex) or 1
 	self:set("baseZIndex", newBaseZIndex, toggleState)
@@ -541,27 +555,87 @@ function Icon:setSize(XOffset, YOffset, toggleState)
 	self:set("iconSize", UDim2.new(0, newXOffset, 0, newYOffset), toggleState)
 end
 
-function Icon:getIconLabelXSize()
-	local XOffset = self:get("iconSize").X.Offset
-	local size = textService:GetTextSize(self.instances.iconLabel.Text,self.instances.iconLabel.TextSize,self.instances.iconLabel.Font,Vector2.new(10000,self.instances.iconLabel.Size.Y))
-	return size.X+((self.instances.iconImage.Visible and self.imageId ~= 0) and self.instances.iconImage.Size.X.Offset+((((XOffset or 32)/32)*12)+(6*(XOffset or 32)/32)) or ((XOffset or 32)/32)*12)
-end
+function Icon:_updateIconSize()
+	-- This is responsible for handling the appearance and size of the icons label and image, in additon to its own size
+	if self._updatingIconSize then return false end
+	self._updatingIconSize = true
 
-function Icon:_updateIconSize(XOffset, YOffset)
-	local notifPosYScale = 0.45
-	if self.instances.iconLabel.Text ~= "" then
-		self.instances.iconLabel.TextSize = 14*math.clamp((XOffset/32),1,2.5)
-		self.instances.iconImage.AnchorPoint = Vector2.new(0,0.5)
-		self.instances.iconImage.Position = UDim2.new(0,((XOffset or 32)/32)*6,0.5,0)
-		self.instances.iconLabel.Position = UDim2.new(0,((self.instances.iconImage.Visible and self.imageId ~= 0) and (((((XOffset or 32)/32)*12))+self.instances.iconImage.AbsoluteSize.X) or ((XOffset or 32)/32)*6),0.5,0)
-		self.instances.iconContainer.Size = UDim2.new(0, self:getIconLabelXSize(), 0, YOffset)
-		notifPosYScale = 0.5
-	else
-		self.instances.iconImage.AnchorPoint = Vector2.new(0.5,0.5)
-		self.instances.iconImage.Position = UDim2.new(0.5,0,0.5,0)
-		self.instances.iconContainer.Size = UDim2.new(0, XOffset, 0, YOffset)
+	local X_MARGIN = 8
+	local X_GAP = 8
+
+	local values = {
+		iconImage = self:get("iconImage") or "",
+		iconText = self:get("iconText") or "",
+		iconSize = self:get("iconSize") or "_NIL",
+		iconImageYScale = self:get("iconImageYScale") or "_NIL",
+		iconImageRatio = self:get("iconImageRatio") or "_NIL",
+		iconLabelYScale = self:get("iconLabelYScale") or "_NIL",
+	}
+	for k, v in pairs(values) do
+		if v == "_NIL" then
+			return false
+		end
+	end 
+
+	local iconContainer = self.instances.iconContainer
+	local iconLabel = self.instances.iconLabel
+	local iconImage = self.instances.iconImage
+	local noticeFrame = self.instances.noticeFrame
+
+	-- We calculate the cells dimensions as apposed to reading because there's a possibility the cells dimensions were changed at the exact time and have not yet updated
+	-- this essentially saves us from waiting a heartbeat which causes additonal complications
+	local cellSizeXOffset = values.iconSize.X.Offset
+	local cellSizeXScale = values.iconSize.X.Scale
+	local cellWidth = cellSizeXOffset + (cellSizeXScale * iconContainer.Parent.AbsoluteSize.X)
+	local minCellWidth = cellWidth
+	local maxCellWidth = (cellSizeXScale > 0 and cellWidth) or (cellWidth * 5)
+	local cellSizeYOffset = values.iconSize.Y.Offset
+	local cellSizeYScale = values.iconSize.Y.Scale
+	local cellHeight = cellSizeYOffset + (cellSizeYScale * iconContainer.Parent.AbsoluteSize.Y)
+	local labelHeight = cellHeight * values.iconLabelYScale
+	local labelWidth = textService:GetTextSize(values.iconText, labelHeight, iconLabel.Font, Vector2.new(10000, labelHeight)).X
+	local imageWidth = cellHeight * values.iconImageYScale * values.iconImageRatio
+
+	local usingImage = values.iconImage ~= ""
+	local usingText = values.iconText ~= ""
+	local notifPosYScale = 0.5
+	local desiredCellWidth
+	if usingImage and not usingText then
+		iconImage.Visible = true
+		iconImage.AnchorPoint = Vector2.new(0.5, 0.5)
+		iconImage.Position = UDim2.new(0.5, 0, 0.5, 0)
+		iconImage.Size = UDim2.new(values.iconImageYScale*values.iconImageRatio, 0, values.iconImageYScale, 0)
+		iconLabel.Visible = false
+		notifPosYScale = 0.45
+
+	elseif not usingImage and usingText then
+		desiredCellWidth = labelWidth+(X_MARGIN*2)
+		iconLabel.Visible = true
+		iconLabel.AnchorPoint = Vector2.new(0, 0.5)
+		iconLabel.Position = UDim2.new(0, X_MARGIN, 0.5, 0)
+		iconLabel.Size = UDim2.new(1, -X_MARGIN*2, values.iconLabelYScale, 0)
+		iconImage.Visible = false
+
+	elseif usingImage and usingText then
+		local labelGap = X_MARGIN + imageWidth + X_GAP
+		desiredCellWidth = labelGap + labelWidth + X_MARGIN
+		iconImage.Visible = true
+		iconLabel.Visible = true
+		iconImage.AnchorPoint = Vector2.new(0, 0.5)
+		iconLabel.AnchorPoint = Vector2.new(0, 0.5)
+		iconImage.Position = UDim2.new(0, X_MARGIN, 0.5, 0)
+		iconImage.Size = UDim2.new(0, imageWidth, values.iconImageYScale, 0)
+		iconLabel.Position = UDim2.new(0, labelGap, 0.5, 0)
+		iconLabel.Size = UDim2.new(1, -labelGap-X_MARGIN, values.iconLabelYScale, 0)
+
 	end
-	self.instances.noticeFrame.Position = UDim2.new(notifPosYScale, 0, 0, -2)
+	if desiredCellWidth then
+		local widthScale = (cellSizeXScale > 0 and cellSizeXScale) or 0
+		local widthOffset = (cellSizeXScale > 0 and 0) or math.clamp(desiredCellWidth, minCellWidth, maxCellWidth)
+		self:set("iconSize", UDim2.new(widthScale, widthOffset, values.iconSize.Y.Scale, values.iconSize.Y.Offset))
+	end
+
+	self._updatingIconSize = false
 	self.updated:Fire()
 end
 
@@ -590,7 +664,7 @@ end
 function Icon:setTip(text)
 	assert(typeof(text) == "string" or text == nil, "Expected string, got "..typeof(text))
 	local textSize = textService:GetTextSize(text, 12, Enum.Font.GothamSemibold, Vector2.new(1000, 20-6))
-	self.instances.tipFrame.TextLabel.Text = text
+	self.instances.tipLabel.Text = text
 	self.instances.tipFrame.Size = UDim2.new(0, textSize.X+6, 0, 20)
 	self.tipText = text
 	if self.hovering then
@@ -601,7 +675,9 @@ end
 function Icon:_displayTip(visibility)
 	local newVisibility = visibility
 	if self.tipText == nil then
-		newVisibility = false
+		return
+	elseif userInputService.TouchEnabled and not self._draggingFinger then
+		return
 	end
 	if newVisibility == true then
 		-- When the user moves their cursor/finger, update tip to match the position
@@ -612,13 +688,17 @@ function Icon:_displayTip(visibility)
 			if camera then
 				local viewportSize = camera.ViewportSize
 				newX = math.clamp(x, 5, viewportSize.X - tipFrame.Size.X.Offset-53)
-				newY = math.clamp(y, tipFrame.Size.Y.Offset+5, viewportSize.Y)
+				newY = math.clamp(y, tipFrame.Size.Y.Offset+3, viewportSize.Y)
 			end
-			if self._draggingFinger then
+			if userInputService.TouchEnabled then
 				newX = newX - tipFrame.Size.X.Offset/2
 				newY = newY + THUMB_OFFSET + 40
 			end
-			tipFrame.Position = UDim2.new(0, newX, 0, newY)
+			local difX = tipFrame.AbsolutePosition.X - tipFrame.Position.X.Offset
+			local difY = tipFrame.AbsolutePosition.Y - tipFrame.Position.Y.Offset
+			local globalX = newX - difX
+			local globalY = newY - difY
+			tipFrame.Position = UDim2.new(0, globalX, 0, globalY-55)
 		end
 		local cursorLocation = userInputService:GetMouseLocation()
 		if cursorLocation then

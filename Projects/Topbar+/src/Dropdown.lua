@@ -21,7 +21,7 @@ function dropdown.new(icon, options)
 	self.opened = maid:give(Signal.new())
 	self.isOpen = false
 	self.icon = icon
-	self.dropdownContainer = self.icon.objects.container.Parent.Parent.Dropdown
+	self.dropdownContainer = self.icon.instances.iconContainer.Parent.Parent.Dropdown
 	self.options = {}
 	self.bringBackPlayerlist = false
 	self.bringBackChat = false

@@ -155,9 +155,9 @@ function IconController.createIcon(name, order, imageId, labelText)
 			local records = alignmentInfo.records
 			if #records > 1 then
 				if alignmentInfo.reverseSort then
-					table.sort(records, function(a,b) return a.order > b.order end)
+					table.sort(records, function(a,b) return a:get("order") > b:get("order") end)
 				else
-					table.sort(records, function(a,b) return a.order < b.order end)
+					table.sort(records, function(a,b) return a:get("order") < b:get("order") end)
 				end
 			end
 			local totalIconX = 0
@@ -211,7 +211,6 @@ function IconController.setTopbarEnabled(bool, forceBool)
 	local topbar = getTopbarPlusGui()
 	if not topbar then return end
 	local indicator = topbar.Indicator
-	local toolTip = topbar.ToolTip
 	if forceBool and not bool then
 		forceTopbarDisabled = true
 	elseif forceBool and bool then
@@ -304,7 +303,6 @@ function IconController.setTopbarEnabled(bool, forceBool)
 				0.1,
 				true
 			)
-			toolTip.Visible = false
 		end
 	else
 		local topbarContainer = topbar.TopbarContainer
@@ -320,7 +318,6 @@ function IconController.enableControllerMode(bool)
 	local topbar = getTopbarPlusGui()
 	if not topbar then return end
 	local indicator = topbar.Indicator
-	local toolTip = topbar.ToolTip
 	local controllerOptionIcon = IconController.getIcon("_TopbarControllerOption")
 	if bool then
 		topbar.TopbarContainer.Position = UDim2.new(0,0,0,5)
@@ -343,8 +340,6 @@ function IconController.enableControllerMode(bool)
 				controllerOptionIcon:setEnabled(true)
 			end
 		end
-		toolTip.AnchorPoint = Vector2.new(0.5,0)
-		toolTip.Position = UDim2.new(0.5,0,0,topbar.TopbarContainer.Size.Y.Offset+60 + robloxStupidOffset)
 	else
 		if userInputService.GamepadEnabled and controllerOptionIcon then
 			--mouse user but might want to use controller
@@ -363,9 +358,7 @@ function IconController.enableControllerMode(bool)
 		topbar.TopbarContainer.Position = UDim2.new(0,0,0,0)
 		topbar.TopbarContainer.Visible = checkTopbarEnabled()
 		indicator.Visible = false
-		toolTip.AnchorPoint = Vector2.new(0,1)
 	end
-	toolTip.Visible = false
 end
 
 function updateDevice()
@@ -458,7 +451,7 @@ function IconController.createFakeChat()
 		end)()
 	end
 	icon:setImage("rbxasset://textures/ui/TopBar/chatOn.png", "selected")
-	icon:setImageSize(20)
+	icon:setImageYScale(0.625)
 	icon.deselected:Connect(function()
 		displayChatBar(false)
 	end)
