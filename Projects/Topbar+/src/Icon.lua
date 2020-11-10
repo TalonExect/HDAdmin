@@ -634,6 +634,7 @@ function Icon:_updateIconSize()
 		local widthOffset = (cellSizeXScale > 0 and 0) or math.clamp(desiredCellWidth, minCellWidth, maxCellWidth)
 		self:set("iconSize", UDim2.new(widthScale, widthOffset, values.iconSize.Y.Scale, values.iconSize.Y.Offset))
 	end
+	iconLabel.TextSize = labelHeight
 
 	self._updatingIconSize = false
 	self.updated:Fire()

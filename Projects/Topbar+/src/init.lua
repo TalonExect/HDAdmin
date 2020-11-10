@@ -54,9 +54,9 @@ iconLabel.Name = "IconLabel"
 iconLabel.AnchorPoint = Vector2.new(0, 0.5)
 iconLabel.Position = UDim2.new(0.5, 0, 0.5, 0)
 iconLabel.Text = ""
---iconLabel.RichText = true
+iconLabel.RichText = true
 iconLabel.TextXAlignment = Enum.TextXAlignment.Left
-iconLabel.TextScaled = true
+iconLabel.TextScaled = false
 iconLabel.ZIndex = 3
 iconLabel.Parent = iconButton
 
