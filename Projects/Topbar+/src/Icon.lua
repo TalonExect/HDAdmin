@@ -15,7 +15,7 @@ local HDAdmin = replicatedStorage:WaitForChild("HDAdmin")
 local Signal = require(HDAdmin:WaitForChild("Signal"))
 local Maid = require(HDAdmin:WaitForChild("Maid"))
 local DEFAULT_THEME = require(script.Parent.Themes.Default)
-local THUMB_OFFSET = 65
+local THUMB_OFFSET = 55
 local Icon = {}
 Icon.__index = Icon
 
@@ -296,7 +296,7 @@ function Icon:set(settingName, value, toggleState, setAdditional)
 		end
 		for i, v in pairs(valuesToSet) do
 			settingDetail.values[v] = value
-			settingDetail.additionalValues["previous_"..v] = value
+			settingDetail.additionalValues["previous_"..v] = previousValue
 			if type(setAdditional) == "string" then
 				settingDetail.additionalValues[setAdditional.."_"..v] = value
 			end
@@ -304,10 +304,11 @@ function Icon:set(settingName, value, toggleState, setAdditional)
 	else
 		settingDetail.value = value
 		if type(setAdditional) == "string" then
-			settingDetail.additionalValues["previous"] = value
+			settingDetail.additionalValues["previous"] = previousValue
 			settingDetail.additionalValues[setAdditional] = value
 		end
 	end
+	print("set previous = ", previousValue)
 	-- Update appearances of associated instances
 	local currentToggleState = self:getToggleState()
 	if settingDetail.instanceNames and (currentToggleState == toggleState or toggleState == nil) then
@@ -614,6 +615,7 @@ function Icon:_updateIconSize()
 		iconLabel.AnchorPoint = Vector2.new(0, 0.5)
 		iconLabel.Position = UDim2.new(0, X_MARGIN, 0.5, 0)
 		iconLabel.Size = UDim2.new(1, -X_MARGIN*2, values.iconLabelYScale, 0)
+		iconLabel.TextXAlignment = Enum.TextXAlignment.Center
 		iconImage.Visible = false
 
 	elseif usingImage and usingText then
@@ -627,6 +629,7 @@ function Icon:_updateIconSize()
 		iconImage.Size = UDim2.new(0, imageWidth, values.iconImageYScale, 0)
 		iconLabel.Position = UDim2.new(0, labelGap, 0.5, 0)
 		iconLabel.Size = UDim2.new(1, -labelGap-X_MARGIN, values.iconLabelYScale, 0)
+		iconLabel.TextXAlignment = Enum.TextXAlignment.Left
 
 	end
 	if desiredCellWidth then
@@ -635,6 +638,23 @@ function Icon:_updateIconSize()
 		self:set("iconSize", UDim2.new(widthScale, widthOffset, values.iconSize.Y.Scale, values.iconSize.Y.Offset))
 	end
 	iconLabel.TextSize = labelHeight
+	noticeFrame.Position = UDim2.new(notifPosYScale, 0, 0, -2)
+
+	-- Caption
+	if self.captionText then
+		local CAPTION_X_MARGIN = 6
+		local CAPTION_CONTAINER_Y_SIZE_SCALE = 0.8
+		local CAPTION_LABEL_Y_SCALE = 0.58
+		local captionContainer = self.instances.captionContainer
+		local captionLabel = self.instances.captionLabel
+		local captionContainerHeight = cellHeight * CAPTION_CONTAINER_Y_SIZE_SCALE
+		local captionLabelHeight = captionContainerHeight * CAPTION_LABEL_Y_SCALE
+		local labelFont = self:get("captionFont")
+		local textWidth = textService:GetTextSize(self.captionText, captionLabelHeight, labelFont, Vector2.new(10000, captionLabelHeight)).X
+		captionLabel.TextSize = captionLabelHeight
+		captionLabel.Size = UDim2.new(0, textWidth, CAPTION_LABEL_Y_SCALE, 0)
+		captionContainer.Size = UDim2.new(0, textWidth + CAPTION_X_MARGIN*2, CAPTION_CONTAINER_Y_SIZE_SCALE, 0)
+	end
 
 	self._updatingIconSize = false
 	self.updated:Fire()
@@ -683,17 +703,37 @@ function Icon:_displayTip(visibility)
 	if newVisibility == true then
 		-- When the user moves their cursor/finger, update tip to match the position
 		local tipFrame = self.instances.tipFrame
+		local IconController = require(HDAdmin["Topbar+"].IconController)
 		local function updateTipPositon(x, y)
-			local newX, newY
+			local newX = x
+			local newY = y
 			local camera = workspace.CurrentCamera
-			if camera then
-				local viewportSize = camera.ViewportSize
-				newX = math.clamp(x, 5, viewportSize.X - tipFrame.Size.X.Offset-53)
-				newY = math.clamp(y, tipFrame.Size.Y.Offset+3, viewportSize.Y)
-			end
+			local viewportSize = camera and camera.ViewportSize
+			tipFrame.AnchorPoint = Vector2.new(0, 0)
 			if userInputService.TouchEnabled then
-				newX = newX - tipFrame.Size.X.Offset/2
-				newY = newY + THUMB_OFFSET + 40
+				tipFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+				local desiredX = newX - tipFrame.Size.X.Offset/2
+				local minX = 0
+				local maxX = viewportSize.X - tipFrame.Size.X.Offset
+				local desiredY = newY + THUMB_OFFSET + 60
+				local minY = tipFrame.AbsoluteSize.Y + THUMB_OFFSET + 64 + 3
+				local maxY = viewportSize.Y - tipFrame.Size.Y.Offset
+				newX = math.clamp(desiredX, minX, maxX)
+				newY = math.clamp(desiredY, minY, maxY)
+			elseif IconController.isControllerMode() then
+				local indicator = topbarPlusGui.Indicator
+				local newPos = indicator.AbsolutePosition
+				newX = newPos.X - tipFrame.Size.X.Offset/2 + indicator.AbsoluteSize.X/2
+				newY = newPos.Y + 90
+			else
+				local desiredX = newX
+				local minX = 0
+				local maxX = viewportSize.X - tipFrame.Size.X.Offset - 48
+				local desiredY = newY
+				local minY = tipFrame.Size.Y.Offset+3
+				local maxY = viewportSize.Y
+				newX = math.clamp(desiredX, minX, maxX)
+				newY = math.clamp(desiredY, minY, maxY)
 			end
 			local difX = tipFrame.AbsolutePosition.X - tipFrame.Position.X.Offset
 			local difY = tipFrame.AbsolutePosition.Y - tipFrame.Position.Y.Offset
@@ -717,11 +757,8 @@ end
 function Icon:setCaption(text)
 	assert(typeof(text) == "string" or text == nil, "Expected string, got "..typeof(text))
 	self.captionText = text
-	local sizeMultiplier = math.clamp(((self:get("iconSize").X.Offset or 32)/32),1,2)
-	local labelTextSize = 12*sizeMultiplier
-	local newTextSize = textService:GetTextSize(text, labelTextSize, Enum.Font.GothamSemibold, Vector2.new(1000,20-6))
-	self.instances.captionLabel.TextSize = newTextSize
-	self.instances.captionContainer.Size = UDim2.new(0, newTextSize.X+20*sizeMultiplier, 0, 25*sizeMultiplier)
+	self.instances.captionLabel.Text = text
+	self:_updateIconSize()
 	if self.hovering then
 		self:_displayCaption(true)
 	end
@@ -730,9 +767,11 @@ end
 function Icon:_displayCaption(visibility)
 	local newVisibility = visibility
 	if self.captionText == nil then
-		newVisibility = false
+		return
+	elseif userInputService.TouchEnabled and not self._draggingFinger then
+		return
 	end
-	local yOffset = 4
+	local yOffset = 5
 	if self._draggingFinger then
 		yOffset = yOffset + THUMB_OFFSET
 	end

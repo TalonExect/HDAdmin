@@ -45,15 +45,7 @@ local robloxStupidOffset = 32
 
 
 
--- PROPERTIES
-IconController.topbarEnabled = true
-IconController.forceController = false
-
--- METHODS
-local function isControllerMode()
-	return (userInputService.GamepadEnabled and not userInputService.MouseEnabled) or (IconController.forceController and userInputService.GamepadEnabled)
-end
-
+-- LOCAL METHODS
 local function isConsoleMode()
 	return guiService:IsTenFootInterface()
 end
@@ -79,6 +71,15 @@ local function updateIconSize(icon, controllerEnabled)
 	icon:set("iconSize", finalSize)
 end
 
+
+
+-- PROPERTIES
+IconController.topbarEnabled = true
+IconController.forceController = false
+
+
+
+-- CONSTRUCTORs
 function IconController.createIcon(name, order, imageId, labelText)
 	
 	-- Verify data
@@ -99,7 +100,8 @@ function IconController.createIcon(name, order, imageId, labelText)
 	local function getIncrement(otherIcon)
 		--local container = otherIcon.instances.iconContainer
 		--local sizeX = container.Size.X.Offset
-		local sizeX = otherIcon:get("iconSize").X.Offset
+		local iconSize = otherIcon:get("iconSize") or UDim2.new(0, 32, 0, 32)
+		local sizeX = iconSize.X.Offset
 		local increment = (sizeX + gap)
 		return increment
 	end
@@ -188,7 +190,7 @@ function IconController.createIcon(name, order, imageId, labelText)
 		end
 	end)
 	
-	if isControllerMode() then
+	if IconController.isControllerMode() then
 		updateIconSize(icon, true)
 		icon:setMid()
 	end
@@ -204,6 +206,13 @@ function IconController.createIconBySettings(dictionaryOfSettings)
 	return icon
 end
 
+
+
+-- OTHER METHODS
+function IconController.isControllerMode()
+	return userInputService.GamepadEnabled and (not userInputService.MouseEnabled or IconController.forceController)
+end
+
 function IconController.setTopbarEnabled(bool, forceBool)
 	if forceBool == nil then
 		forceBool = true
@@ -216,7 +225,7 @@ function IconController.setTopbarEnabled(bool, forceBool)
 	elseif forceBool and bool then
 		forceTopbarDisabled = false
 	end
-	if isControllerMode() then
+	if IconController.isControllerMode() then
 		if bool then
 			if topbar.TopbarContainer.Visible or forceTopbarDisabled or menuOpen or not checkTopbarEnabled() then return end
 			if forceBool then
@@ -349,10 +358,12 @@ function IconController.enableControllerMode(bool)
 		end
 		local isConsole = isConsoleMode()
 		for name, otherIcon in pairs(topbarIcons) do
-			updateIconSize(otherIcon, false)
 			local previousAlignment = otherIcon:get("alignment", nil, "previous")
+			--updateIconSize(otherIcon, false)
+			--error("HERE")
+			print("previousAlignment = ", previousAlignment)
 			if previousAlignment then
-				otherIcon:set("alignment", previousAlignment)
+				--otherIcon:set("alignment", previousAlignment)
 			end
 		end
 		topbar.TopbarContainer.Position = UDim2.new(0,0,0,0)
@@ -362,17 +373,21 @@ function IconController.enableControllerMode(bool)
 end
 
 function updateDevice()
-	if isControllerMode() then
+	print("Update device 1")
+	if IconController.isControllerMode() then
 		for _, icon in pairs(topbarIcons) do
 			icon._isControllerMode = true
 		end
 		IconController.enableControllerMode(true)
 		return
 	end
+	print("Update device 2")
 	for _,icon in pairs(topbarIcons) do
 		icon._isControllerMode = false
 	end
+	print("Update device 3")
 	IconController.enableControllerMode()
+	print("Update device 4")
 end
 
 function IconController.createFakeChat()
@@ -533,7 +548,7 @@ coroutine.wrap(function()
 			return "SetCoreGuiEnabled was called instead of SetCore"
 		end
 		previousTopbarEnabled = topbarEnabled
-		if isControllerMode() then
+		if IconController.isControllerMode() then
 			IconController.setTopbarEnabled(false,false)
 		else
 			IconController.setTopbarEnabled(topbarEnabled,false)
@@ -545,7 +560,7 @@ end)()
 
 guiService.MenuClosed:Connect(function()
 	menuOpen = false
-	if not isControllerMode() then
+	if not IconController.isControllerMode() then
 		IconController.setTopbarEnabled(IconController.topbarEnabled,false)
 	end
 end)
@@ -562,7 +577,7 @@ userInputService:GetPropertyChangedSignal("MouseEnabled"):Connect(updateDevice)
 userInputService.InputBegan:Connect(function(input,gpe)
 	local topbar = getTopbarPlusGui()
 	if not topbar then return end
-	if not isControllerMode() then return end
+	if not IconController.isControllerMode() then return end
 	if input.KeyCode == Enum.KeyCode.DPadDown then
 		if not guiService.SelectedObject and checkTopbarEnabled() then
 			IconController.setTopbarEnabled(true,false)
@@ -578,7 +593,7 @@ controllerOptionIcon:setRight()
 controllerOptionIcon.deselectWhenOtherIconSelected = false
 controllerOptionIcon:setEnabled(false)
 controllerOptionIcon:setTip("Controller mode")
-if not isControllerMode() and userInputService.GamepadEnabled then
+if not IconController.isControllerMode() and userInputService.GamepadEnabled then
 	controllerOptionIcon:setEnabled(true)
 end
 controllerOptionIcon.selected:Connect(function()
