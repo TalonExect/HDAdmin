@@ -7,7 +7,6 @@ local userInputService = game:GetService("UserInputService")
 local tweenService = game:GetService("TweenService")
 local players = game:GetService("Players")
 local IconController = {}
-local Icon = require(script.Parent.Icon)
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local HDAdmin = replicatedStorage:WaitForChild("HDAdmin")
 local Signal = require(HDAdmin:WaitForChild("Signal"))
@@ -50,13 +49,14 @@ local function getScaleMultiplier()
 end
 
 local function updateIconSize(icon, controllerEnabled)
-	local currentSize, previousSize = icon:get("iconSize", nil, "previous")
 	if not controllerEnabled then
 		return
 	end
 	local scaleMultiplier = getScaleMultiplier()
-	local finalSize = UDim2.new(0, currentSize.X.Offset*scaleMultiplier, 0, currentSize.Y.Offset*scaleMultiplier)
-	icon:set("iconSize", finalSize)
+	local currentSizeDeselected = icon:get("iconSize", "deselected")
+	local currentSizeSelected = icon:get("iconSize", "selected")
+	icon:set("iconSize", UDim2.new(0, currentSizeDeselected.X.Offset*scaleMultiplier, 0, currentSizeDeselected.Y.Offset*scaleMultiplier), "deselected")
+	icon:set("iconSize", UDim2.new(0, currentSizeSelected.X.Offset*scaleMultiplier, 0, currentSizeSelected.Y.Offset*scaleMultiplier), "selected")
 end
 
 
@@ -77,6 +77,7 @@ IconController.iconRemoved = Signal.new()
 -- CONNECTIONS
 local iconCreationCount = 0
 IconController.iconAdded:Connect(function(icon)
+	print("RECEIVED ICON: ", icon.name)
 	topbarIcons[icon] = true
 	if IconController.gameTheme then
 		icon:setTheme(IconController.gameTheme)
@@ -158,7 +159,7 @@ function IconController.updateTopbar(toggleTweenInfo)
 		local increment = (sizeX + gap)
 		return increment
 	end
-	local function updateIcon()
+	coroutine.wrap(function()
 		if topbarUpdating then -- This prevents the topbar updating and shifting icons more than it needs to
 			return false
 		end
@@ -232,8 +233,7 @@ function IconController.updateTopbar(toggleTweenInfo)
 			end
 		end
 		return true
-	end
-	coroutine.wrap(function() updateIcon() end)()
+	end)()
 end
 
 function IconController.setTopbarEnabled(bool, forceBool)
@@ -388,13 +388,16 @@ function IconController._enableControllerMode(bool)
 		end
 		local isConsole = isConsoleMode()
 		for otherIcon, _ in pairs(topbarIcons) do
-			local currentAlignment, previousAlignment = otherIcon:get("alignment", nil, "previous")
-			if previousAlignment then
-				otherIcon:set("alignment", previousAlignment)
-			end
-			local currentSize, previousSize = otherIcon:get("iconSize", nil, "previous")
-			if previousSize then
-				otherIcon:set("iconSize", previousSize)
+			local states = {"deselected", "selected"}
+			for _, toggleState in pairs(states) do
+				local _, previousAlignment = otherIcon:get("alignment", toggleState, "previous")
+				if previousAlignment then
+					otherIcon:set("alignment", previousAlignment, toggleState)
+				end
+				local currentSize, previousSize = otherIcon:get("iconSize", toggleState, "previous")
+				if previousSize then
+					otherIcon:set("iconSize", previousSize, toggleState)
+				end
 			end
 		end
 		topbar.TopbarContainer.Position = UDim2.new(0,0,0,0)
@@ -421,10 +424,12 @@ end
 
 -- BEHAVIOUR
 -- This is mostly console and fake chat support
-coroutine.wrap(function() -- This is required to prevent cicular infinite references
-	runService.Heartbeat:Wait()
-
-	--Controller
+--Controller support
+coroutine.wrap(function()
+	print("controller 1")
+	wait(6)
+	runService.Heartbeat:Wait() -- This is required to prevent cicular infinite references
+	print("controller 2")
 	IconController._updateDevice()
 	userInputService.GamepadConnected:Connect(IconController._updateDevice)
 	userInputService.GamepadDisconnected:Connect(IconController._updateDevice)
@@ -442,6 +447,7 @@ coroutine.wrap(function() -- This is required to prevent cicular infinite refere
 		end
 		input:Destroy()
 	end)
+	local Icon = require(script.Parent.Icon)
 	local controllerOptionIcon = Icon.new()
 		:setName("_TopbarControllerOption")
 		:setOrder(100)
@@ -470,8 +476,10 @@ coroutine.wrap(function() -- This is required to prevent cicular infinite refere
 		end
 		input:Destroy()
 	end)
+end)()
 
-	-- Mimic the enabling of the topbar when StarterGui:SetCore("TopbarEnabled", state) is called
+-- Mimic the enabling of the topbar when StarterGui:SetCore("TopbarEnabled", state) is called
+coroutine.wrap(function()
 	local ChatMain = require(players.LocalPlayer.PlayerScripts:WaitForChild("ChatScript").ChatMain)
 	ChatMain.CoreGuiEnabled:connect(function()
 		local topbarEnabled = checkTopbarEnabled()

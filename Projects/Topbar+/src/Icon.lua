@@ -14,6 +14,7 @@ local topbarPlusGui = playerGui:WaitForChild("Topbar+")
 local topbarContainer = topbarPlusGui.TopbarContainer
 local iconTemplate = topbarContainer["IconContainer"]
 local HDAdmin = replicatedStorage:WaitForChild("HDAdmin")
+local IconController = require(script.Parent.IconController)
 local Signal = require(HDAdmin:WaitForChild("Signal"))
 local Maid = require(HDAdmin:WaitForChild("Maid"))
 local DEFAULT_THEME = require(script.Parent.Themes.Default)
@@ -282,13 +283,11 @@ function Icon.new(order, imageId, labelText)
 	end
 
 	-- Finish
-	coroutine.wrap(function()
-		self._updatingIconSize = false
-		self._orderWasSet = (order and true) or nil
-		self:_updateIconSize()
-		local IconController = require(script.Parent.IconController)
-		IconController.iconAdded:Fire(self)
-	end)()
+	self._updatingIconSize = false
+	self._orderWasSet = (order and true) or nil
+	print("anddddddd update!! (1)")
+	self:_updateIconSize()
+	IconController.iconAdded:Fire(self)
 	
 	return self
 end
@@ -296,7 +295,6 @@ end
 -- This is the same as Icon.new(), except it adds additional behaviour for certain specified names designed to mimic core icons, such as 'Chat'
 function Icon.mimic(coreIconToMimic)
 	local iconName = coreIconToMimic.."Mimic"
-	local IconController = require(script.Parent.IconController)
 	local icon = IconController.getIcon(iconName)
 	if icon then
 		return icon
@@ -489,8 +487,6 @@ function Icon:_update(settingName, toggleState, applyInstantly)
 		["Text"] = true,
 		["EnumItem"] = true,
 		["ColorSequence"] = true,
-		--["Color3"] = true,
-		--["BrickColor"] = true,
 	}
 	local uniqueSetting = self._uniqueSettingsDictionary[settingName]
 	for _, instanceName in pairs(settingDetail.instanceNames) do
@@ -713,6 +709,7 @@ function Icon:_updateIconSize(_, toggleState)
 	-- This is responsible for handling the appearance and size of the icons label and image, in additon to its own size
 	if self._updatingIconSize then return false end
 	self._updatingIconSize = true
+	print("did i update mom? (1)")
 
 	local X_MARGIN = 8
 	local X_GAP = 8
@@ -853,7 +850,6 @@ function Icon:_displayTip(visibility)
 	if newVisibility == true then
 		-- When the user moves their cursor/finger, update tip to match the position
 		local tipFrame = self.instances.tipFrame
-		local IconController = require(HDAdmin["Topbar+"].IconController)
 		local function updateTipPositon(x, y)
 			local newX = x
 			local newY = y
@@ -949,7 +945,6 @@ end
 
 -- DESTROY/CLEANUP METHOD
 function Icon:destroy()
-	local IconController = require(script.Parent.IconController)
 	IconController.iconRemoved:Fire(self)
 	self:clearNotices()
 	self._maid:clean()
