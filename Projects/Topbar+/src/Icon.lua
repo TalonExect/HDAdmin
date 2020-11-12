@@ -285,7 +285,6 @@ function Icon.new(order, imageId, labelText)
 	-- Finish
 	self._updatingIconSize = false
 	self._orderWasSet = (order and true) or nil
-	print("anddddddd update!! (1)")
 	self:_updateIconSize()
 	IconController.iconAdded:Fire(self)
 	
@@ -709,8 +708,7 @@ function Icon:_updateIconSize(_, toggleState)
 	-- This is responsible for handling the appearance and size of the icons label and image, in additon to its own size
 	if self._updatingIconSize then return false end
 	self._updatingIconSize = true
-	print("did i update mom? (1)")
-
+	
 	local X_MARGIN = 8
 	local X_GAP = 8
 
@@ -866,7 +864,7 @@ function Icon:_displayTip(visibility)
 				local maxY = viewportSize.Y - tipFrame.Size.Y.Offset
 				newX = math.clamp(desiredX, minX, maxX)
 				newY = math.clamp(desiredY, minY, maxY)
-			elseif IconController._isControllerMode() then
+			elseif IconController.controllerModeEnabled then
 				local indicator = topbarPlusGui.Indicator
 				local newPos = indicator.AbsolutePosition
 				newX = newPos.X - tipFrame.Size.X.Offset/2 + indicator.AbsoluteSize.X/2
