@@ -6,7 +6,9 @@ local userInputService = game:GetService("UserInputService")
 local runService = game:GetService("RunService")
 local textService = game:GetService("TextService")
 local guiService = game:GetService("GuiService")
-local player = game:GetService("Players").LocalPlayer
+local starterGui = game:GetService("StarterGui")
+local players = game:GetService("Players")
+local player = players.LocalPlayer
 local playerGui = player.PlayerGui
 local topbarPlusGui = playerGui:WaitForChild("Topbar+")
 local topbarContainer = topbarPlusGui.TopbarContainer
@@ -21,22 +23,20 @@ Icon.__index = Icon
 
 
 
--- CONSTRUCTOR
-function Icon.new(name, order, imageId, labelText)
+-- CONSTRUCTORS
+function Icon.new(order, imageId, labelText)
 	local self = {}
 	setmetatable(self, Icon)
 
 	-- Maids (for autocleanup)
 	local maid = Maid.new()
 	self._maid = maid
-	self._fakeChatMaid = maid:give(Maid.new())
 	self._hoveringMaid = maid:give(Maid.new())
 
 	-- These are the GuiObjects that make up the icon
 	local instances = {}
 	self.instances = instances
 	local iconContainer = maid:give(iconTemplate:Clone())
-	iconContainer.Name = name
 	iconContainer.Visible = true
 	iconContainer.Parent = topbarContainer
 	instances["iconContainer"] = iconContainer
@@ -120,7 +120,7 @@ function Icon.new(name, order, imageId, labelText)
 		["caption"] = function(instance, propertyName, value)
 			local tweenInfo = self._settings.action.captionTweenInfo.value
 			local newValue = value
-			if not self.hovering then
+			if not self.hovering or self.captionText == nil then
 				newValue = 1
 			end
 			tweenService:Create(instance, tweenInfo, {[propertyName] = newValue}):Play()
@@ -128,7 +128,7 @@ function Icon.new(name, order, imageId, labelText)
 		["tip"] = function(instance, propertyName, value)
 			local tweenInfo = self._settings.action.tipTweenInfo.value
 			local newValue = value
-			if not self.hovering then
+			if not self.hovering or self.tipText == nil then
 				newValue = 1
 			end
 			tweenService:Create(instance, tweenInfo, {[propertyName] = newValue}):Play()
@@ -168,7 +168,7 @@ function Icon.new(name, order, imageId, labelText)
 	self._endNotices = maid:give(Signal.new())
 
 	-- Properties
-	self.name = name
+	self.name = ""
 	self.isSelected = false
 	self.enabled = true
 	self.hovering = false
@@ -185,6 +185,7 @@ function Icon.new(name, order, imageId, labelText)
 	self._updatingIconSize = true
 	
 	-- Apply start values
+	self:setName("UnnamedIcon")
 	self:setTheme(DEFAULT_THEME)
 	self:setOrder(order)
 	self:setImage(imageId)
@@ -266,10 +267,119 @@ function Icon.new(name, order, imageId, labelText)
 	end
 
 	-- Finish
-	self._updatingIconSize = false
-	self:_updateIconSize()
+	coroutine.wrap(function()
+		self._updatingIconSize = false
+		self._orderWasSet = (order and true) or nil
+		self:_updateIconSize()
+		local IconController = require(script.Parent.IconController)
+		IconController.iconAdded:Fire(self)
+	end)()
 	
 	return self
+end
+
+-- This is the same as Icon.new(), except it adds additional behaviour for certain specified names designed to mimic core icons, such as 'Chat'
+function Icon.mimic(coreIconToMimic)
+	local iconName = coreIconToMimic.."Mimic"
+	local IconController = require(script.Parent.IconController)
+	local icon = IconController.getIcon(iconName)
+	if icon then
+		return icon
+	end
+	icon = Icon.new()
+	icon:setName(iconName)
+
+	if coreIconToMimic == "Chat" then
+		-- Setup maid and cleanup actioon
+		local maid = icon._maid
+		icon._fakeChatMaid = maid:give(Maid.new())
+		maid.chatMimicCleanup = function()
+			starterGui:SetCoreGuiEnabled("Chat", icon.enabled)
+		end
+		-- Tap into chat module
+		local chatMainModule = players.LocalPlayer.PlayerScripts:WaitForChild("ChatScript").ChatMain
+		local ChatMain = require(chatMainModule)
+		local function displayChatBar(visibility)
+			icon.ignoreVisibilityStateChange = true
+			ChatMain.CoreGuiEnabled:fire(visibility)
+			ChatMain.IsCoreGuiEnabled = false
+			ChatMain:SetVisible(visibility)
+			icon.ignoreVisibilityStateChange = nil
+		end
+		local function setIconEnabled(visibility)
+			icon.ignoreVisibilityStateChange = true
+			ChatMain.CoreGuiEnabled:fire(visibility)
+			icon:setEnabled(visibility)
+			starterGui:SetCoreGuiEnabled("Chat", false)
+			icon:deselect()
+			icon.updated:Fire()
+			icon.ignoreVisibilityStateChange = nil
+		end
+		-- Open chat via Slash key
+		icon._fakeChatMaid:give(userInputService.InputEnded:connect(function(inputObject, gameProcessedEvent)
+			if gameProcessedEvent then
+				return "Another menu has priority"
+			elseif not(inputObject.KeyCode == Enum.KeyCode.Slash or inputObject.KeyCode == Enum.SpecialKey.ChatHotkey) then
+				return "No relavent key pressed"
+			elseif ChatMain.IsFocused() then
+				return "Chat bar already open"
+			elseif not icon.enabled then
+				return "Icon disabled"
+			end
+			ChatMain:FocusChatBar(true)
+			icon:select()
+		end))
+		-- ChatActive
+		icon._fakeChatMaid:give(ChatMain.VisibilityStateChanged:connect(function(visibility)
+			if not icon.ignoreVisibilityStateChange then
+				if visibility == true then
+					icon:select()
+				else
+					icon:deselect()
+				end
+			end
+		end))
+		-- Keep when other icons selected
+		icon.deselectWhenOtherIconSelected = false
+		-- Mimic chat notifications
+		icon._fakeChatMaid:give(ChatMain.MessagesChanged:connect(function()
+			if ChatMain:GetVisibility() == true then
+				return "ChatWindow was open"
+			end
+			icon:notify(icon.selected)
+		end))
+		-- Mimic visibility when StarterGui:SetCoreGuiEnabled(Enum.CoreGuiType.Chat, state) is called
+		coroutine.wrap(function()
+			runService.Heartbeat:Wait()
+			icon._fakeChatMaid:give(ChatMain.CoreGuiEnabled:connect(function(newState)
+				if icon.ignoreVisibilityStateChange then
+					return "ignoreVisibilityStateChange enabled"
+				end
+				local topbarEnabled = starterGui:GetCore("TopbarEnabled")
+				if topbarEnabled ~= IconController.previousTopbarEnabled then
+					return "SetCore was called instead of SetCoreGuiEnabled"
+				end
+				if not icon.enabled and userInputService:IsKeyDown(Enum.KeyCode.LeftShift) and userInputService:IsKeyDown(Enum.KeyCode.P) then
+					icon:setEnabled(true)
+				else
+					setIconEnabled(newState)
+				end
+			end))
+		end)()
+		icon:setOrder(-1)
+		icon:setImage("rbxasset://textures/ui/TopBar/chatOff.png", "deselected")
+		icon:setImage("rbxasset://textures/ui/TopBar/chatOn.png", "selected")
+		icon:setImageYScale(0.625)
+		icon.deselected:Connect(function()
+			displayChatBar(false)
+		end)
+		icon.selected:Connect(function()
+			displayChatBar(true)
+		end)
+		setIconEnabled(starterGui:GetCoreGuiEnabled("Chat"))
+
+	end
+	return icon
 end
 
 
@@ -278,12 +388,11 @@ end
 function Icon:set(settingName, value, toggleState, setAdditional)
 	local settingDetail = self._settingsDictionary[settingName]
 	assert(settingDetail ~= nil, ("setting '%s' does not exist"):format(settingName))
-	-- Check previous and new are not the same
-	local previousValue = self:get(settingName, toggleState)
-	if previousValue == value then
-		return "Value was already set"
-	end
 	-- Update the settings value
+	if type(toggleState) == "string" then
+		toggleState = toggleState:lower()
+	end
+	local previousValue = self:get(settingName, toggleState)
 	local settingType = settingDetail.type
 	if settingType == "toggleable" then
 		local valuesToSet = {}
@@ -296,33 +405,42 @@ function Icon:set(settingName, value, toggleState, setAdditional)
 		end
 		for i, v in pairs(valuesToSet) do
 			settingDetail.values[v] = value
-			settingDetail.additionalValues["previous_"..v] = previousValue
+			if setAdditional ~= "_ignorePrevious" then
+				settingDetail.additionalValues["previous_"..v] = previousValue
+			end
 			if type(setAdditional) == "string" then
-				settingDetail.additionalValues[setAdditional.."_"..v] = value
+				settingDetail.additionalValues[setAdditional.."_"..v] = previousValue
 			end
 		end
 	else
 		settingDetail.value = value
 		if type(setAdditional) == "string" then
-			settingDetail.additionalValues["previous"] = previousValue
-			settingDetail.additionalValues[setAdditional] = value
+			if setAdditional ~= "_ignorePrevious" then
+				settingDetail.additionalValues["previous"] = previousValue
+			end
+			settingDetail.additionalValues[setAdditional] = previousValue
 		end
 	end
-	print("set previous = ", previousValue)
+	-- Check previous and new are not the same
+	if previousValue == value then
+		return self, "Value was already set"
+	end
 	-- Update appearances of associated instances
 	local currentToggleState = self:getToggleState()
+	print("toggleState 2 = ", toggleState)
 	if settingDetail.instanceNames and (currentToggleState == toggleState or toggleState == nil) then
 		self:_update(settingName, currentToggleState, true)
 	end
 	-- Call any methods present
 	if settingDetail.callMethod then
-		settingDetail.callMethod(self, value)
+		settingDetail.callMethod(self, value, toggleState)
 	end
 	
 	-- Call any signals present
 	if settingDetail.callSignal then
 		settingDetail.callSignal:Fire()
 	end
+	return self
 end
 
 function Icon:get(settingName, toggleState, getAdditional)
@@ -403,12 +521,20 @@ function Icon:setTheme(theme)
 			end
 		end
 	end
+	return self
 end
 
 function Icon:setEnabled(bool)
 	self.enabled = bool
 	self.instances.iconContainer.Visible = bool
 	self.updated:Fire()
+	return self
+end
+
+function Icon:setName(string)
+	self.name = string
+	self.instances.iconContainer.Name = string
+	return self
 end
 
 function Icon:select()
@@ -422,6 +548,7 @@ function Icon:select()
 	end
 	self:_updateAll()
 	self.selected:Fire()
+	return self
 end
 
 function Icon:deselect()
@@ -435,6 +562,7 @@ function Icon:deselect()
 	end
 	self:_updateAll()
 	self.deselected:Fire()
+	return self
 end
 
 function Icon:notify(clearNoticeEvent)
@@ -469,10 +597,12 @@ function Icon:notify(clearNoticeEvent)
 			self.instances.noticeFrame.Visible = false
 		end
 	end)()
+	return self
 end
 
 function Icon:clearNotices()
 	self._endNotices:Fire()
+	return self
 end
 
 function Icon:disableStateOverlay(bool)
@@ -481,6 +611,7 @@ function Icon:disableStateOverlay(bool)
 	end
 	local stateOverlay = self.instances.iconOverlay
 	stateOverlay.Visible = not bool
+	return self
 end
 
 
@@ -489,54 +620,56 @@ end
 function Icon:setLabel(text, toggleState)
 	text = text or ""
 	self:set("iconText", text, toggleState)
+	return self
 end
 
 function Icon:setCornerRadius(scale, offset, toggleState)
 	local oldCornerRadius = self.instances.iconCorner.CornerRadius
 	local newCornerRadius = UDim.new(scale or oldCornerRadius.Scale, offset or oldCornerRadius.Offset)
 	self:set("iconCornerRadius", newCornerRadius, toggleState)
+	return self
 end
 
 function Icon:setImage(imageId, toggleState)
 	local textureId = (tonumber(imageId) and "http://www.roblox.com/asset/?id="..imageId) or imageId or ""
-	self:set("iconImage", textureId, toggleState)
+	return self:set("iconImage", textureId, toggleState)
 end
 
 function Icon:setOrder(order, toggleState)
 	local newOrder = tonumber(order) or 1
-	self:set("order", newOrder, toggleState)
+	return self:set("order", newOrder, toggleState)
 end
 
 function Icon:setLeft(toggleState)
-	self:set("alignment", "left", toggleState)
+	return self:set("alignment", "left", toggleState)
 end
 
 function Icon:setMid(toggleState)
-	self:set("alignment", "mid", toggleState)
+	return self:set("alignment", "mid", toggleState)
 end
 
 function Icon:setRight(toggleState)
-	self:set("alignment", "right", toggleState)
+	return self:set("alignment", "right", toggleState)
 end
 
 function Icon:setImageYScale(YScale, toggleState)
 	local newYScale = tonumber(YScale) or 0.63
-	self:set("iconImageYScale", newYScale, toggleState)
+	return self:set("iconImageYScale", newYScale, toggleState)
 end
 
 function Icon:setImageRatio(ratio, toggleState)
 	local newRatio = tonumber(ratio) or 1
-	self:set("iconImageRatio", newRatio, toggleState)
+	return self:set("iconImageRatio", newRatio, toggleState)
 end
 
 function Icon:setLabelYScale(YScale, toggleState)
 	local newYScale = tonumber(YScale) or 0.45
-	self:set("iconLabelYScale", newYScale, toggleState)
+	return self:set("iconLabelYScale", newYScale, toggleState)
 end
 	
 function Icon:setBaseZIndex(ZIndex, toggleState)
 	local newBaseZIndex = tonumber(ZIndex) or 1
-	self:set("baseZIndex", newBaseZIndex, toggleState)
+	return self:set("baseZIndex", newBaseZIndex, toggleState)
 end
 
 function Icon:_updateBaseZIndex(baseValue)
@@ -553,10 +686,10 @@ end
 function Icon:setSize(XOffset, YOffset, toggleState)
 	local newXOffset = tonumber(XOffset) or 32
 	local newYOffset = tonumber(YOffset) or newXOffset
-	self:set("iconSize", UDim2.new(0, newXOffset, 0, newYOffset), toggleState)
+	return self:set("iconSize", UDim2.new(0, newXOffset, 0, newYOffset), toggleState)
 end
 
-function Icon:_updateIconSize()
+function Icon:_updateIconSize(_, toggleState)
 	-- This is responsible for handling the appearance and size of the icons label and image, in additon to its own size
 	if self._updatingIconSize then return false end
 	self._updatingIconSize = true
@@ -596,6 +729,7 @@ function Icon:_updateIconSize()
 	local labelHeight = cellHeight * values.iconLabelYScale
 	local labelWidth = textService:GetTextSize(values.iconText, labelHeight, iconLabel.Font, Vector2.new(10000, labelHeight)).X
 	local imageWidth = cellHeight * values.iconImageYScale * values.iconImageRatio
+	print("labelWidth = ", labelWidth)
 
 	local usingImage = values.iconImage ~= ""
 	local usingText = values.iconText ~= ""
@@ -635,7 +769,7 @@ function Icon:_updateIconSize()
 	if desiredCellWidth then
 		local widthScale = (cellSizeXScale > 0 and cellSizeXScale) or 0
 		local widthOffset = (cellSizeXScale > 0 and 0) or math.clamp(desiredCellWidth, minCellWidth, maxCellWidth)
-		self:set("iconSize", UDim2.new(widthScale, widthOffset, values.iconSize.Y.Scale, values.iconSize.Y.Offset))
+		self:set("iconSize", UDim2.new(widthScale, widthOffset, values.iconSize.Y.Scale, values.iconSize.Y.Offset), toggleState, "_ignorePrevious")
 	end
 	iconLabel.TextSize = labelHeight
 	noticeFrame.Position = UDim2.new(notifPosYScale, 0, 0, -2)
@@ -669,6 +803,7 @@ function Icon:setToggleItem(guiObject)
 		guiObject = nil
 	end
 	self.toggleItem = guiObject
+	return self
 end
 
 function Icon:_setToggleItemVisible(bool)
@@ -691,6 +826,7 @@ function Icon:setTip(text)
 	if self.hovering then
 		self:_displayTip(true)
 	end
+	return self
 end
 
 function Icon:_displayTip(visibility)
@@ -720,7 +856,7 @@ function Icon:_displayTip(visibility)
 				local maxY = viewportSize.Y - tipFrame.Size.Y.Offset
 				newX = math.clamp(desiredX, minX, maxX)
 				newY = math.clamp(desiredY, minY, maxY)
-			elseif IconController.isControllerMode() then
+			elseif IconController._isControllerMode() then
 				local indicator = topbarPlusGui.Indicator
 				local newPos = indicator.AbsolutePosition
 				newX = newPos.X - tipFrame.Size.X.Offset/2 + indicator.AbsoluteSize.X/2
@@ -762,6 +898,7 @@ function Icon:setCaption(text)
 	if self.hovering then
 		self:_displayCaption(true)
 	end
+	return self
 end
 
 function Icon:_displayCaption(visibility)
@@ -794,20 +931,14 @@ function Icon:createDropdown(options)
 	return self.dropdown
 end
 
-function Icon:removeDropdown()
-	if self.dropdown then
-		self.dropdown:destroy()
-		self.dropdown = nil
-	end
-end
-
 
 
 -- DESTROY/CLEANUP METHOD
 function Icon:destroy()
+	local IconController = require(script.Parent.IconController)
+	IconController.iconRemoved:Fire(self)
 	self:clearNotices()
 	self._maid:clean()
-	self._fakeChatConnections:clean()
 end
 
 
