@@ -4,6 +4,7 @@ local guiService = game:GetService("GuiService")
 local hapticService = game:GetService("HapticService")
 local runService = game:GetService("RunService")
 local userInputService = game:GetService("UserInputService")
+local tweenService = game:GetService("TweenService")
 local players = game:GetService("Players")
 local IconController = {}
 local Icon = require(script.Parent.Icon)
@@ -81,7 +82,8 @@ IconController.iconAdded:Connect(function(icon)
 		icon:setTheme(IconController.gameTheme)
 	end
 	icon.updated:Connect(function()
-		IconController.updateTopbar()
+		local toggleTweenInfo = icon:get("toggleTweenInfo")
+		IconController.updateTopbar(toggleTweenInfo)
 	end)
 	-- When this icon is selected, deselect other icons if necessary
 	icon.selected:Connect(function()
@@ -146,7 +148,7 @@ function IconController.getIcons()
 end
 
 -- This is responsible for positioning the topbar icons
-function IconController.updateTopbar()
+function IconController.updateTopbar(toggleTweenInfo)
 	local gap = 12
 	local function getIncrement(otherIcon)
 		--local container = otherIcon.instances.iconContainer
@@ -220,7 +222,12 @@ function IconController.updateTopbar()
 			for i, otherIcon in pairs(records) do
 				local container = otherIcon.instances.iconContainer
 				local increment = getIncrement(otherIcon)
-				container.Position = UDim2.new(alignmentInfo.startScale, offsetX, 0, 4)
+				local newPositon = UDim2.new(alignmentInfo.startScale, offsetX, 0, 4)
+				if toggleTweenInfo then
+					tweenService:Create(container, toggleTweenInfo, {Position = newPositon}):Play()
+				else
+					container.Position = newPositon
+				end
 				offsetX = offsetX + increment
 			end
 		end

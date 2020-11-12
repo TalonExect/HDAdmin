@@ -91,6 +91,21 @@ function Icon.new(order, imageId, labelText)
 			["baseZIndex"] = {callMethod = self._updateBaseZIndex},
 			["order"] = {callSignal = self.updated},
 			["alignment"] = {callSignal = self.updated},
+			--
+			["iconImageVisible"] = {instanceNames = {"iconImage"}, propertyName = "Visible"},
+			["iconImageAnchorPoint"] = {instanceNames = {"iconImage"}, propertyName = "AnchorPoint"},
+			["iconImagePosition"] = {instanceNames = {"iconImage"}, propertyName = "Position"},
+			["iconImageSize"] = {instanceNames = {"iconImage"}, propertyName = "Size"},
+			["iconImageTextXAlignment"] = {instanceNames = {"iconImage"}, propertyName = "TextXAlignment"},
+			--
+			["iconLabelVisible"] = {instanceNames = {"iconLabel"}, propertyName = "Visible"},
+			["iconLabelAnchorPoint"] = {instanceNames = {"iconLabel"}, propertyName = "AnchorPoint"},
+			["iconLabelPosition"] = {instanceNames = {"iconLabel"}, propertyName = "Position"},
+			["iconLabelSize"] = {instanceNames = {"iconLabel"}, propertyName = "Size"},
+			["iconLabelTextXAlignment"] = {instanceNames = {"iconLabel"}, propertyName = "TextXAlignment"},
+			["iconLabelTextSize"] = {instanceNames = {"iconLabel"}, propertyName = "TextSize"},
+			--
+			["noticeFramePosition"] = {instanceNames = {"noticeFrame"}, propertyName = "Position"},
 		},
 		other = {
 			["captionBackgroundColor"] = {instanceNames = {"captionFrame"}, propertyName = "BackgroundColor3"},
@@ -427,7 +442,6 @@ function Icon:set(settingName, value, toggleState, setAdditional)
 	end
 	-- Update appearances of associated instances
 	local currentToggleState = self:getToggleState()
-	print("toggleState 2 = ", toggleState)
 	if settingDetail.instanceNames and (currentToggleState == toggleState or toggleState == nil) then
 		self:_update(settingName, currentToggleState, true)
 	end
@@ -466,6 +480,7 @@ function Icon:_update(settingName, toggleState, applyInstantly)
 	assert(settingDetail ~= nil, ("setting '%s' does not exist"):format(settingName))
 	toggleState = toggleState or self:getToggleState()
 	local value = settingDetail.value or settingDetail.values[toggleState]
+	if value == nil then return end
 	local tweenInfo = (applyInstantly and TweenInfo.new(0)) or self._settings.action.toggleTweenInfo.value
 	local propertyName = settingDetail.propertyName
 	local invalidPropertiesTypes = {
@@ -489,6 +504,11 @@ function Icon:_update(settingName, toggleState, applyInstantly)
 		else
 			tweenService:Create(instance, tweenInfo, {[propertyName] = value}):Play()
 		end
+		--
+		if settingName == "iconSize" and instance[propertyName] ~= value then
+			self.updated:Fire()
+		end
+		--
 	end
 end
 
@@ -698,18 +718,13 @@ function Icon:_updateIconSize(_, toggleState)
 	local X_GAP = 8
 
 	local values = {
-		iconImage = self:get("iconImage") or "",
-		iconText = self:get("iconText") or "",
-		iconSize = self:get("iconSize") or "_NIL",
-		iconImageYScale = self:get("iconImageYScale") or "_NIL",
-		iconImageRatio = self:get("iconImageRatio") or "_NIL",
-		iconLabelYScale = self:get("iconLabelYScale") or "_NIL",
+		iconImage = self:get("iconImage", toggleState),
+		iconText = self:get("iconText", toggleState),
+		iconSize = self:get("iconSize", toggleState),
+		iconImageYScale = self:get("iconImageYScale", toggleState),
+		iconImageRatio = self:get("iconImageRatio", toggleState),
+		iconLabelYScale = self:get("iconLabelYScale", toggleState),
 	}
-	for k, v in pairs(values) do
-		if v == "_NIL" then
-			return false
-		end
-	end 
 
 	local iconContainer = self.instances.iconContainer
 	local iconLabel = self.instances.iconLabel
@@ -729,50 +744,50 @@ function Icon:_updateIconSize(_, toggleState)
 	local labelHeight = cellHeight * values.iconLabelYScale
 	local labelWidth = textService:GetTextSize(values.iconText, labelHeight, iconLabel.Font, Vector2.new(10000, labelHeight)).X
 	local imageWidth = cellHeight * values.iconImageYScale * values.iconImageRatio
-	print("labelWidth = ", labelWidth)
-
+	
 	local usingImage = values.iconImage ~= ""
 	local usingText = values.iconText ~= ""
 	local notifPosYScale = 0.5
 	local desiredCellWidth
+	
 	if usingImage and not usingText then
-		iconImage.Visible = true
-		iconImage.AnchorPoint = Vector2.new(0.5, 0.5)
-		iconImage.Position = UDim2.new(0.5, 0, 0.5, 0)
-		iconImage.Size = UDim2.new(values.iconImageYScale*values.iconImageRatio, 0, values.iconImageYScale, 0)
-		iconLabel.Visible = false
 		notifPosYScale = 0.45
+		self:set("iconImageVisible", true, toggleState)
+		self:set("iconImageAnchorPoint", Vector2.new(0.5, 0.5), toggleState)
+		self:set("iconImagePosition", UDim2.new(0.5, 0, 0.5, 0), toggleState)
+		self:set("iconImageSize", UDim2.new(values.iconImageYScale*values.iconImageRatio, 0, values.iconImageYScale, 0), toggleState)
+		self:set("iconLabelVisible", false, toggleState)
 
 	elseif not usingImage and usingText then
 		desiredCellWidth = labelWidth+(X_MARGIN*2)
-		iconLabel.Visible = true
-		iconLabel.AnchorPoint = Vector2.new(0, 0.5)
-		iconLabel.Position = UDim2.new(0, X_MARGIN, 0.5, 0)
-		iconLabel.Size = UDim2.new(1, -X_MARGIN*2, values.iconLabelYScale, 0)
-		iconLabel.TextXAlignment = Enum.TextXAlignment.Center
-		iconImage.Visible = false
+		self:set("iconLabelVisible", true, toggleState)
+		self:set("iconLabelAnchorPoint", Vector2.new(0, 0.5), toggleState)
+		self:set("iconLabelPosition", UDim2.new(0, X_MARGIN, 0.5, 0), toggleState)
+		self:set("iconLabelSize", UDim2.new(1, -X_MARGIN*2, values.iconLabelYScale, 0), toggleState)
+		self:set("iconLabelTextXAlignment", Enum.TextXAlignment.Center, toggleState)
+		self:set("iconImageVisible", false, toggleState)
 
 	elseif usingImage and usingText then
 		local labelGap = X_MARGIN + imageWidth + X_GAP
 		desiredCellWidth = labelGap + labelWidth + X_MARGIN
-		iconImage.Visible = true
-		iconLabel.Visible = true
-		iconImage.AnchorPoint = Vector2.new(0, 0.5)
-		iconLabel.AnchorPoint = Vector2.new(0, 0.5)
-		iconImage.Position = UDim2.new(0, X_MARGIN, 0.5, 0)
-		iconImage.Size = UDim2.new(0, imageWidth, values.iconImageYScale, 0)
-		iconLabel.Position = UDim2.new(0, labelGap, 0.5, 0)
-		iconLabel.Size = UDim2.new(1, -labelGap-X_MARGIN, values.iconLabelYScale, 0)
-		iconLabel.TextXAlignment = Enum.TextXAlignment.Left
-
+		self:set("iconImageVisible", true, toggleState)
+		self:set("iconImageAnchorPoint", Vector2.new(0, 0.5), toggleState)
+		self:set("iconImagePosition", UDim2.new(0, X_MARGIN, 0.5, 0), toggleState)
+		self:set("iconImageSize", UDim2.new(0, imageWidth, values.iconImageYScale, 0), toggleState)
+		----
+		self:set("iconLabelVisible", true, toggleState)
+		self:set("iconLabelAnchorPoint", Vector2.new(0, 0.5), toggleState)
+		self:set("iconLabelPosition", UDim2.new(0, labelGap, 0.5, 0), toggleState)
+		self:set("iconLabelSize", UDim2.new(1, -labelGap-X_MARGIN, values.iconLabelYScale, 0), toggleState)
+		self:set("iconLabelTextXAlignment", Enum.TextXAlignment.Left, toggleState)
 	end
 	if desiredCellWidth then
 		local widthScale = (cellSizeXScale > 0 and cellSizeXScale) or 0
 		local widthOffset = (cellSizeXScale > 0 and 0) or math.clamp(desiredCellWidth, minCellWidth, maxCellWidth)
 		self:set("iconSize", UDim2.new(widthScale, widthOffset, values.iconSize.Y.Scale, values.iconSize.Y.Offset), toggleState, "_ignorePrevious")
 	end
-	iconLabel.TextSize = labelHeight
-	noticeFrame.Position = UDim2.new(notifPosYScale, 0, 0, -2)
+	self:set("iconLabelTextSize", labelHeight, toggleState)
+	self:set("noticeFramePosition", UDim2.new(notifPosYScale, 0, 0, -2), toggleState)
 
 	-- Caption
 	if self.captionText then
@@ -791,7 +806,6 @@ function Icon:_updateIconSize(_, toggleState)
 	end
 
 	self._updatingIconSize = false
-	self.updated:Fire()
 end
 
 
