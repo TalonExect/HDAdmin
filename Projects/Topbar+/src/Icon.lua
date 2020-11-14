@@ -11,6 +11,7 @@ local players = game:GetService("Players")
 local player = players.LocalPlayer
 local playerGui = player.PlayerGui
 local topbarPlusGui = playerGui:WaitForChild("Topbar+")
+local activeItems = topbarPlusGui.ActiveItems
 local topbarContainer = topbarPlusGui.TopbarContainer
 local iconTemplate = topbarContainer["IconContainer"]
 local HDAdmin = replicatedStorage:WaitForChild("HDAdmin")
@@ -57,16 +58,22 @@ function Icon.new(order, imageId, labelText)
 	instances["captionOverlineContainer"] = instances.captionContainer.CaptionOverlineContainer
 	instances["captionOverline"] = instances.captionOverlineContainer.CaptionOverline
 	instances["captionOverlineCorner"] = instances.captionOverline.CaptionOverlineCorner
+	instances["captionVisibilityBlocker"] = instances.captionFrame.CaptionVisibilityBlocker
+	instances["captionVisibilityCorner"] = instances.captionVisibilityBlocker.CaptionVisibilityCorner
 	instances["tipFrame"] = iconContainer.TipFrame
 	instances["tipLabel"] = instances.tipFrame.TipLabel
 	instances["tipCorner"] = instances.tipFrame.TipCorner
+	instances["dropdownContainer"] = iconContainer.DropdownContainer
+	instances["dropdownFrame"] = instances.dropdownContainer.DropdownFrame
+	instances["dropdownList"] = instances.dropdownFrame.DropdownList
 
 	-- These determine and describe how instances behave and appear
 	self._settings = {
 		action = {
-			["toggleTweenInfo"] = {},
-			["captionTweenInfo"] = {},
-			["tipTweenInfo"] = {},
+			["toggleTransitionInfo"] = {},
+			["captionFadeInfo"] = {},
+			["tipFadeInfo"] = {},
+			["dropdownSlideInfo"] = {},
 		},
 		toggleable = {
 			["iconBackgroundColor"] = {instanceNames = {"iconButton"}, propertyName = "BackgroundColor3"},
@@ -74,55 +81,67 @@ function Icon.new(order, imageId, labelText)
 			["iconCornerRadius"] = {instanceNames = {"iconCorner", "iconOverlayCorner"}, propertyName = "CornerRadius"},
 			["iconGradientColor"] = {instanceNames = {"iconGradient"}, propertyName = "Color"},
 			["iconGradientRotation"] = {instanceNames = {"iconGradient"}, propertyName = "Rotation"},
-			["iconImage"] = {callMethod = self._updateIconSize, instanceNames = {"iconImage"}, propertyName = "Image"},
+			["iconImage"] = {callMethods = {self._updateIconSize}, instanceNames = {"iconImage"}, propertyName = "Image"},
 			["iconImageColor"] = {instanceNames = {"iconImage"}, propertyName = "ImageColor3"},
 			["iconImageTransparency"] = {instanceNames = {"iconImage"}, propertyName = "ImageTransparency"},
 			["iconScale"] = {instanceNames = {"iconButton"}, propertyName = "Size"},
-			["iconSize"] = {callMethod = self._updateIconSize, instanceNames = {"iconContainer"}, propertyName = "Size"},
+			["iconSize"] = {callMethods = {self._updateIconSize}, instanceNames = {"iconContainer"}, propertyName = "Size"},
 			["iconOffset"] = {instanceNames = {"iconButton"}, propertyName = "Position"},
-			["iconText"] = {callMethod = self._updateIconSize, instanceNames = {"iconLabel"}, propertyName = "Text"},
+			["iconText"] = {callMethods = {self._updateIconSize}, instanceNames = {"iconLabel"}, propertyName = "Text"},
 			["iconTextColor"] = {instanceNames = {"iconLabel"}, propertyName = "TextColor3"},
 			["iconFont"] = {instanceNames = {"iconLabel"}, propertyName = "Font"},
-			["iconImageYScale"] = {callMethod = self._updateIconSize},
-			["iconImageRatio"] = {callMethod = self._updateIconSize},
-			["iconLabelYScale"] = {callMethod = self._updateIconSize},
+			["iconImageYScale"] = {callMethods = {self._updateIconSize}},
+			["iconImageRatio"] = {callMethods = {self._updateIconSize}},
+			["iconLabelYScale"] = {callMethods = {self._updateIconSize}},
 			["noticeCircleColor"] = {instanceNames = {"noticeFrame"}, propertyName = "ImageColor3"},
 			["noticeCircleImage"] = {instanceNames = {"noticeFrame"}, propertyName = "Image"},
 			["noticeTextColor"] = {instanceNames = {"noticeLabel"}, propertyName = "TextColor3"},
-			["baseZIndex"] = {callMethod = self._updateBaseZIndex},
-			["order"] = {callSignal = self.updated},
-			["alignment"] = {callSignal = self.updated},
-			--
+			["baseZIndex"] = {callMethods = {self._updateBaseZIndex}},
+			["order"] = {callSignals = {self.updated}, instanceNames = {"iconContainer"}, propertyName = "LayoutOrder"},
+			["alignment"] = {callSignals = {self.updated}, callMethods = {self._updateDropdown}},
 			["iconImageVisible"] = {instanceNames = {"iconImage"}, propertyName = "Visible"},
 			["iconImageAnchorPoint"] = {instanceNames = {"iconImage"}, propertyName = "AnchorPoint"},
 			["iconImagePosition"] = {instanceNames = {"iconImage"}, propertyName = "Position"},
 			["iconImageSize"] = {instanceNames = {"iconImage"}, propertyName = "Size"},
 			["iconImageTextXAlignment"] = {instanceNames = {"iconImage"}, propertyName = "TextXAlignment"},
-			--
 			["iconLabelVisible"] = {instanceNames = {"iconLabel"}, propertyName = "Visible"},
 			["iconLabelAnchorPoint"] = {instanceNames = {"iconLabel"}, propertyName = "AnchorPoint"},
 			["iconLabelPosition"] = {instanceNames = {"iconLabel"}, propertyName = "Position"},
 			["iconLabelSize"] = {instanceNames = {"iconLabel"}, propertyName = "Size"},
 			["iconLabelTextXAlignment"] = {instanceNames = {"iconLabel"}, propertyName = "TextXAlignment"},
 			["iconLabelTextSize"] = {instanceNames = {"iconLabel"}, propertyName = "TextSize"},
-			--
 			["noticeFramePosition"] = {instanceNames = {"noticeFrame"}, propertyName = "Position"},
 		},
 		other = {
 			["captionBackgroundColor"] = {instanceNames = {"captionFrame"}, propertyName = "BackgroundColor3"},
 			["captionBackgroundTransparency"] = {instanceNames = {"captionFrame"}, propertyName = "BackgroundTransparency", unique = "caption"},
+			["captionBlockerTransparency"] = {instanceNames = {"captionVisibilityBlocker"}, propertyName = "BackgroundTransparency", unique = "caption"},
 			["captionOverlineColor"] = {instanceNames = {"captionOverline"}, propertyName = "BackgroundColor3"},
 			["captionOverlineTransparency"] = {instanceNames = {"captionOverline"}, propertyName = "BackgroundTransparency", unique = "caption"},
 			["captionTextColor"] = {instanceNames = {"captionLabel"}, propertyName = "TextColor3"},
 			["captionTextTransparency"] = {instanceNames = {"captionLabel"}, propertyName = "TextTransparency", unique = "caption"},
 			["captionFont"] = {instanceNames = {"captionLabel"}, propertyName = "Font"},
-			["captionCornerRadius"] = {instanceNames = {"captionCorner", "captionOverlineCorner"}, propertyName = "CornerRadius"},
+			["captionCornerRadius"] = {instanceNames = {"captionCorner", "captionOverlineCorner", "captionVisibilityCorner"}, propertyName = "CornerRadius"},
 			["tipBackgroundColor"] = {instanceNames = {"tipFrame"}, propertyName = "BackgroundColor3"},
 			["tipBackgroundTransparency"] = {instanceNames = {"tipFrame"}, propertyName = "BackgroundTransparency", unique = "tip"},
 			["tipTextColor"] = {instanceNames = {"tipLabel"}, propertyName = "TextColor3"},
 			["tipTextTransparency"] = {instanceNames = {"tipLabel"}, propertyName = "TextTransparency", unique = "tip"},
 			["tipFont"] = {instanceNames = {"tipLabel"}, propertyName = "Font"},
-			["tipCornerRadius"] = {instanceNames = {"tipCorner", "captionOverlineCorner"}, propertyName = "CornerRadius"},
+			["tipCornerRadius"] = {instanceNames = {"tipCorner"}, propertyName = "CornerRadius"},
+			["dropdownSize"] = {instanceNames = {"dropdownContainer"}, propertyName = "Size", unique = "dropdown"},
+			["dropdownCanvasSize"] = {instanceNames = {"dropdownFrame"}, propertyName = "CanvasSize"},
+			["dropdownMaxIconsBeforeScroll"] = {callMethods = {self._updateDropdown}},
+			["dropdownMinWidth"] = {callMethods = {self._updateDropdown}},
+			["dropdownSquareCorners"] = {callMethods = {self._updateDropdown}},
+			["dropdownBindToggleToIcon"] = {},
+			["dropdownToggleOnLongPress"] = {},
+			["dropdownToggleOnRightClick"] = {},
+			["dropdownCloseOnTapAway"] = {},
+			["dropdownListPadding"] = {callMethods = {self._updateDropdown}, instanceNames = {"dropdownList"}, propertyName = "Padding"},
+			["dropdownAlignment"] = {callMethods = {self._updateDropdown}},
+			["dropdownScrollBarColor"] = {instanceNames = {"dropdownFrame"}, propertyName = "ScrollBarImageColor3"},
+			["dropdownScrollBarTransparency"] = {instanceNames = {"dropdownFrame"}, propertyName = "ScrollBarImageTransparency"},
+			["dropdownScrollBarThickness"] = {instanceNames = {"dropdownFrame"}, propertyName = "ScrollBarThickness"},
 		}
 	}
 	-- The setting values themselves will be set within _settings
@@ -133,22 +152,41 @@ function Icon.new(order, imageId, labelText)
 	self._uniqueSettings = {}
 	self._uniqueSettingsDictionary = {}
 	local uniqueBehaviours = {
-		["caption"] = function(instance, propertyName, value)
-			local tweenInfo = self._settings.action.captionTweenInfo.value
+		["caption"] = function(settingName, instance, propertyName, value)
+			local tweenInfo = self:get("captionFadeInfo")
 			local newValue = value
 			if not self.hovering or self.captionText == nil then
 				newValue = 1
 			end
 			tweenService:Create(instance, tweenInfo, {[propertyName] = newValue}):Play()
 		end,
-		["tip"] = function(instance, propertyName, value)
-			local tweenInfo = self._settings.action.tipTweenInfo.value
+		["tip"] = function(settingName, instance, propertyName, value)
+			local tweenInfo = self:get("tipFadeInfo")
 			local newValue = value
 			if not self.hovering or self.tipText == nil then
 				newValue = 1
 			end
 			tweenService:Create(instance, tweenInfo, {[propertyName] = newValue}):Play()
-		end
+		end,
+		["dropdown"] = function(settingName, instance, propertyName, value)
+			local tweenInfo = self:get("dropdownSlideInfo")
+			local canvasSize = self:get("dropdownCanvasSize")
+			local bindToggleToIcon = self:get("dropdownBindToggleToIcon")
+			local newValue = value
+			local isOpen = true
+			local isDeselected = (bindToggleToIcon and not self.isSelected) or not self.dropdownOpen
+			local isSpecialPressing = self._longPressing or self._rightClicking
+			if self._tappingAway or (isDeselected and not isSpecialPressing) or (isSpecialPressing and self.dropdownOpen) then 
+				local dropdownSize = self:get("dropdownSize")
+				local XOffset = (dropdownSize and dropdownSize.X.Offset/1) or 0
+				newValue = UDim2.new(0, XOffset, 0, 0)
+				canvasSize = UDim2.new(0, 0, 0, 0)
+				isOpen = false
+			end
+			self.dropdownOpen = isOpen
+			tweenService:Create(instance, tweenInfo, {[propertyName] = newValue}):Play()
+			tweenService:Create(self.instances.dropdownFrame, tweenInfo, {CanvasSize = canvasSize}):Play()
+		end,
 	}
 	for settingsType, settingsDetails in pairs(self._settings) do
 		for settingName, settingDetail in pairs(settingsDetails) do
@@ -184,14 +222,17 @@ function Icon.new(order, imageId, labelText)
 	self._endNotices = maid:give(Signal.new())
 
 	-- Properties
+	self.deselectWhenOtherIconSelected = true
 	self.name = ""
 	self.isSelected = false
+	self.presentOnTopbar = true
 	self.enabled = true
 	self.hovering = false
 	self.tipText = nil
 	self.caption = nil
 	self.notices = 0
-	self.deselectWhenOtherIconSelected = true
+	self.dropdownIcons = {}
+	self.menuIcons = {}
 	
 	-- Private Properties
 	self._draggingFinger = false
@@ -218,6 +259,13 @@ function Icon.new(order, imageId, labelText)
 		end
 		self:select()
 	end)
+	instances.iconButton.MouseButton2Click:Connect(function()
+		self._rightClicking = true
+		if self:get("dropdownToggleOnRightClick") == true then
+			self:_update("dropdownSize")
+		end
+		self._rightClicking = false
+	end)
 
 	-- Shows/hides the dark overlay when the icon is presssed/released
 	instances.iconButton.MouseButton1Down:Connect(function()
@@ -225,6 +273,23 @@ function Icon.new(order, imageId, labelText)
 	end)
 	instances.iconButton.MouseButton1Up:Connect(function()
 		self:_updateStateOverlay(0.9, Color3.new(1, 1, 1))
+	end)
+
+	-- Tap away
+	userInputService.InputBegan:Connect(function(input, touchingAnObject)
+		local validTapAwayInputs = {
+			[Enum.UserInputType.MouseButton1] = true,
+			[Enum.UserInputType.MouseButton2] = true,
+			[Enum.UserInputType.MouseButton3] = true,
+			[Enum.UserInputType.Touch] = true,
+		}
+		if self.dropdownOpen and not touchingAnObject and validTapAwayInputs[input.UserInputType] then
+			self._tappingAway = true
+			if self:get("dropdownCloseOnTapAway") == true then
+				self:_update("dropdownSize")
+			end
+			self._tappingAway = false
+		end
 	end)
 	
 	-- hoverStarted and hoverEnded triggers and actions
@@ -261,6 +326,26 @@ function Icon.new(order, imageId, labelText)
 		if self._draggingFinger then
 			self.hoverStarted:Fire()
 		end
+		-- Long press check
+		local heartbeatConnection
+		local releaseConnection
+		local longPressTime = 0.7
+		local endTick = tick() + longPressTime
+		heartbeatConnection = runService.Heartbeat:Connect(function()
+			if tick() >= endTick then
+				releaseConnection:Disconnect()
+				heartbeatConnection:Disconnect()
+				self._longPressing = true
+				if self:get("dropdownToggleOnLongPress") == true then
+					self:_update("dropdownSize")
+				end
+				self._longPressing = false
+			end
+		end)
+		releaseConnection = instances.iconButton.MouseButton1Up:Connect(function()
+			releaseConnection:Disconnect()
+			heartbeatConnection:Disconnect()
+		end)
 	end)
 	instances.iconButton.MouseButton1Up:Connect(function() -- TouchPad (ended)
 		if self.hovering then
@@ -443,13 +528,17 @@ function Icon:set(settingName, value, toggleState, setAdditional)
 		self:_update(settingName, currentToggleState, true)
 	end
 	-- Call any methods present
-	if settingDetail.callMethod then
-		settingDetail.callMethod(self, value, toggleState)
+	if settingDetail.callMethods then
+		for _, callMethod in pairs(settingDetail.callMethods) do
+			callMethod(self, value, toggleState)
+		end
 	end
 	
 	-- Call any signals present
-	if settingDetail.callSignal then
-		settingDetail.callSignal:Fire()
+	if settingDetail.callSignals then
+		for _, callSignal in pairs(settingDetail.callSignals) do
+			callSignal:Fire()
+		end
 	end
 	return self
 end
@@ -476,9 +565,9 @@ function Icon:_update(settingName, toggleState, applyInstantly)
 	local settingDetail = self._settingsDictionary[settingName]
 	assert(settingDetail ~= nil, ("setting '%s' does not exist"):format(settingName))
 	toggleState = toggleState or self:getToggleState()
-	local value = settingDetail.value or settingDetail.values[toggleState]
+	local value = settingDetail.value or (settingDetail.values and settingDetail.values[toggleState])
 	if value == nil then return end
-	local tweenInfo = (applyInstantly and TweenInfo.new(0)) or self._settings.action.toggleTweenInfo.value
+	local tweenInfo = (applyInstantly and TweenInfo.new(0)) or self._settings.action.toggleTransitionInfo.value
 	local propertyName = settingDetail.propertyName
 	local invalidPropertiesTypes = {
 		["string"] = true,
@@ -493,7 +582,7 @@ function Icon:_update(settingName, toggleState, applyInstantly)
 		local propertyType = typeof(instance[propertyName])
 		local cannotTweenProperty = invalidPropertiesTypes[propertyType]
 		if uniqueSetting then
-			uniqueSetting(instance, propertyName, value)
+			uniqueSetting(settingName, instance, propertyName, value)
 		elseif cannotTweenProperty then
 			instance[propertyName] = value
 		else
@@ -797,7 +886,7 @@ function Icon:_updateIconSize(_, toggleState)
 		local textWidth = textService:GetTextSize(self.captionText, captionLabelHeight, labelFont, Vector2.new(10000, captionLabelHeight)).X
 		captionLabel.TextSize = captionLabelHeight
 		captionLabel.Size = UDim2.new(0, textWidth, CAPTION_LABEL_Y_SCALE, 0)
-		captionContainer.Size = UDim2.new(0, textWidth + CAPTION_X_MARGIN*2, CAPTION_CONTAINER_Y_SIZE_SCALE, 0)
+		captionContainer.Size = UDim2.new(0, textWidth + CAPTION_X_MARGIN*2, 0, cellHeight*CAPTION_CONTAINER_Y_SIZE_SCALE)
 	end
 
 	self._updatingIconSize = false
@@ -831,6 +920,7 @@ function Icon:setTip(text)
 	local textSize = textService:GetTextSize(text, 12, Enum.Font.GothamSemibold, Vector2.new(1000, 20-6))
 	self.instances.tipLabel.Text = text
 	self.instances.tipFrame.Size = UDim2.new(0, textSize.X+6, 0, 20)
+	self.instances.tipFrame.Parent = (text and activeItems) or self.instances.iconContainer
 	self.tipText = text
 	if self.hovering then
 		self:_displayTip(true)
@@ -840,6 +930,7 @@ end
 
 function Icon:_displayTip(visibility)
 	local newVisibility = visibility
+	local tipFrame = self.instances.tipFrame
 	if self.tipText == nil then
 		return
 	elseif userInputService.TouchEnabled and not self._draggingFinger then
@@ -847,15 +938,13 @@ function Icon:_displayTip(visibility)
 	end
 	if newVisibility == true then
 		-- When the user moves their cursor/finger, update tip to match the position
-		local tipFrame = self.instances.tipFrame
 		local function updateTipPositon(x, y)
 			local newX = x
 			local newY = y
 			local camera = workspace.CurrentCamera
 			local viewportSize = camera and camera.ViewportSize
-			tipFrame.AnchorPoint = Vector2.new(0, 0)
 			if userInputService.TouchEnabled then
-				tipFrame.AnchorPoint = Vector2.new(0.5, 0.5)
+				--tipFrame.AnchorPoint = Vector2.new(0.5, 0.5)
 				local desiredX = newX - tipFrame.Size.X.Offset/2
 				local minX = 0
 				local maxX = viewportSize.X - tipFrame.Size.X.Offset
@@ -879,11 +968,12 @@ function Icon:_displayTip(visibility)
 				newX = math.clamp(desiredX, minX, maxX)
 				newY = math.clamp(desiredY, minY, maxY)
 			end
-			local difX = tipFrame.AbsolutePosition.X - tipFrame.Position.X.Offset
-			local difY = tipFrame.AbsolutePosition.Y - tipFrame.Position.Y.Offset
-			local globalX = newX - difX
-			local globalY = newY - difY
-			tipFrame.Position = UDim2.new(0, globalX, 0, globalY-55)
+			--local difX = tipFrame.AbsolutePosition.X - tipFrame.Position.X.Offset
+			--local difY = tipFrame.AbsolutePosition.Y - tipFrame.Position.Y.Offset
+			--local globalX = newX - difX
+			--local globalY = newY - difY
+			--tipFrame.Position = UDim2.new(0, globalX, 0, globalY-55)
+			tipFrame.Position = UDim2.new(0, newX, 0, newY-20)
 		end
 		local cursorLocation = userInputService:GetMouseLocation()
 		if cursorLocation then
@@ -902,6 +992,7 @@ function Icon:setCaption(text)
 	assert(typeof(text) == "string" or text == nil, "Expected string, got "..typeof(text))
 	self.captionText = text
 	self.instances.captionLabel.Text = text
+	self.instances.captionContainer.Parent = (text and activeItems) or self.instances.iconContainer
 	self:_updateIconSize()
 	if self.hovering then
 		self:_displayCaption(true)
@@ -916,27 +1007,138 @@ function Icon:_displayCaption(visibility)
 	elseif userInputService.TouchEnabled and not self._draggingFinger then
 		return
 	end
-	local yOffset = 5
+	local yOffset = 8
 	if self._draggingFinger then
 		yOffset = yOffset + THUMB_OFFSET
 	end
-	local oldPos = self.instances.captionContainer.Position
-	local newPos = UDim2.new(oldPos.X.Scale, oldPos.X.Offset, oldPos.Y.Scale, yOffset)
-	self.instances.captionContainer.Position = newPos
+	local iconContainer = self.instances.iconContainer
+	local captionContainer = self.instances.captionContainer
+	local newPos = UDim2.new(0, iconContainer.AbsolutePosition.X+iconContainer.AbsoluteSize.X/2-captionContainer.AbsoluteSize.X/2, 0, iconContainer.AbsolutePosition.Y+(iconContainer.AbsoluteSize.Y*2)+yOffset)
+	captionContainer.Position = newPos
 	-- Change transparency of relavent caption instances
 	for _, settingName in pairs(self._uniqueSettings.caption) do
 		self:_update(settingName)
 	end
 end
 
--- Dropdowns
-function Icon:createDropdown(options)
-	if self.dropdown then
-		self:removeDropdown()
+-- Leave a special feature such as a Dropdown or Menu
+function Icon:leave()
+	local settingsToReset = {"iconSize", "captionBackgroundTransparency", "iconCornerRadius"}
+	self.instances.iconContainer.Parent = topbarContainer
+	self.presentOnTopbar = true
+	local function scanFeature(t, prevReference)
+		for i, otherIcon in pairs(t) do
+			if otherIcon == self then
+				for _, settingName in pairs(settingsToReset) do
+					local states = {"deselected", "selected"}
+					for _, toggleState in pairs(states) do
+						local currentSetting, previousSetting = self:get(settingName, toggleState, prevReference)
+						if previousSetting then
+							self:set(settingName, previousSetting, toggleState)
+						end
+					end
+					table.remove(t, i)
+					break
+				end
+			end
+		end
 	end
-	local DropdownModule = require(script.Parent:WaitForChild("Dropdown"))
-	self.dropdown = self._maid:give(DropdownModule.new(self,options))
-	return self.dropdown
+	scanFeature(self.dropdownIcons, "beforeDropdown")
+	scanFeature(self.menuIcons, "beforeMenu")
+end
+
+-- Dropdowns
+function Icon:setDropdown(arrayOfIcons)
+	local dropdownFrame = self.instances.dropdownFrame
+	self.deselectWhenOtherIconSelected = false
+	
+	-- Reset any previous icons
+	for i, otherIcon in pairs(self.dropdownIcons) do
+		otherIcon:leave()
+	end
+
+	-- Apply new icons
+	for i, otherIcon in pairs(arrayOfIcons) do
+		local otherIconContainer = otherIcon.instances.iconContainer
+		local squareCorners = self:get("dropdownSquareCorners")
+		otherIcon.presentOnTopbar = false
+		otherIconContainer.Parent = dropdownFrame
+		otherIcon:set("iconSize", UDim2.new(1, 0, 0, otherIcon:get("iconSize", "deselected").Y.Offset), "deselected", "beforeDropdown")
+		otherIcon:set("iconSize", UDim2.new(1, 0, 0, otherIcon:get("iconSize", "selected").Y.Offset), "selected", "beforeDropdown")
+		--otherIcon:set("captionBackgroundTransparency", 0.1, nil, "beforeDropdown")
+		if squareCorners then
+			otherIcon:set("iconCornerRadius", UDim.new(0, 0), "deselected", "beforeDropdown")
+			otherIcon:set("iconCornerRadius", UDim.new(0, 0), "selected", "beforeDropdown")
+			otherIcon:set("captionBlockerTransparency", 0.4, nil, "beforeDropdown")
+		end
+		table.insert(self.dropdownIcons, otherIcon)
+	end
+
+	-- Update dropdown
+	self:_updateDropdown()
+end
+
+function Icon:_updateDropdown()
+	local values = {
+		maxIconsBeforeScroll = self:get("dropdownMaxIconsBeforeScroll") or "_NIL",
+		minWidth = self:get("dropdownMinWidth") or "_NIL",
+		padding = self:get("dropdownListPadding") or "_NIL",
+		dropdownAlignment = self:get("dropdownAlignment") or "_NIL",
+		iconAlignment = self:get("alignment") or "_NIL",
+	}
+	for k, v in pairs(values) do if v == "_NIL" then return end end
+
+	local YPadding = values.padding.Offset
+	local dropdownContainer = self.instances.dropdownContainer
+	local dropdownList = self.instances.dropdownList
+	local totalIcons = #self.dropdownIcons
+
+	local lastVisibleIconIndex = (totalIcons > values.maxIconsBeforeScroll and values.maxIconsBeforeScroll) or totalIcons
+	local newCanvasSizeY = -YPadding
+	local newFrameSizeY = 0
+	local newMinWidth = values.minWidth
+	for i = 1, totalIcons do
+		local otherIcon = self.dropdownIcons[i]
+		local _, otherIconSize = otherIcon:get("iconSize", nil, "beforeDropdown")
+		print("otherIconSize = ", otherIconSize)
+		local increment = otherIconSize.Y.Offset + YPadding
+		if i <= lastVisibleIconIndex then
+			newFrameSizeY = newFrameSizeY + increment
+		end
+		if i == totalIcons then
+			newFrameSizeY = newFrameSizeY + increment/4
+		end
+		newCanvasSizeY = newCanvasSizeY + increment
+		local otherIconWidth = otherIconSize.X.Offset + 4
+		if otherIconWidth > newMinWidth then
+			newMinWidth = otherIconWidth
+		end
+	end
+	self:set("dropdownCanvasSize", UDim2.new(0, 0, 0, newCanvasSizeY))
+	self:set("dropdownSize", UDim2.new(0, newMinWidth, 0, newFrameSizeY))
+
+	-- Set alignment while considering screen bounds
+	local dropdownAlignment = values.dropdownAlignment:lower()
+	local alignmentDetails = {
+		left = {
+			AnchorPoint = Vector2.new(0, 0),
+			PositionXScale = 0
+		},
+		mid = {
+			AnchorPoint = Vector2.new(0.5, 0),
+			PositionXScale = 0.5
+		},
+		right = {
+			AnchorPoint = Vector2.new(1, 0),
+			PositionXScale = 1
+		}
+	}
+	local alignmentDetail = alignmentDetails[dropdownAlignment]
+	if not alignmentDetail then
+		alignmentDetail = alignmentDetails[values.iconAlignment:lower()]
+	end
+	dropdownContainer.AnchorPoint = alignmentDetail.AnchorPoint
+	dropdownContainer.Position = UDim2.new(alignmentDetail.PositionXScale, 0, 1, YPadding+0)
 end
 
 

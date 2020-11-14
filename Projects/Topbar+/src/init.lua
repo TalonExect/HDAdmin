@@ -13,6 +13,10 @@ topbarPlusGui.IgnoreGuiInset = true
 topbarPlusGui.ResetOnSpawn = false
 topbarPlusGui.Name = "Topbar+"
 
+local activeItems = Instance.new("Folder")
+activeItems.Name = "ActiveItems"
+activeItems.Parent = topbarPlusGui
+
 local topbarContainer = Instance.new("Frame")
 topbarContainer.BackgroundTransparency = 1
 topbarContainer.Name = "TopbarContainer"
@@ -111,9 +115,8 @@ noticeLabel.Parent = noticeFrame
 -- Captions
 local captionContainer = Instance.new("Frame")
 captionContainer.Name = "CaptionContainer"
-captionContainer.Position = UDim2.new(0.5,0,1,4)
 captionContainer.BackgroundTransparency = 1
-captionContainer.AnchorPoint = Vector2.new(0.5,0)
+captionContainer.AnchorPoint = Vector2.new(0, 0)
 captionContainer.ClipsDescendants = true
 captionContainer.ZIndex = 30
 captionContainer.Visible = true
@@ -164,12 +167,22 @@ local captionOverlineCorner = captionCorner:Clone()
 captionOverlineCorner.Name = "CaptionOverlineCorner"
 captionOverlineCorner.Parent = captionOverline
 
+local captionVisibilityBlocker = captionFrame:Clone()
+captionVisibilityBlocker.Name = "CaptionVisibilityBlocker"
+captionVisibilityBlocker.BackgroundTransparency = 1
+captionVisibilityBlocker.BackgroundColor3 = Color3.fromRGB(50, 50, 50)
+captionVisibilityBlocker.ZIndex -= 1
+captionVisibilityBlocker.Parent = captionFrame
+
+local captionVisibilityCorner = captionVisibilityBlocker.CaptionCorner
+captionVisibilityCorner.Name = "CaptionVisibilityCorner"
+
 
 -- Tips
 local tipFrame = Instance.new("Frame")
 tipFrame.Name = "TipFrame"
 tipFrame.BorderSizePixel = 0
-tipFrame.AnchorPoint = Vector2.new(0.5,0.5)
+tipFrame.AnchorPoint = Vector2.new(0, 0)
 tipFrame.Position = UDim2.new(0,50,0,50)
 tipFrame.Size = UDim2.new(1,0,1,-8)
 tipFrame.ZIndex = 40
@@ -192,54 +205,39 @@ tipLabel.Parent = tipFrame
 
 
 -- Dropdowns
-local dropdown = Instance.new("Frame")
-dropdown.Name = "Dropdown"
-dropdown.BackgroundTransparency = 1
-dropdown.Visible = false
-dropdown.ClipsDescendants = true
-dropdown.Parent = topbarPlusGui
+local dropdownContainer = Instance.new("Frame")
+dropdownContainer.Name = "DropdownContainer"
+dropdownContainer.BackgroundTransparency = 1
+dropdownContainer.BorderSizePixel = 0
+dropdownContainer.AnchorPoint = Vector2.new(0.5, 0)
+dropdownContainer.ZIndex = -2
+dropdownContainer.ClipsDescendants = true
+dropdownContainer.Visible = true
+dropdownContainer.Parent = iconContainer
 
-local background = Instance.new("Frame")
-background.Name = "Background"
-background.BackgroundColor3 = Color3.fromRGB(31, 33, 35)
-background.BackgroundTransparency = 0.3
-background.BorderSizePixel = 0
-background.ZIndex = 10
-background.AnchorPoint = Vector2.new(0.5,0.5)
-background.Position = UDim2.new(0.5,0,0.5,0)
-background.Size = UDim2.new(1,0,1,-8)
-background.Parent = dropdown
+local dropdownFrame = Instance.new("ScrollingFrame")
+dropdownFrame.Name = "DropdownFrame"
+dropdownFrame.BackgroundTransparency = 1
+dropdownFrame.BorderSizePixel = 0
+dropdownFrame.AnchorPoint = Vector2.new(0.5, 0)
+dropdownFrame.Position = UDim2.new(0.5, 0, 0, 0)
+dropdownFrame.Size = UDim2.new(1, 0, 1, 0)
+dropdownFrame.ZIndex = -1
+dropdownFrame.ClipsDescendants = false
+dropdownFrame.Visible = true
+dropdownFrame.TopImage = dropdownFrame.MidImage
+dropdownFrame.BottomImage = dropdownFrame.MidImage
+dropdownFrame.VerticalScrollBarInset = Enum.ScrollBarInset.Always
+dropdownFrame.Parent = dropdownContainer
 
-local topRect = Instance.new("ImageLabel")
-topRect.Name = "TopRoundedRect"
-topRect.BackgroundTransparency = 1
-topRect.ImageColor3 = Color3.fromRGB(31, 33, 35)
-topRect.ImageTransparency = 0.3
-topRect.Image = "rbxasset://textures/ui/BottomRoundedRect8px.png"
-topRect.ScaleType = Enum.ScaleType.Slice
-topRect.SliceCenter = Rect.new(8,8,24,16)
-topRect.SliceScale = 0.5
-topRect.Size = UDim2.new(1,0,0,4)
-topRect.AnchorPoint = Vector2.new(0,1)
-topRect.Position = UDim2.new(0,0,0,0)
-topRect.Parent = background
+local dropdownList = Instance.new("UIListLayout")
+dropdownList.Name = "DropdownList"
+dropdownList.FillDirection = Enum.FillDirection.Vertical
+dropdownList.SortOrder = Enum.SortOrder.LayoutOrder
+dropdownList.Parent = dropdownFrame
 
-local bottomRect = topRect:Clone()
-bottomRect.Name = "BottomRoundedRect"
-bottomRect.Image = "rbxasset://textures/ui/TopRoundedRect8px.png"
-bottomRect.AnchorPoint = Vector2.new(0,0)--topRect
-bottomRect.Position = UDim2.new(0,0,1,0)--topRect
-bottomRect.Parent = background
 
-local uiSize = Instance.new("UISizeConstraint")
-uiSize.Name = "_UISizeConstraint"
-uiSize.MinSize = Vector2.new(150,0)
-uiSize.Parent = dropdown
-
-local tempFolder = Instance.new("Folder")
-tempFolder.Name = "Temp"
-tempFolder.Parent = script:WaitForChild("Dropdown")
-
+-- Other
 local clickSound = Instance.new("Sound")
 clickSound.Name = "ClickSound"
 clickSound.SoundId = "rbxassetid://5273899897"

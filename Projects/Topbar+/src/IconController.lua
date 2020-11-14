@@ -61,8 +61,8 @@ IconController.iconAdded:Connect(function(icon)
 		icon:setTheme(IconController.gameTheme)
 	end
 	icon.updated:Connect(function()
-		local toggleTweenInfo = icon:get("toggleTweenInfo")
-		IconController.updateTopbar(toggleTweenInfo)
+		local toggleTransitionInfo = icon:get("toggleTransitionInfo")
+		IconController.updateTopbar(toggleTransitionInfo)
 	end)
 	-- When this icon is selected, deselect other icons if necessary
 	icon.selected:Connect(function()
@@ -126,7 +126,7 @@ function IconController.getIcons()
 end
 
 -- This is responsible for positioning the topbar icons
-function IconController.updateTopbar(toggleTweenInfo)
+function IconController.updateTopbar(toggleTransitionInfo)
 	local gap = 12
 	local function getIncrement(otherIcon)
 		--local container = otherIcon.instances.iconContainer
@@ -178,7 +178,7 @@ function IconController.updateTopbar(toggleTweenInfo)
 			},
 		}
 		for otherIcon, _ in pairs(topbarIcons) do
-			if otherIcon.enabled == true then
+			if otherIcon.enabled == true and otherIcon.presentOnTopbar then
 				table.insert(alignmentDetails[otherIcon:get("alignment")].records, otherIcon)
 			end
 		end
@@ -201,8 +201,8 @@ function IconController.updateTopbar(toggleTweenInfo)
 				local container = otherIcon.instances.iconContainer
 				local increment = getIncrement(otherIcon)
 				local newPositon = UDim2.new(alignmentInfo.startScale, offsetX, 0, 4)
-				if toggleTweenInfo then
-					tweenService:Create(container, toggleTweenInfo, {Position = newPositon}):Play()
+				if toggleTransitionInfo then
+					tweenService:Create(container, toggleTransitionInfo, {Position = newPositon}):Play()
 				else
 					container.Position = newPositon
 				end

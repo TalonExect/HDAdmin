@@ -7,11 +7,12 @@
 
 return {
     
-    -- Settings which dsescribe how an item behaves or transitions between states
+    -- Settings which describe how an item behaves or transitions between states
     action =  {
-        toggleTweenInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-        captionTweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
-        tipTweenInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        toggleTransitionInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        captionFadeInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        tipFadeInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        dropdownSlideInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
     },
 
     -- Settings which describe how an item appears when 'deselected' and 'selected'
@@ -54,6 +55,7 @@ return {
 
     -- Settings where toggleState doesn't matter (they have a singular state)
     other = {
+        -- Caption settings
         captionBackgroundColor = Color3.fromRGB(0, 0, 0),
         captionBackgroundTransparency = 0.5,
         captionTextColor = Color3.fromRGB(255, 255, 255),
@@ -62,12 +64,26 @@ return {
         captionOverlineColor = Color3.fromRGB(0, 170, 255),
         captionOverlineTransparency = 0,
         captionCornerRadius = UDim.new(0.25, 0),
+        -- Tip settings
         tipBackgroundColor = Color3.fromRGB(255, 255, 255),
         tipBackgroundTransparency = 0.1,
         tipTextColor = Color3.fromRGB(27, 42, 53),
         tipTextTransparency = 0,
         tipFont = Enum.Font.GothamSemibold,
         tipCornerRadius = UDim.new(0.175, 0),
+        -- Dropdown settings
+        dropdownAlignment = "auto", -- 'left', 'mid', 'right' or 'auto' (auto is where the dropdown alignment matches the icons alignment)
+        dropdownMaxIconsBeforeScroll = 4,
+        dropdownMinWidth = 32,
+        dropdownSquareCorners = true,
+        dropdownBindToggleToIcon = true,
+        dropdownToggleOnLongPress = false,
+        dropdownToggleOnRightClick = false,
+        dropdownCloseOnTapAway = false,
+        dropdownListPadding = UDim.new(0, 2),
+        dropdownScrollBarColor = Color3.fromRGB(25, 25, 25),
+        dropdownScrollBarTransparency = 0.2,
+        dropdownScrollBarThickness = 4,
     },
     
 }
