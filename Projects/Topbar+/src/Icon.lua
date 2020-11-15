@@ -3,6 +3,7 @@ local tweenService = game:GetService("TweenService")
 local replicatedStorage = game:GetService("ReplicatedStorage")
 local debris = game:GetService("Debris")
 local userInputService = game:GetService("UserInputService")
+local httpService = game:GetService("HttpService") -- This is to generate GUIDs
 local runService = game:GetService("RunService")
 local textService = game:GetService("TextService")
 local guiService = game:GetService("GuiService")
@@ -96,6 +97,8 @@ function Icon.new(order, imageId, labelText)
 			["noticeCircleColor"] = {instanceNames = {"noticeFrame"}, propertyName = "ImageColor3"},
 			["noticeCircleImage"] = {instanceNames = {"noticeFrame"}, propertyName = "Image"},
 			["noticeTextColor"] = {instanceNames = {"noticeLabel"}, propertyName = "TextColor3"},
+			["noticeImageTransparency"] = {instanceNames = {"noticeFrame"}, propertyName = "ImageTransparency"},
+			["noticeTextTransparency"] = {instanceNames = {"noticeLabel"}, propertyName = "TextTransparency"},
 			["baseZIndex"] = {callMethods = {self._updateBaseZIndex}},
 			["order"] = {callSignals = {self.updated}, instanceNames = {"iconContainer"}, propertyName = "LayoutOrder"},
 			["alignment"] = {callSignals = {self.updated}, callMethods = {self._updateDropdown}},
@@ -137,6 +140,7 @@ function Icon.new(order, imageId, labelText)
 			["dropdownToggleOnLongPress"] = {},
 			["dropdownToggleOnRightClick"] = {},
 			["dropdownCloseOnTapAway"] = {},
+			["dropdownHidePlayerlistOnOverlap"] = {},
 			["dropdownListPadding"] = {callMethods = {self._updateDropdown}, instanceNames = {"dropdownList"}, propertyName = "Padding"},
 			["dropdownAlignment"] = {callMethods = {self._updateDropdown}},
 			["dropdownScrollBarColor"] = {instanceNames = {"dropdownFrame"}, propertyName = "ScrollBarImageColor3"},
@@ -172,9 +176,13 @@ function Icon.new(order, imageId, labelText)
 			local tweenInfo = self:get("dropdownSlideInfo")
 			local canvasSize = self:get("dropdownCanvasSize")
 			local bindToggleToIcon = self:get("dropdownBindToggleToIcon")
+			local hidePlayerlist = self:get("dropdownHidePlayerlistOnOverlap") == true and self:get("alignment") == "right"
 			local newValue = value
 			local isOpen = true
-			local isDeselected = (bindToggleToIcon and not self.isSelected) or not self.dropdownOpen
+			local isDeselected = not self.isSelected
+			if bindToggleToIcon == false then
+				isDeselected = not self.dropdownOpen
+			end
 			local isSpecialPressing = self._longPressing or self._rightClicking
 			if self._tappingAway or (isDeselected and not isSpecialPressing) or (isSpecialPressing and self.dropdownOpen) then 
 				local dropdownSize = self:get("dropdownSize")
@@ -184,6 +192,20 @@ function Icon.new(order, imageId, labelText)
 				isOpen = false
 			end
 			self.dropdownOpen = isOpen
+			if #self.dropdownIcons > 0 and isOpen and hidePlayerlist then
+				if starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.PlayerList) then
+					starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
+				end
+				IconController._bringBackPlayerlist = (IconController._bringBackPlayerlist and IconController._bringBackPlayerlist + 1) or 1
+				self._bringBackPlayerlist = true
+			elseif self._bringBackPlayerlist and not isOpen and IconController._bringBackPlayerlist then
+				IconController._bringBackPlayerlist -= 1
+				if IconController._bringBackPlayerlist <= 0 then
+					IconController._bringBackPlayerlist = nil
+					starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, true)
+				end
+				self._bringBackPlayerlist = nil
+			end
 			tweenService:Create(instance, tweenInfo, {[propertyName] = newValue}):Play()
 			tweenService:Create(self.instances.dropdownFrame, tweenInfo, {CanvasSize = canvasSize}):Play()
 		end,
@@ -230,7 +252,8 @@ function Icon.new(order, imageId, labelText)
 	self.hovering = false
 	self.tipText = nil
 	self.caption = nil
-	self.notices = 0
+	self.totalNotices = 0
+	self.notices = {}
 	self.dropdownIcons = {}
 	self.menuIcons = {}
 	
@@ -644,11 +667,8 @@ end
 function Icon:select()
 	self.isSelected = true
 	self:_setToggleItemVisible(true)
-	if self._totalSubIcons > 0 then
-		self.instances.noticeFrame.Visible = false
-	end
-	for subIcon, _ in pairs(self._subIcons) do
-		subIcon:setEnabled(true)
+	if #self.dropdownIcons > 0 or #self.menuIcons > 0 then
+		self:_displayNotice(false)
 	end
 	self:_updateAll()
 	self.selected:Fire()
@@ -658,28 +678,23 @@ end
 function Icon:deselect()
 	self.isSelected = false
 	self:_setToggleItemVisible(false)
-	if self._totalSubIcons > 0 and self.notices > 0 then
-		self.instances.noticeFrame.Visible = true
-	end
-	for subIcon, _ in pairs(self._subIcons) do
-		subIcon:setEnabled(false)
+	if (#self.dropdownIcons > 0 or #self.menuIcons > 0) and self.totalNotices > 0 then
+		self:_displayNotice(true)
 	end
 	self:_updateAll()
 	self.deselected:Fire()
 	return self
 end
 
-function Icon:notify(clearNoticeEvent)
+function Icon:notify(clearNoticeEvent, noticeId)
 	coroutine.wrap(function()
 		if not clearNoticeEvent then
 			clearNoticeEvent = self.deselected
 		end
-		for parentIcon, _ in pairs(self._parentIcons) do
-			parentIcon:notify(clearNoticeEvent)
+		if self._parentIcon then
+			self._parentIcon:notify(clearNoticeEvent)
 		end
-		self.notices = self.notices + 1
-		self.instances.noticeLabel.Text = (self.notices < 100 and self.notices) or "99+"
-		self.instances.noticeFrame.Visible = true
+		self:_displayNotice(true)
 		
 		local notifComplete = Signal.new()
 		local endEvent = self._endNotices:Connect(function()
@@ -689,19 +704,34 @@ function Icon:notify(clearNoticeEvent)
 			notifComplete:Fire()
 		end)
 		
+		noticeId = noticeId or httpService:GenerateGUID(true)
+		self.notices[noticeId] = {
+			completeSignal = notifComplete,
+			clearNoticeEvent = clearNoticeEvent,
+		}
+		self.totalNotices = self.totalNotices + 1
+		self.instances.noticeLabel.Text = (self.totalNotices < 100 and self.totalNotices) or "99+"
+
 		notifComplete:Wait()
 		
 		endEvent:Disconnect()
 		customEvent:Disconnect()
 		notifComplete:Disconnect()
 		
-		self.notices = self.notices - 1
-		self.instances.noticeLabel.Text = self.notices
-		if self.notices < 1 then
-			self.instances.noticeFrame.Visible = false
+		self.totalNotices = self.totalNotices - 1
+		self.instances.noticeLabel.Text = self.totalNotices
+		self.notices[noticeId] = nil
+		if self.totalNotices < 1 then
+			self:_displayNotice(false)
 		end
 	end)()
 	return self
+end
+
+function Icon:_displayNotice(bool)
+	local value = (bool and 0) or 1
+	self:set("noticeImageTransparency", value)
+	self:set("noticeTextTransparency", value)
 end
 
 function Icon:clearNotices()
@@ -798,7 +828,7 @@ function Icon:_updateIconSize(_, toggleState)
 	if self._updatingIconSize then return false end
 	self._updatingIconSize = true
 	
-	local X_MARGIN = 8
+	local X_MARGIN = 12
 	local X_GAP = 8
 
 	local values = {
@@ -1021,12 +1051,22 @@ function Icon:_displayCaption(visibility)
 	end
 end
 
--- Leave a special feature such as a Dropdown or Menu
+-- Join or leave a special feature such as a Dropdown or Menu
+function Icon:_join(parentIcon, parentFrame)
+	self.presentOnTopbar = false
+	self._parentIcon = parentIcon
+	self.instances.iconContainer.Parent = parentFrame
+	for noticeId, noticeDetail in pairs(self.notices) do
+		parentIcon:notify(noticeDetail.clearNoticeEvent, noticeId)
+	end
+end
+
 function Icon:leave()
-	local settingsToReset = {"iconSize", "captionBackgroundTransparency", "iconCornerRadius"}
+	local settingsToReset = {"iconSize", "captionBlockerTransparency", "iconCornerRadius"}
+	local parentIcon = self._parentIcon
 	self.instances.iconContainer.Parent = topbarContainer
 	self.presentOnTopbar = true
-	local function scanFeature(t, prevReference)
+	local function scanFeature(t, prevReference, updateMethod)
 		for i, otherIcon in pairs(t) do
 			if otherIcon == self then
 				for _, settingName in pairs(settingsToReset) do
@@ -1037,14 +1077,27 @@ function Icon:leave()
 							self:set(settingName, previousSetting, toggleState)
 						end
 					end
-					table.remove(t, i)
-					break
 				end
+				table.remove(t, i)
+				updateMethod(parentIcon)
+				if #t == 0 then
+					self._parentIcon.deselectWhenOtherIconSelected = true
+				end
+				break
 			end
 		end
 	end
-	scanFeature(self.dropdownIcons, "beforeDropdown")
-	scanFeature(self.menuIcons, "beforeMenu")
+	scanFeature(parentIcon.dropdownIcons, "beforeDropdown", parentIcon._updateDropdown)
+	scanFeature(parentIcon.menuIcons, "beforeMenu", parentIcon._updateMenu)
+	--
+	for noticeId, noticeDetail in pairs(self.notices) do
+		local parentIconNoticeDetail = parentIcon.notices[noticeId]
+		if parentIconNoticeDetail then
+			parentIconNoticeDetail.completeSignal:Fire()
+		end
+	end
+	--
+	self._parentIcon = nil
 end
 
 -- Dropdowns
@@ -1059,18 +1112,15 @@ function Icon:setDropdown(arrayOfIcons)
 
 	-- Apply new icons
 	for i, otherIcon in pairs(arrayOfIcons) do
-		local otherIconContainer = otherIcon.instances.iconContainer
 		local squareCorners = self:get("dropdownSquareCorners")
-		otherIcon.presentOnTopbar = false
-		otherIconContainer.Parent = dropdownFrame
+		otherIcon:_join(self, dropdownFrame)
 		otherIcon:set("iconSize", UDim2.new(1, 0, 0, otherIcon:get("iconSize", "deselected").Y.Offset), "deselected", "beforeDropdown")
 		otherIcon:set("iconSize", UDim2.new(1, 0, 0, otherIcon:get("iconSize", "selected").Y.Offset), "selected", "beforeDropdown")
-		--otherIcon:set("captionBackgroundTransparency", 0.1, nil, "beforeDropdown")
 		if squareCorners then
 			otherIcon:set("iconCornerRadius", UDim.new(0, 0), "deselected", "beforeDropdown")
 			otherIcon:set("iconCornerRadius", UDim.new(0, 0), "selected", "beforeDropdown")
-			otherIcon:set("captionBlockerTransparency", 0.4, nil, "beforeDropdown")
 		end
+		otherIcon:set("captionBlockerTransparency", 0.4, nil, "beforeDropdown")
 		table.insert(self.dropdownIcons, otherIcon)
 	end
 
@@ -1085,11 +1135,13 @@ function Icon:_updateDropdown()
 		padding = self:get("dropdownListPadding") or "_NIL",
 		dropdownAlignment = self:get("dropdownAlignment") or "_NIL",
 		iconAlignment = self:get("alignment") or "_NIL",
+		scrollBarThickness = self:get("dropdownScrollBarThickness") or "_NIL",
 	}
 	for k, v in pairs(values) do if v == "_NIL" then return end end
 
 	local YPadding = values.padding.Offset
 	local dropdownContainer = self.instances.dropdownContainer
+	local dropdownFrame = self.instances.dropdownFrame
 	local dropdownList = self.instances.dropdownList
 	local totalIcons = #self.dropdownIcons
 
@@ -1100,7 +1152,6 @@ function Icon:_updateDropdown()
 	for i = 1, totalIcons do
 		local otherIcon = self.dropdownIcons[i]
 		local _, otherIconSize = otherIcon:get("iconSize", nil, "beforeDropdown")
-		print("otherIconSize = ", otherIconSize)
 		local increment = otherIconSize.Y.Offset + YPadding
 		if i <= lastVisibleIconIndex then
 			newFrameSizeY = newFrameSizeY + increment
@@ -1109,7 +1160,7 @@ function Icon:_updateDropdown()
 			newFrameSizeY = newFrameSizeY + increment/4
 		end
 		newCanvasSizeY = newCanvasSizeY + increment
-		local otherIconWidth = otherIconSize.X.Offset + 4
+		local otherIconWidth = otherIconSize.X.Offset + 4 + 100 -- the +100 is to allow for notices
 		if otherIconWidth > newMinWidth then
 			newMinWidth = otherIconWidth
 		end
@@ -1129,8 +1180,10 @@ function Icon:_updateDropdown()
 			PositionXScale = 0.5
 		},
 		right = {
-			AnchorPoint = Vector2.new(1, 0),
-			PositionXScale = 1
+			AnchorPoint = Vector2.new(0.5, 0),
+			PositionXScale = 1,
+			FrameAnchorPoint = Vector2.new(0, 0),
+			FramePositionXScale = 0,
 		}
 	}
 	local alignmentDetail = alignmentDetails[dropdownAlignment]
@@ -1139,6 +1192,10 @@ function Icon:_updateDropdown()
 	end
 	dropdownContainer.AnchorPoint = alignmentDetail.AnchorPoint
 	dropdownContainer.Position = UDim2.new(alignmentDetail.PositionXScale, 0, 1, YPadding+0)
+	local thicknessHalf = values.scrollBarThickness/2
+	local additionalOffset = (dropdownFrame.VerticalScrollBarPosition == Enum.VerticalScrollBarPosition.Right and thicknessHalf) or -thicknessHalf
+	dropdownFrame.AnchorPoint = alignmentDetail.FrameAnchorPoint or alignmentDetail.AnchorPoint
+	dropdownFrame.Position = UDim2.new(alignmentDetail.FramePositionXScale or alignmentDetail.PositionXScale, additionalOffset, 0, 0)
 end
 
 

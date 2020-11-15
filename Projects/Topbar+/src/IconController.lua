@@ -107,6 +107,7 @@ function IconController.setDisplayOrder(value)
 	value = tonumber(value) or topbarPlusGui.DisplayOrder
 	topbarPlusGui.DisplayOrder = value
 end
+IconController.setDisplayOrder(10)
 
 function IconController.getIcon(name)
 	for otherIcon, _ in pairs(topbarIcons) do

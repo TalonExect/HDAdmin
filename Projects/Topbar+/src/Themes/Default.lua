@@ -80,6 +80,7 @@ return {
         dropdownToggleOnLongPress = false,
         dropdownToggleOnRightClick = false,
         dropdownCloseOnTapAway = false,
+        dropdownHidePlayerlistOnOverlap = true,
         dropdownListPadding = UDim.new(0, 2),
         dropdownScrollBarColor = Color3.fromRGB(25, 25, 25),
         dropdownScrollBarTransparency = 0.2,

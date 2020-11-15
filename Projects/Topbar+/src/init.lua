@@ -93,9 +93,9 @@ noticeFrame.BackgroundTransparency = 1
 noticeFrame.Name = "NoticeFrame"
 noticeFrame.Position = UDim2.new(0.45, 0, 0, -2)
 noticeFrame.Size = UDim2.new(1, 0, 0.7, 0)
-noticeFrame.Visible = false
+noticeFrame.Visible = true
 noticeFrame.ZIndex = 4
-noticeFrame.ImageTransparency = 0
+noticeFrame.ImageTransparency = 1
 noticeFrame.ScaleType = Enum.ScaleType.Fit
 noticeFrame.Parent = iconButton
 
@@ -108,6 +108,7 @@ noticeLabel.Visible = true
 noticeLabel.ZIndex = 5
 noticeLabel.Font = Enum.Font.Arial
 noticeLabel.Text = "0"
+noticeLabel.TextTransparency = 1
 noticeLabel.TextScaled = true
 noticeLabel.Parent = noticeFrame
 
@@ -221,13 +222,14 @@ dropdownFrame.BackgroundTransparency = 1
 dropdownFrame.BorderSizePixel = 0
 dropdownFrame.AnchorPoint = Vector2.new(0.5, 0)
 dropdownFrame.Position = UDim2.new(0.5, 0, 0, 0)
-dropdownFrame.Size = UDim2.new(1, 0, 1, 0)
+dropdownFrame.Size = UDim2.new(1, -100, 1, 0)
 dropdownFrame.ZIndex = -1
 dropdownFrame.ClipsDescendants = false
 dropdownFrame.Visible = true
 dropdownFrame.TopImage = dropdownFrame.MidImage
 dropdownFrame.BottomImage = dropdownFrame.MidImage
 dropdownFrame.VerticalScrollBarInset = Enum.ScrollBarInset.Always
+dropdownFrame.VerticalScrollBarPosition = Enum.VerticalScrollBarPosition.Right
 dropdownFrame.Parent = dropdownContainer
 
 local dropdownList = Instance.new("UIListLayout")
