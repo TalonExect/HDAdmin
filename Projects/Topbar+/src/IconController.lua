@@ -370,6 +370,11 @@ function IconController._enableControllerModeForIcon(icon, bool)
 		icon:set("iconSize", UDim2.new(0, currentSizeDeselected.X.Offset*scaleMultiplier, 0, currentSizeDeselected.Y.Offset*scaleMultiplier), "deselected")
 		icon:set("iconSize", UDim2.new(0, currentSizeSelected.X.Offset*scaleMultiplier, 0, currentSizeSelected.Y.Offset*scaleMultiplier), "selected")
 		icon:setMid()
+		local parentIcon = icon._parentIcon
+		if parentIcon then
+			parentIcon:_updateDropdown()
+			parentIcon:_updateMenu()
+		end
 	else
 		local states = {"deselected", "selected"}
 		for _, toggleState in pairs(states) do

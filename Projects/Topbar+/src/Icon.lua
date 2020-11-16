@@ -261,7 +261,6 @@ function Icon.new(order, imageId, labelText)
 	self._draggingFinger = false
 	self._subIcons = {}
 	self._totalSubIcons = 0
-	self._parentIcons = {}
 	self._updatingIconSize = true
 	
 	-- Apply start values
@@ -1052,12 +1051,32 @@ function Icon:_displayCaption(visibility)
 end
 
 -- Join or leave a special feature such as a Dropdown or Menu
-function Icon:_join(parentIcon, parentFrame)
+function Icon:join(parentIcon, featureName, dontUpdate)
+	local newFeatureName = (featureName and featureName:lower()) or "dropdown"
+	local beforeName = "before"..featureName:sub(1,1):upper()..featureName:sub(2)
+	local parentFrame = parentIcon.instances[featureName.."Frame"]
 	self.presentOnTopbar = false
 	self._parentIcon = parentIcon
 	self.instances.iconContainer.Parent = parentFrame
 	for noticeId, noticeDetail in pairs(self.notices) do
 		parentIcon:notify(noticeDetail.clearNoticeEvent, noticeId)
+	end
+	
+	if featureName == "dropdown" then
+		local squareCorners = self:get("dropdownSquareCorners")
+		self:set("iconSize", UDim2.new(1, 0, 0, self:get("iconSize", "deselected").Y.Offset), "deselected", beforeName)
+		self:set("iconSize", UDim2.new(1, 0, 0, self:get("iconSize", "selected").Y.Offset), "selected", beforeName)
+		if squareCorners then
+			self:set("iconCornerRadius", UDim.new(0, 0), "deselected", beforeName)
+			self:set("iconCornerRadius", UDim.new(0, 0), "selected", beforeName)
+		end
+		self:set("captionBlockerTransparency", 0.4, nil, beforeName)
+	end
+	
+	local array = parentIcon[newFeatureName.."Icons"]
+	table.insert(array, self)
+	if dontUpdate == false then
+		parentIcon:_updateDropdown()
 	end
 end
 
@@ -1112,16 +1131,7 @@ function Icon:setDropdown(arrayOfIcons)
 
 	-- Apply new icons
 	for i, otherIcon in pairs(arrayOfIcons) do
-		local squareCorners = self:get("dropdownSquareCorners")
-		otherIcon:_join(self, dropdownFrame)
-		otherIcon:set("iconSize", UDim2.new(1, 0, 0, otherIcon:get("iconSize", "deselected").Y.Offset), "deselected", "beforeDropdown")
-		otherIcon:set("iconSize", UDim2.new(1, 0, 0, otherIcon:get("iconSize", "selected").Y.Offset), "selected", "beforeDropdown")
-		if squareCorners then
-			otherIcon:set("iconCornerRadius", UDim.new(0, 0), "deselected", "beforeDropdown")
-			otherIcon:set("iconCornerRadius", UDim.new(0, 0), "selected", "beforeDropdown")
-		end
-		otherIcon:set("captionBlockerTransparency", 0.4, nil, "beforeDropdown")
-		table.insert(self.dropdownIcons, otherIcon)
+		otherIcon:join(self, "dropdown", true)
 	end
 
 	-- Update dropdown
@@ -1129,6 +1139,7 @@ function Icon:setDropdown(arrayOfIcons)
 end
 
 function Icon:_updateDropdown()
+	--print("_updateDropdown! 1", self.name)
 	local values = {
 		maxIconsBeforeScroll = self:get("dropdownMaxIconsBeforeScroll") or "_NIL",
 		minWidth = self:get("dropdownMinWidth") or "_NIL",
@@ -1138,7 +1149,8 @@ function Icon:_updateDropdown()
 		scrollBarThickness = self:get("dropdownScrollBarThickness") or "_NIL",
 	}
 	for k, v in pairs(values) do if v == "_NIL" then return end end
-
+	--print("_updateDropdown! 2", self.name)
+	
 	local YPadding = values.padding.Offset
 	local dropdownContainer = self.instances.dropdownContainer
 	local dropdownFrame = self.instances.dropdownFrame
@@ -1165,6 +1177,8 @@ function Icon:_updateDropdown()
 			newMinWidth = otherIconWidth
 		end
 	end
+
+	print("_updateDropdown! STATS", self.name)
 	self:set("dropdownCanvasSize", UDim2.new(0, 0, 0, newCanvasSizeY))
 	self:set("dropdownSize", UDim2.new(0, newMinWidth, 0, newFrameSizeY))
 
@@ -1196,6 +1210,16 @@ function Icon:_updateDropdown()
 	local additionalOffset = (dropdownFrame.VerticalScrollBarPosition == Enum.VerticalScrollBarPosition.Right and thicknessHalf) or -thicknessHalf
 	dropdownFrame.AnchorPoint = alignmentDetail.FrameAnchorPoint or alignmentDetail.AnchorPoint
 	dropdownFrame.Position = UDim2.new(alignmentDetail.FramePositionXScale or alignmentDetail.PositionXScale, additionalOffset, 0, 0)
+end
+
+
+-- Menus
+function Icon:setMenu()
+	
+end
+
+function Icon:_updateMenu()
+	
 end
 
 
