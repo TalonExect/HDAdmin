@@ -70,6 +70,12 @@ function Icon.new(order, imageId, labelText)
 
 	-- These determine and describe how instances behave and appear
 	self._settings = {
+		sound = {
+			["clickSoundId"] = {},
+			["clickVolume"] = {},
+			["clickPlaybackSpeed"] = {},
+			["clickTimePosition"] = {},
+		},
 		action = {
 			["toggleTransitionInfo"] = {},
 			["captionFadeInfo"] = {},
@@ -265,7 +271,7 @@ function Icon.new(order, imageId, labelText)
 	
 	-- Apply start values
 	self:setName("UnnamedIcon")
-	self:setTheme(DEFAULT_THEME)
+	self:setTheme(DEFAULT_THEME, true)
 	self:setOrder(order)
 	self:setImage(imageId)
 	self:setLabel(labelText)
@@ -507,6 +513,7 @@ end
 function Icon:set(settingName, value, toggleState, setAdditional)
 	local settingDetail = self._settingsDictionary[settingName]
 	assert(settingDetail ~= nil, ("setting '%s' does not exist"):format(settingName))
+
 	-- Update the settings value
 	if type(toggleState) == "string" then
 		toggleState = toggleState:lower()
@@ -540,15 +547,18 @@ function Icon:set(settingName, value, toggleState, setAdditional)
 			settingDetail.additionalValues[setAdditional] = previousValue
 		end
 	end
+
 	-- Check previous and new are not the same
 	if previousValue == value then
 		return self, "Value was already set"
 	end
+
 	-- Update appearances of associated instances
 	local currentToggleState = self:getToggleState()
-	if settingDetail.instanceNames and (currentToggleState == toggleState or toggleState == nil) then
+	if not self._updateAfterSettingAll and settingDetail.instanceNames and (currentToggleState == toggleState or toggleState == nil) then
 		self:_update(settingName, currentToggleState, true)
 	end
+
 	-- Call any methods present
 	if settingDetail.callMethods then
 		for _, callMethod in pairs(settingDetail.callMethods) do
@@ -632,7 +642,8 @@ function Icon:_updateStateOverlay(transparency, color)
 	stateOverlay.BackgroundColor3 = color or Color3.new(1, 1, 1)
 end
 
-function Icon:setTheme(theme)
+function Icon:setTheme(theme, updateAfterSettingAll)
+	self._updateAfterSettingAll = updateAfterSettingAll
 	for settingsType, settingsDetails in pairs(theme) do
 		if settingsType == "toggleable" then
 			for settingName, settingValue in pairs(settingsDetails.deselected) do
@@ -646,6 +657,10 @@ function Icon:setTheme(theme)
 				self:set(settingName, settingValue)
 			end
 		end
+	end
+	self._updateAfterSettingAll = nil
+	if updateAfterSettingAll then
+		self:_updateAll()
 	end
 	return self
 end
@@ -1056,6 +1071,7 @@ function Icon:join(parentIcon, featureName, dontUpdate)
 	local beforeName = "before"..featureName:sub(1,1):upper()..featureName:sub(2)
 	local parentFrame = parentIcon.instances[featureName.."Frame"]
 	self.presentOnTopbar = false
+	self.joinedFeatureName = featureName
 	self._parentIcon = parentIcon
 	self.instances.iconContainer.Parent = parentFrame
 	for noticeId, noticeDetail in pairs(self.notices) do
@@ -1063,7 +1079,7 @@ function Icon:join(parentIcon, featureName, dontUpdate)
 	end
 	
 	if featureName == "dropdown" then
-		local squareCorners = self:get("dropdownSquareCorners")
+		local squareCorners = parentIcon:get("dropdownSquareCorners")
 		self:set("iconSize", UDim2.new(1, 0, 0, self:get("iconSize", "deselected").Y.Offset), "deselected", beforeName)
 		self:set("iconSize", UDim2.new(1, 0, 0, self:get("iconSize", "selected").Y.Offset), "selected", beforeName)
 		if squareCorners then
@@ -1075,7 +1091,7 @@ function Icon:join(parentIcon, featureName, dontUpdate)
 	
 	local array = parentIcon[newFeatureName.."Icons"]
 	table.insert(array, self)
-	if dontUpdate == false then
+	if not dontUpdate then
 		parentIcon:_updateDropdown()
 	end
 end
@@ -1085,6 +1101,7 @@ function Icon:leave()
 	local parentIcon = self._parentIcon
 	self.instances.iconContainer.Parent = topbarContainer
 	self.presentOnTopbar = true
+	self.joinedFeatureName = nil
 	local function scanFeature(t, prevReference, updateMethod)
 		for i, otherIcon in pairs(t) do
 			if otherIcon == self then
@@ -1139,7 +1156,6 @@ function Icon:setDropdown(arrayOfIcons)
 end
 
 function Icon:_updateDropdown()
-	--print("_updateDropdown! 1", self.name)
 	local values = {
 		maxIconsBeforeScroll = self:get("dropdownMaxIconsBeforeScroll") or "_NIL",
 		minWidth = self:get("dropdownMinWidth") or "_NIL",
@@ -1149,7 +1165,6 @@ function Icon:_updateDropdown()
 		scrollBarThickness = self:get("dropdownScrollBarThickness") or "_NIL",
 	}
 	for k, v in pairs(values) do if v == "_NIL" then return end end
-	--print("_updateDropdown! 2", self.name)
 	
 	local YPadding = values.padding.Offset
 	local dropdownContainer = self.instances.dropdownContainer
@@ -1178,7 +1193,6 @@ function Icon:_updateDropdown()
 		end
 	end
 
-	print("_updateDropdown! STATS", self.name)
 	self:set("dropdownCanvasSize", UDim2.new(0, 0, 0, newCanvasSizeY))
 	self:set("dropdownSize", UDim2.new(0, newMinWidth, 0, newFrameSizeY))
 

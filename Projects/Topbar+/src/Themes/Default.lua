@@ -15,6 +15,14 @@ return {
         dropdownSlideInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
     },
 
+    -- The sound the icon(s) make when clicked
+    sound =  {
+        clickSoundId = "rbxassetid://5273899897",
+        clickVolume = 0.5,
+        clickPlaybackSpeed = 1,
+        clickTimePosition = 0.1
+    },
+
     -- Settings which describe how an item appears when 'deselected' and 'selected'
     toggleable = {
         -- How items appear normally (i.e. when they're 'deselected')

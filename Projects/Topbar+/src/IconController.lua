@@ -248,7 +248,12 @@ function IconController.setTopbarEnabled(bool, forceBool)
 					0.1,
 					true
 				)
-				guiService:AddSelectionParent("TopbarPlus",topbar.TopbarContainer)
+				local icons = IconController.getIcons()
+				local iconContainers = {}
+				for i, v in pairs(icons) do
+					table.insert(iconContainers, v.instances.iconButton)
+				end
+				guiService:AddSelectionTuple("TopbarPlusIcons", table.unpack(iconContainers))
 				guiService.CoreGuiNavigationEnabled = false
 				guiService.GuiNavigationEnabled = true
 				
@@ -256,13 +261,11 @@ function IconController.setTopbarEnabled(bool, forceBool)
 				local targetOffset = 0
 				runService.Heartbeat:Wait()
 				local indicatorSizeTrip = 50 --indicator.AbsoluteSize.Y * 2
-				for otherIcon, _ in pairs(topbarIcons) do
-					local container = otherIcon.instances.iconContainer
-					if container.Visible then
-						if not selectIcon or otherIcon:get("order") > selectIcon:get("order") then
-							selectIcon = otherIcon
-						end
+				for _, otherIcon in pairs(icons) do
+					if otherIcon.enabled == true and otherIcon.presentOnTopbar and (selectIcon == nil or otherIcon:get("order") > selectIcon:get("order")) then
+						selectIcon = otherIcon
 					end
+					local container = otherIcon.instances.iconContainer
 					local newTargetOffset = -27 + container.AbsoluteSize.Y + indicatorSizeTrip
 					if newTargetOffset > targetOffset then
 						targetOffset = newTargetOffset
@@ -274,9 +277,7 @@ function IconController.setTopbarEnabled(bool, forceBool)
 				if guiService:GetInspectMenuEnabled() then
 					guiService:CloseInspectMenu()
 				end
-				delay(0.15,function()
-					guiService.SelectedObject = selectIcon.instances.iconContainer
-				end)
+				guiService.SelectedObject = IconController._previousSelectedObject or selectIcon.instances.iconButton
 				indicator.Image = "rbxassetid://5278151071"
 				indicator:TweenPosition(
 					UDim2.new(0.5,0,0,targetOffset + robloxStupidOffset),
@@ -294,7 +295,7 @@ function IconController.setTopbarEnabled(bool, forceBool)
 			end
 			if not topbar.TopbarContainer.Visible then return end
 			guiService.AutoSelectGuiEnabled = true
-			guiService:RemoveSelectionGroup("TopbarPlus")
+			guiService:RemoveSelectionGroup("TopbarPlusIcons")
 			topbar.TopbarContainer:TweenPosition(
 				UDim2.new(0,0,0,-topbar.TopbarContainer.Size.Y.Offset + robloxStupidOffset),
 				Enum.EasingDirection.Out,
@@ -363,30 +364,34 @@ function IconController._enableControllerMode(bool)
 end
 
 function IconController._enableControllerModeForIcon(icon, bool)
+	local parentIcon = icon._parentIcon
+	local featureName = icon.joinedFeatureName
+	if parentIcon then
+		icon:leave()
+	end
 	if bool then
 		local scaleMultiplier = getScaleMultiplier()
 		local currentSizeDeselected = icon:get("iconSize", "deselected")
 		local currentSizeSelected = icon:get("iconSize", "selected")
-		icon:set("iconSize", UDim2.new(0, currentSizeDeselected.X.Offset*scaleMultiplier, 0, currentSizeDeselected.Y.Offset*scaleMultiplier), "deselected")
-		icon:set("iconSize", UDim2.new(0, currentSizeSelected.X.Offset*scaleMultiplier, 0, currentSizeSelected.Y.Offset*scaleMultiplier), "selected")
-		icon:setMid()
-		local parentIcon = icon._parentIcon
-		if parentIcon then
-			parentIcon:_updateDropdown()
-			parentIcon:_updateMenu()
-		end
+		icon:set("iconSize", UDim2.new(0, currentSizeDeselected.X.Offset*scaleMultiplier, 0, currentSizeDeselected.Y.Offset*scaleMultiplier), "deselected", "controllerMode")
+		icon:set("iconSize", UDim2.new(0, currentSizeSelected.X.Offset*scaleMultiplier, 0, currentSizeSelected.Y.Offset*scaleMultiplier), "selected", "controllerMode")
+		icon:set("alignment", "mid", "deselected", "controllerMode")
+		icon:set("alignment", "mid", "selected", "controllerMode")
 	else
 		local states = {"deselected", "selected"}
 		for _, toggleState in pairs(states) do
-			local _, previousAlignment = icon:get("alignment", toggleState, "previous")
+			local _, previousAlignment = icon:get("alignment", toggleState, "controllerMode")
 			if previousAlignment then
 				icon:set("alignment", previousAlignment, toggleState)
 			end
-			local currentSize, previousSize = icon:get("iconSize", toggleState, "previous")
+			local currentSize, previousSize = icon:get("iconSize", toggleState, "controllerMode")
 			if previousSize then
 				icon:set("iconSize", previousSize, toggleState)
 			end
 		end
+	end
+	if parentIcon then
+		icon:join(parentIcon, featureName)
 	end
 end
 
@@ -454,6 +459,8 @@ coroutine.wrap(function()
 				IconController.setTopbarEnabled(true,false)
 			end
 		elseif input.KeyCode == Enum.KeyCode.ButtonB then
+			IconController._previousSelectedObject = guiService.SelectedObject
+			guiService.SelectedObject = nil
 			IconController.setTopbarEnabled(false,false)
 		end
 		input:Destroy()
