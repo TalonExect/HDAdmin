@@ -239,12 +239,13 @@ dropdownList.SortOrder = Enum.SortOrder.LayoutOrder
 dropdownList.Parent = dropdownFrame
 
 
--- Other
+-- Click Sound
 local clickSound = Instance.new("Sound")
 clickSound.Name = "ClickSound"
-clickSound.SoundId = "rbxassetid://5273899897"
-clickSound.Parent = topbarPlusGui
+clickSound.Parent = iconContainer
 
+
+-- Other
 local indicator = Instance.new("ImageLabel")
 indicator.Name = "Indicator"
 indicator.BackgroundTransparency = 1

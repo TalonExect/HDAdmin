@@ -15,14 +15,6 @@ return {
         dropdownSlideInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
     },
 
-    -- The sound the icon(s) make when clicked
-    sound =  {
-        clickSoundId = "rbxassetid://5273899897",
-        clickVolume = 0.5,
-        clickPlaybackSpeed = 1,
-        clickTimePosition = 0.1
-    },
-
     -- Settings which describe how an item appears when 'deselected' and 'selected'
     toggleable = {
         -- How items appear normally (i.e. when they're 'deselected')
@@ -50,6 +42,10 @@ return {
             baseZIndex = 1,
             order = 1,
             alignment = "left",
+            clickSoundId = "rbxassetid://5273899897",
+            clickVolume = 0,
+            clickPlaybackSpeed = 1,
+            clickTimePosition = 0.12
         },
         -- How items appear after the icon has been clicked (i.e. when they're 'selected')
         -- If a selected value is not specified, it will default to the deselected value
@@ -58,6 +54,7 @@ return {
             iconBackgroundTransparency = 0.1,
             iconImageColor = Color3.fromRGB(57, 60, 65),
             iconTextColor = Color3.fromRGB(57, 60, 65),
+            clickPlaybackSpeed = 1.5,
         }
     },
 

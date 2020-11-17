@@ -67,15 +67,10 @@ function Icon.new(order, imageId, labelText)
 	instances["dropdownContainer"] = iconContainer.DropdownContainer
 	instances["dropdownFrame"] = instances.dropdownContainer.DropdownFrame
 	instances["dropdownList"] = instances.dropdownFrame.DropdownList
+	instances["clickSound"] = iconContainer.ClickSound
 
 	-- These determine and describe how instances behave and appear
 	self._settings = {
-		sound = {
-			["clickSoundId"] = {},
-			["clickVolume"] = {},
-			["clickPlaybackSpeed"] = {},
-			["clickTimePosition"] = {},
-		},
 		action = {
 			["toggleTransitionInfo"] = {},
 			["captionFadeInfo"] = {},
@@ -120,6 +115,10 @@ function Icon.new(order, imageId, labelText)
 			["iconLabelTextXAlignment"] = {instanceNames = {"iconLabel"}, propertyName = "TextXAlignment"},
 			["iconLabelTextSize"] = {instanceNames = {"iconLabel"}, propertyName = "TextSize"},
 			["noticeFramePosition"] = {instanceNames = {"noticeFrame"}, propertyName = "Position"},
+			["clickSoundId"] = {instanceNames = {"clickSound"}, propertyName = "SoundId"},
+			["clickVolume"] = {instanceNames = {"clickSound"}, propertyName = "Volume"},
+			["clickPlaybackSpeed"] = {instanceNames = {"clickSound"}, propertyName = "PlaybackSpeed"},
+			["clickTimePosition"] = {instanceNames = {"clickSound"}, propertyName = "TimePosition"},
 		},
 		other = {
 			["captionBackgroundColor"] = {instanceNames = {"captionFrame"}, propertyName = "BackgroundColor3"},
@@ -678,6 +677,16 @@ function Icon:setName(string)
 	return self
 end
 
+function Icon:_playClickSound()
+	local clickSound = self.instances.clickSound
+	if clickSound.SoundId ~= nil and #clickSound.SoundId > 0 and clickSound.Volume > 0 then
+		local clickSoundCopy = clickSound:Clone()
+		clickSoundCopy.Parent = clickSound.Parent
+		clickSoundCopy:Play()
+		debris:AddItem(clickSoundCopy, clickSound.TimeLength)
+	end
+end
+
 function Icon:select()
 	self.isSelected = true
 	self:_setToggleItemVisible(true)
@@ -685,6 +694,10 @@ function Icon:select()
 		self:_displayNotice(false)
 	end
 	self:_updateAll()
+	self:_playClickSound()
+	if #self.dropdownIcons > 0 or #self.menuIcons > 0 then
+		IconController:_updateSelectionGroup()
+	end
 	self.selected:Fire()
 	return self
 end
@@ -696,6 +709,10 @@ function Icon:deselect()
 		self:_displayNotice(true)
 	end
 	self:_updateAll()
+	self:_playClickSound()
+	if #self.dropdownIcons > 0 or #self.menuIcons > 0 then
+		IconController:_updateSelectionGroup()
+	end
 	self.deselected:Fire()
 	return self
 end
@@ -1094,6 +1111,9 @@ function Icon:join(parentIcon, featureName, dontUpdate)
 	if not dontUpdate then
 		parentIcon:_updateDropdown()
 	end
+	--
+	IconController:_updateSelectionGroup()
+	--
 end
 
 function Icon:leave()
@@ -1134,6 +1154,9 @@ function Icon:leave()
 	end
 	--
 	self._parentIcon = nil
+	--
+	IconController:_updateSelectionGroup()
+	--
 end
 
 -- Dropdowns

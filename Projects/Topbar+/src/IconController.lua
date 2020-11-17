@@ -82,6 +82,7 @@ IconController.iconAdded:Connect(function(icon)
 	if IconController.controllerModeEnabled then
 		IconController._enableControllerModeForIcon(icon, true)
 	end
+	IconController:_updateSelectionGroup()
 end)
 
 IconController.iconRemoved:Connect(function(icon)
@@ -89,6 +90,7 @@ IconController.iconRemoved:Connect(function(icon)
 	icon:setEnabled(false)
 	icon:deselect()
 	icon.updated:Fire()
+	IconController:_updateSelectionGroup()
 end)
 
 
@@ -248,20 +250,14 @@ function IconController.setTopbarEnabled(bool, forceBool)
 					0.1,
 					true
 				)
-				local icons = IconController.getIcons()
-				local iconContainers = {}
-				for i, v in pairs(icons) do
-					table.insert(iconContainers, v.instances.iconButton)
-				end
-				guiService:AddSelectionTuple("TopbarPlusIcons", table.unpack(iconContainers))
-				guiService.CoreGuiNavigationEnabled = false
-				guiService.GuiNavigationEnabled = true
+				
 				
 				local selectIcon
 				local targetOffset = 0
+				IconController:_updateSelectionGroup()
 				runService.Heartbeat:Wait()
 				local indicatorSizeTrip = 50 --indicator.AbsoluteSize.Y * 2
-				for _, otherIcon in pairs(icons) do
+				for otherIcon, _ in pairs(topbarIcons) do
 					if otherIcon.enabled == true and otherIcon.presentOnTopbar and (selectIcon == nil or otherIcon:get("order") > selectIcon:get("order")) then
 						selectIcon = otherIcon
 					end
@@ -277,7 +273,8 @@ function IconController.setTopbarEnabled(bool, forceBool)
 				if guiService:GetInspectMenuEnabled() then
 					guiService:CloseInspectMenu()
 				end
-				guiService.SelectedObject = IconController._previousSelectedObject or selectIcon.instances.iconButton
+				local newSelectedObject = IconController._previousSelectedObject or selectIcon.instances.iconButton
+				IconController._setControllerSelectedObject(newSelectedObject)
 				indicator.Image = "rbxassetid://5278151071"
 				indicator:TweenPosition(
 					UDim2.new(0.5,0,0,targetOffset + robloxStupidOffset),
@@ -295,7 +292,7 @@ function IconController.setTopbarEnabled(bool, forceBool)
 			end
 			if not topbar.TopbarContainer.Visible then return end
 			guiService.AutoSelectGuiEnabled = true
-			guiService:RemoveSelectionGroup("TopbarPlusIcons")
+			IconController:_updateSelectionGroup(true)
 			topbar.TopbarContainer:TweenPosition(
 				UDim2.new(0,0,0,-topbar.TopbarContainer.Size.Y.Offset + robloxStupidOffset),
 				Enum.EasingDirection.Out,
@@ -328,12 +325,52 @@ end
 
 
 -- PRIVATE METHODS
+function IconController:_updateSelectionGroup(clearAll)
+	if IconController._navigationEnabled then
+		guiService:RemoveSelectionGroup("TopbarPlusIcons")
+	end
+	if clearAll then
+		guiService.CoreGuiNavigationEnabled = IconController._originalCoreGuiNavigationEnabled
+		guiService.GuiNavigationEnabled = IconController._originalGuiNavigationEnabled
+		IconController._navigationEnabled = nil
+	elseif IconController.controllerModeEnabled then
+		local icons = IconController.getIcons()
+		local iconContainers = {}
+		for i, otherIcon in pairs(icons) do
+			local featureName = otherIcon.joinedFeatureName
+			if not featureName or otherIcon._parentIcon[otherIcon.joinedFeatureName.."Open"] == true then
+				table.insert(iconContainers, otherIcon.instances.iconButton)
+			end
+		end
+		guiService:AddSelectionTuple("TopbarPlusIcons", table.unpack(iconContainers))
+		if not IconController._navigationEnabled then
+			IconController._originalCoreGuiNavigationEnabled = guiService.CoreGuiNavigationEnabled
+			IconController._originalGuiNavigationEnabled = guiService.GuiNavigationEnabled
+			guiService.CoreGuiNavigationEnabled = false
+			guiService.GuiNavigationEnabled = true
+			IconController._navigationEnabled = true
+		end
+	end
+end
+
 local function getScaleMultiplier()
 	if guiService:IsTenFootInterface() then
 		return 3
 	else
 		return 1.3
 	end
+end
+
+function IconController._setControllerSelectedObject(object)
+	local startId = (IconController._controllerSetCount and IconController._controllerSetCount + 1) or 0
+	IconController._controllerSetCount = startId
+	guiService.SelectedObject = object
+	delay(0.1, function() -- blame the roblox guiservice its a piece of doo doo
+		local finalId = IconController._controllerSetCount
+		if startId == finalId then
+			guiService.SelectedObject = object
+		end
+	end)
 end
 
 function IconController._enableControllerMode(bool)
@@ -357,6 +394,7 @@ function IconController._enableControllerMode(bool)
 		topbar.TopbarContainer.Position = UDim2.new(0,0,0,0)
 		topbar.TopbarContainer.Visible = checkTopbarEnabled()
 		indicator.Visible = false
+		IconController._setControllerSelectedObject(nil)
 	end
 	for icon, _ in pairs(topbarIcons) do
 		IconController._enableControllerModeForIcon(icon, bool)
@@ -460,7 +498,7 @@ coroutine.wrap(function()
 			end
 		elseif input.KeyCode == Enum.KeyCode.ButtonB then
 			IconController._previousSelectedObject = guiService.SelectedObject
-			guiService.SelectedObject = nil
+			IconController._setControllerSelectedObject(nil)
 			IconController.setTopbarEnabled(false,false)
 		end
 		input:Destroy()
