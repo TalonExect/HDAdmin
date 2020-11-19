@@ -239,6 +239,40 @@ dropdownList.SortOrder = Enum.SortOrder.LayoutOrder
 dropdownList.Parent = dropdownFrame
 
 
+-- Menus
+local menuContainer = Instance.new("Frame")
+menuContainer.Name = "MenuContainer"
+menuContainer.BackgroundTransparency = 1
+menuContainer.BorderSizePixel = 0
+menuContainer.AnchorPoint = Vector2.new(0.5, 0)
+menuContainer.ZIndex = -2
+menuContainer.ClipsDescendants = true
+menuContainer.Visible = true
+menuContainer.Parent = iconContainer
+
+local menuFrame = Instance.new("ScrollingFrame")
+menuFrame.Name = "MenuFrame"
+menuFrame.BackgroundTransparency = 1
+menuFrame.BorderSizePixel = 0
+menuFrame.AnchorPoint = Vector2.new(0.5, 0)
+menuFrame.Position = UDim2.new(0.5, 0, 0, 0)
+menuFrame.Size = UDim2.new(1, -100, 1, 0)
+menuFrame.ZIndex = -1
+menuFrame.ClipsDescendants = false
+menuFrame.Visible = true
+menuFrame.TopImage = menuFrame.MidImage
+menuFrame.BottomImage = menuFrame.MidImage
+menuFrame.VerticalScrollBarInset = Enum.ScrollBarInset.Always
+menuFrame.VerticalScrollBarPosition = Enum.VerticalScrollBarPosition.Right
+menuFrame.Parent = menuContainer
+
+local menuList = Instance.new("UIListLayout")
+menuList.Name = "MenuList"
+menuList.FillDirection = Enum.FillDirection.Vertical
+menuList.SortOrder = Enum.SortOrder.LayoutOrder
+menuList.Parent = menuFrame
+
+
 -- Click Sound
 local clickSound = Instance.new("Sound")
 clickSound.Name = "ClickSound"

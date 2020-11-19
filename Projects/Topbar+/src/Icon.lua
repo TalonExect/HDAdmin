@@ -27,7 +27,7 @@ Icon.__index = Icon
 
 
 -- CONSTRUCTORS
-function Icon.new(order, imageId, labelText)
+function Icon.new(order)
 	local self = {}
 	setmetatable(self, Icon)
 
@@ -67,6 +67,9 @@ function Icon.new(order, imageId, labelText)
 	instances["dropdownContainer"] = iconContainer.DropdownContainer
 	instances["dropdownFrame"] = instances.dropdownContainer.DropdownFrame
 	instances["dropdownList"] = instances.dropdownFrame.DropdownList
+	instances["menuContainer"] = iconContainer.MenuContainer
+	instances["menuFrame"] = instances.menuContainer.MenuFrame
+	instances["menuList"] = instances.menuFrame.MenuList
 	instances["clickSound"] = iconContainer.ClickSound
 
 	-- These determine and describe how instances behave and appear
@@ -151,6 +154,19 @@ function Icon.new(order, imageId, labelText)
 			["dropdownScrollBarColor"] = {instanceNames = {"dropdownFrame"}, propertyName = "ScrollBarImageColor3"},
 			["dropdownScrollBarTransparency"] = {instanceNames = {"dropdownFrame"}, propertyName = "ScrollBarImageTransparency"},
 			["dropdownScrollBarThickness"] = {instanceNames = {"dropdownFrame"}, propertyName = "ScrollBarThickness"},
+			--
+			["menuSize"] = {instanceNames = {"menuContainer"}, propertyName = "Size", unique = "menu"},
+			["menuCanvasSize"] = {instanceNames = {"menuFrame"}, propertyName = "CanvasSize"},
+			["menuMaxIconsBeforeScroll"] = {callMethods = {self._updateMenu}},
+			["menuBindToggleToIcon"] = {},
+			["menuToggleOnLongPress"] = {},
+			["menuToggleOnRightClick"] = {},
+			["menuCloseOnTapAway"] = {},
+			["menuListPadding"] = {callMethods = {self._updateMenu}, instanceNames = {"menuList"}, propertyName = "Padding"},
+			["menuDirection"] = {callMethods = {self._updateMenu}},
+			["menuScrollBarColor"] = {instanceNames = {"menuFrame"}, propertyName = "ScrollBarImageColor3"},
+			["menuScrollBarTransparency"] = {instanceNames = {"menuFrame"}, propertyName = "ScrollBarImageTransparency"},
+			["menuScrollBarThickness"] = {instanceNames = {"menuFrame"}, propertyName = "ScrollBarThickness"},
 		}
 	}
 	-- The setting values themselves will be set within _settings
@@ -256,7 +272,7 @@ function Icon.new(order, imageId, labelText)
 	self.enabled = true
 	self.hovering = false
 	self.tipText = nil
-	self.caption = nil
+	self.captionText = nil
 	self.totalNotices = 0
 	self.notices = {}
 	self.dropdownIcons = {}
@@ -264,16 +280,12 @@ function Icon.new(order, imageId, labelText)
 	
 	-- Private Properties
 	self._draggingFinger = false
-	self._subIcons = {}
-	self._totalSubIcons = 0
 	self._updatingIconSize = true
 	
 	-- Apply start values
 	self:setName("UnnamedIcon")
 	self:setTheme(DEFAULT_THEME, true)
 	self:setOrder(order)
-	self:setImage(imageId)
-	self:setLabel(labelText)
 
 	-- Input handlers
 	-- Calls deselect/select when the icon is clicked
@@ -856,20 +868,22 @@ end
 
 function Icon:_updateIconSize(_, toggleState)
 	-- This is responsible for handling the appearance and size of the icons label and image, in additon to its own size
-	if self._updatingIconSize then return false end
-	self._updatingIconSize = true
-	
 	local X_MARGIN = 12
 	local X_GAP = 8
 
 	local values = {
-		iconImage = self:get("iconImage", toggleState),
-		iconText = self:get("iconText", toggleState),
-		iconSize = self:get("iconSize", toggleState),
-		iconImageYScale = self:get("iconImageYScale", toggleState),
-		iconImageRatio = self:get("iconImageRatio", toggleState),
-		iconLabelYScale = self:get("iconLabelYScale", toggleState),
+		iconImage = self:get("iconImage", toggleState) or "_NIL",
+		iconText = self:get("iconText", toggleState) or "_NIL",
+		iconSize = self:get("iconSize", toggleState) or "_NIL",
+		iconImageYScale = self:get("iconImageYScale", toggleState) or "_NIL",
+		iconImageRatio = self:get("iconImageRatio", toggleState) or "_NIL",
+		iconLabelYScale = self:get("iconLabelYScale", toggleState) or "_NIL",
 	}
+	for k,v in pairs(values) do
+		if v == "_NIL" then
+			return
+		end
+	end
 
 	local iconContainer = self.instances.iconContainer
 	local iconLabel = self.instances.iconLabel
@@ -882,7 +896,7 @@ function Icon:_updateIconSize(_, toggleState)
 	local cellSizeXScale = values.iconSize.X.Scale
 	local cellWidth = cellSizeXOffset + (cellSizeXScale * iconContainer.Parent.AbsoluteSize.X)
 	local minCellWidth = cellWidth
-	local maxCellWidth = (cellSizeXScale > 0 and cellWidth) or (cellWidth * 5)
+	local maxCellWidth = (cellSizeXScale > 0 and cellWidth) or 9999
 	local cellSizeYOffset = values.iconSize.Y.Offset
 	local cellSizeYScale = values.iconSize.Y.Scale
 	local cellHeight = cellSizeYOffset + (cellSizeYScale * iconContainer.Parent.AbsoluteSize.Y)
@@ -927,9 +941,13 @@ function Icon:_updateIconSize(_, toggleState)
 		self:set("iconLabelTextXAlignment", Enum.TextXAlignment.Left, toggleState)
 	end
 	if desiredCellWidth then
-		local widthScale = (cellSizeXScale > 0 and cellSizeXScale) or 0
-		local widthOffset = (cellSizeXScale > 0 and 0) or math.clamp(desiredCellWidth, minCellWidth, maxCellWidth)
-		self:set("iconSize", UDim2.new(widthScale, widthOffset, values.iconSize.Y.Scale, values.iconSize.Y.Offset), toggleState, "_ignorePrevious")
+		if not self._updatingIconSize then
+			self._updatingIconSize = true
+			local widthScale = (cellSizeXScale > 0 and cellSizeXScale) or 0
+			local widthOffset = (cellSizeXScale > 0 and 0) or math.clamp(desiredCellWidth, minCellWidth, maxCellWidth)
+			self:set("iconSize", UDim2.new(widthScale, widthOffset, values.iconSize.Y.Scale, values.iconSize.Y.Offset), toggleState, "_ignorePrevious")
+			self._updatingIconSize = false
+		end
 	end
 	self:set("iconLabelTextSize", labelHeight, toggleState)
 	self:set("noticeFramePosition", UDim2.new(notifPosYScale, 0, 0, -2), toggleState)
@@ -1054,7 +1072,7 @@ function Icon:setCaption(text)
 	self.captionText = text
 	self.instances.captionLabel.Text = text
 	self.instances.captionContainer.Parent = (text and activeItems) or self.instances.iconContainer
-	self:_updateIconSize()
+	self:_updateIconSize(nil, self:getToggleState())
 	if self.hovering then
 		self:_displayCaption(true)
 	end
@@ -1111,6 +1129,7 @@ function Icon:join(parentIcon, featureName, dontUpdate)
 	if not dontUpdate then
 		parentIcon:_updateDropdown()
 	end
+	parentIcon.deselectWhenOtherIconSelected = false
 	--
 	IconController:_updateSelectionGroup()
 	--
@@ -1161,19 +1180,14 @@ end
 
 -- Dropdowns
 function Icon:setDropdown(arrayOfIcons)
-	local dropdownFrame = self.instances.dropdownFrame
-	self.deselectWhenOtherIconSelected = false
-	
 	-- Reset any previous icons
 	for i, otherIcon in pairs(self.dropdownIcons) do
 		otherIcon:leave()
 	end
-
 	-- Apply new icons
 	for i, otherIcon in pairs(arrayOfIcons) do
 		otherIcon:join(self, "dropdown", true)
 	end
-
 	-- Update dropdown
 	self:_updateDropdown()
 end
@@ -1249,10 +1263,18 @@ function Icon:_updateDropdown()
 	dropdownFrame.Position = UDim2.new(alignmentDetail.FramePositionXScale or alignmentDetail.PositionXScale, additionalOffset, 0, 0)
 end
 
-
 -- Menus
-function Icon:setMenu()
-	
+function Icon:setMenu(arrayOfIcons)
+	-- Reset any previous icons
+	for i, otherIcon in pairs(self.menuIcons) do
+		otherIcon:leave()
+	end
+	-- Apply new icons
+	for i, otherIcon in pairs(arrayOfIcons) do
+		otherIcon:join(self, "menu", true)
+	end
+	-- Update dropdown
+	self:_updateMenu()
 end
 
 function Icon:_updateMenu()

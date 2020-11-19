@@ -90,6 +90,17 @@ return {
         dropdownScrollBarColor = Color3.fromRGB(25, 25, 25),
         dropdownScrollBarTransparency = 0.2,
         dropdownScrollBarThickness = 4,
+        -- Menu settings
+        menuDirection = "auto", -- 'left', 'right' or 'auto' (for auto, if alignment is 'left' or 'mid', menuDirection will be 'right', else menuDirection is 'left')
+        menuMaxIconsBeforeScroll = 4,
+        menuBindToggleToIcon = true,
+        menuToggleOnLongPress = false,
+        menuToggleOnRightClick = false,
+        menuCloseOnTapAway = false,
+        menuListPadding = UDim.new(0, 2),
+        menuScrollBarColor = Color3.fromRGB(25, 25, 25),
+        menuScrollBarTransparency = 0.2,
+        menuScrollBarThickness = 4,
     },
     
 }
