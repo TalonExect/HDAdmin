@@ -41,7 +41,7 @@ end
 function Zone:update()
 	local clusters = {}
 	local totalVolume = 0
-	local groupParts = self.groupParts
+	--local groupParts = self.groupParts
 	local groupParts = {}
 	local updateQueue = 0
 	self._updateConnections:clean()

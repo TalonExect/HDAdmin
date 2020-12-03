@@ -10,7 +10,7 @@ function ZoneService:createZone(name, group, additionalHeight)
 	local zone = zones[name]
 	assert(not zones[name], ("zone '%s' already exists!"):format(name))
 	assert(typeof(group) == "Instance", "bad argument #2 - zone group must be an instance (folder, model, etc)!")
-	local zone = Zone.new(group, additionalHeight)
+	zone = Zone.new(group, additionalHeight)
 	zone.name = name
 	zones[name] = zone
 	return zone
