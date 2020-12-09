@@ -1,0 +1,7 @@
+{
+    "Lua.diagnostics.disable": [
+        "undefined-rbx-member",
+        "incorrect-call-arguments",
+        "redundant-parameter"
+    ]
+}

@@ -136,8 +136,23 @@ function IconController.updateTopbar(toggleTransitionInfo)
 		--local sizeX = container.Size.X.Offset
 		local iconSize = otherIcon:get("iconSize") or UDim2.new(0, 32, 0, 32)
 		local sizeX = iconSize.X.Offset
-		local increment = (sizeX + gap)
-		return increment
+		local iconWidthAndGap = (sizeX + gap)
+		local increment = iconWidthAndGap
+		local preOffset = 0
+		--
+		if otherIcon._parentIcon == nil and otherIcon.menuOpen then
+			local menuSize = otherIcon:get("menuSize")
+			local direction = otherIcon:_getMenuDirection()
+			increment = increment + menuSize.X.Offset
+			if direction == "right" then
+				increment += 2
+			elseif direction == "left" then
+				preOffset = increment - iconWidthAndGap + 4
+				increment += 4
+			end
+		end
+		--
+		return increment, preOffset
 	end
 	coroutine.wrap(function()
 		if topbarUpdating then -- This prevents the topbar updating and shifting icons more than it needs to
@@ -202,8 +217,8 @@ function IconController.updateTopbar(toggleTransitionInfo)
 			local offsetX = alignmentInfo.getStartOffset(totalIconX)
 			for i, otherIcon in pairs(records) do
 				local container = otherIcon.instances.iconContainer
-				local increment = getIncrement(otherIcon)
-				local newPositon = UDim2.new(alignmentInfo.startScale, offsetX, 0, 4)
+				local increment, preOffset = getIncrement(otherIcon)
+				local newPositon = UDim2.new(alignmentInfo.startScale, offsetX+preOffset, 0, 4)
 				if toggleTransitionInfo then
 					tweenService:Create(container, toggleTransitionInfo, {Position = newPositon}):Play()
 				else

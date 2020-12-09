@@ -13,6 +13,7 @@ return {
         captionFadeInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
         tipFadeInfo = TweenInfo.new(0.1, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
         dropdownSlideInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
+        menuSlideInfo = TweenInfo.new(0.15, Enum.EasingStyle.Quad, Enum.EasingDirection.Out),
     },
 
     -- Settings which describe how an item appears when 'deselected' and 'selected'
@@ -78,7 +79,7 @@ return {
         tipCornerRadius = UDim.new(0.175, 0),
         -- Dropdown settings
         dropdownAlignment = "auto", -- 'left', 'mid', 'right' or 'auto' (auto is where the dropdown alignment matches the icons alignment)
-        dropdownMaxIconsBeforeScroll = 4,
+        dropdownMaxIconsBeforeScroll = 3,
         dropdownMinWidth = 32,
         dropdownSquareCorners = true,
         dropdownBindToggleToIcon = true,
@@ -97,7 +98,6 @@ return {
         menuToggleOnLongPress = false,
         menuToggleOnRightClick = false,
         menuCloseOnTapAway = false,
-        menuListPadding = UDim.new(0, 2),
         menuScrollBarColor = Color3.fromRGB(25, 25, 25),
         menuScrollBarTransparency = 0.2,
         menuScrollBarThickness = 4,

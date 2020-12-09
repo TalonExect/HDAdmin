@@ -35,6 +35,8 @@ function Icon.new(order)
 	local maid = Maid.new()
 	self._maid = maid
 	self._hoveringMaid = maid:give(Maid.new())
+	self._dropdownClippingMaid = maid:give(Maid.new())
+	self._menuClippingMaid = maid:give(Maid.new())
 
 	-- These are the GuiObjects that make up the icon
 	local instances = {}
@@ -79,6 +81,7 @@ function Icon.new(order)
 			["captionFadeInfo"] = {},
 			["tipFadeInfo"] = {},
 			["dropdownSlideInfo"] = {},
+			["menuSlideInfo"] = {},
 		},
 		toggleable = {
 			["iconBackgroundColor"] = {instanceNames = {"iconButton"}, propertyName = "BackgroundColor3"},
@@ -154,7 +157,7 @@ function Icon.new(order)
 			["dropdownScrollBarColor"] = {instanceNames = {"dropdownFrame"}, propertyName = "ScrollBarImageColor3"},
 			["dropdownScrollBarTransparency"] = {instanceNames = {"dropdownFrame"}, propertyName = "ScrollBarImageTransparency"},
 			["dropdownScrollBarThickness"] = {instanceNames = {"dropdownFrame"}, propertyName = "ScrollBarThickness"},
-			--
+			["dropdownIgnoreClipping"] = {callMethods = {self._dropdownIgnoreClipping}},
 			["menuSize"] = {instanceNames = {"menuContainer"}, propertyName = "Size", unique = "menu"},
 			["menuCanvasSize"] = {instanceNames = {"menuFrame"}, propertyName = "CanvasSize"},
 			["menuMaxIconsBeforeScroll"] = {callMethods = {self._updateMenu}},
@@ -167,6 +170,7 @@ function Icon.new(order)
 			["menuScrollBarColor"] = {instanceNames = {"menuFrame"}, propertyName = "ScrollBarImageColor3"},
 			["menuScrollBarTransparency"] = {instanceNames = {"menuFrame"}, propertyName = "ScrollBarImageTransparency"},
 			["menuScrollBarThickness"] = {instanceNames = {"menuFrame"}, propertyName = "ScrollBarThickness"},
+			["menuIgnoreClipping"] = {callMethods = {self._menuIgnoreClipping}},
 		}
 	}
 	-- The setting values themselves will be set within _settings
@@ -195,9 +199,10 @@ function Icon.new(order)
 		end,
 		["dropdown"] = function(settingName, instance, propertyName, value)
 			local tweenInfo = self:get("dropdownSlideInfo")
-			local canvasSize = self:get("dropdownCanvasSize")
 			local bindToggleToIcon = self:get("dropdownBindToggleToIcon")
 			local hidePlayerlist = self:get("dropdownHidePlayerlistOnOverlap") == true and self:get("alignment") == "right"
+			local dropdownContainer = self.instances.dropdownContainer
+			local dropdownFrame = self.instances.dropdownFrame
 			local newValue = value
 			local isOpen = true
 			local isDeselected = not self.isSelected
@@ -209,10 +214,8 @@ function Icon.new(order)
 				local dropdownSize = self:get("dropdownSize")
 				local XOffset = (dropdownSize and dropdownSize.X.Offset/1) or 0
 				newValue = UDim2.new(0, XOffset, 0, 0)
-				canvasSize = UDim2.new(0, 0, 0, 0)
 				isOpen = false
 			end
-			self.dropdownOpen = isOpen
 			if #self.dropdownIcons > 0 and isOpen and hidePlayerlist then
 				if starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.PlayerList) then
 					starterGui:SetCoreGuiEnabled(Enum.CoreGuiType.PlayerList, false)
@@ -227,8 +230,56 @@ function Icon.new(order)
 				end
 				self._bringBackPlayerlist = nil
 			end
-			tweenService:Create(instance, tweenInfo, {[propertyName] = newValue}):Play()
-			tweenService:Create(self.instances.dropdownFrame, tweenInfo, {CanvasSize = canvasSize}):Play()
+			local tween = tweenService:Create(instance, tweenInfo, {[propertyName] = newValue})
+			local connection
+			connection = tween.Completed:Connect(function()
+				connection:Disconnect()
+				--dropdownContainer.ClipsDescendants = not self.dropdownOpen
+			end)
+			tween:Play()
+			if isOpen then
+				dropdownFrame.CanvasPosition = self._dropdownCanvasPos
+			else
+				self._dropdownCanvasPos = dropdownFrame.CanvasPosition
+			end
+			self.dropdownOpen = isOpen
+			self:_decideToCallSignal("dropdown")
+		end,
+		["menu"] = function(settingName, instance, propertyName, value)
+			local tweenInfo = self:get("menuSlideInfo")
+			local bindToggleToIcon = self:get("menuBindToggleToIcon")
+			local menuContainer = self.instances.menuContainer
+			local menuFrame = self.instances.menuFrame
+			local newValue = value
+			local isOpen = true
+			local isDeselected = not self.isSelected
+			if bindToggleToIcon == false then
+				isDeselected = not self.menuOpen
+			end
+			local isSpecialPressing = self._longPressing or self._rightClicking
+			if self._tappingAway or (isDeselected and not isSpecialPressing) or (isSpecialPressing and self.menuOpen) then 
+				local menuSize = self:get("menuSize")
+				local YOffset = (menuSize and menuSize.Y.Offset/1) or 0
+				newValue = UDim2.new(0, 0, 0, YOffset)
+				isOpen = false
+			end
+			if isOpen ~= self.menuOpen then
+				self.updated:Fire()
+			end
+			local tween = tweenService:Create(instance, tweenInfo, {[propertyName] = newValue})
+			local connection
+			connection = tween.Completed:Connect(function()
+				connection:Disconnect()
+				--menuContainer.ClipsDescendants = not self.menuOpen
+			end)
+			tween:Play()
+			if isOpen then
+				menuFrame.CanvasPosition = self._menuCanvasPos
+			else
+				self._menuCanvasPos = menuFrame.CanvasPosition
+			end
+			self.menuOpen = isOpen
+			self:_decideToCallSignal("menu")
 		end,
 	}
 	for settingsType, settingsDetails in pairs(self._settings) do
@@ -262,7 +313,42 @@ function Icon.new(order)
 	self.deselected = maid:give(Signal.new())
 	self.hoverStarted = maid:give(Signal.new())
 	self.hoverEnded = maid:give(Signal.new())
+	self.dropdownOpened = maid:give(Signal.new())
+	self.dropdownClosed = maid:give(Signal.new())
+	self.menuOpened = maid:give(Signal.new())
+	self.menuClosed = maid:give(Signal.new())
 	self._endNotices = maid:give(Signal.new())
+	self._ignoreClippingChanged = maid:give(Signal.new())
+	
+	-- Connections
+	-- This enables us to chain icons and features like menus and dropdowns together without them being hidden by parent frame with ClipsDescendants enabled
+	local function setFeatureChange(featureName, value)
+		local parentIcon = self._parentIcon
+		self:set(featureName.."IgnoreClipping", value)
+		if value == true and parentIcon then
+			local connection = parentIcon._ignoreClippingChanged:Connect(function(_, value)
+				self:set(featureName.."IgnoreClipping", value)
+			end)
+			local endConnection
+			endConnection = self[featureName.."Closed"]:Connect(function()
+				endConnection:Disconnect()
+				connection:Disconnect()
+			end)
+		end
+	end
+	self.dropdownOpened:Connect(function()
+		setFeatureChange("dropdown", true)
+	end)
+	self.dropdownClosed:Connect(function()
+		setFeatureChange("dropdown", false)
+	end)
+	self.menuOpened:Connect(function()
+		setFeatureChange("menu", true)
+	end)
+	self.menuClosed:Connect(function()
+		setFeatureChange("menu", false)
+	end)
+	--]]
 
 	-- Properties
 	self.deselectWhenOtherIconSelected = true
@@ -277,6 +363,10 @@ function Icon.new(order)
 	self.notices = {}
 	self.dropdownIcons = {}
 	self.menuIcons = {}
+	self.dropdownOpen = false
+	self._previousDropdownOpen = false
+	self.menuOpen = false
+	self._previousMenuOpen = false
 	
 	-- Private Properties
 	self._draggingFinger = false
@@ -303,6 +393,9 @@ function Icon.new(order)
 		if self:get("dropdownToggleOnRightClick") == true then
 			self:_update("dropdownSize")
 		end
+		if self:get("menuToggleOnRightClick") == true then
+			self:_update("menuSize")
+		end
 		self._rightClicking = false
 	end)
 
@@ -322,10 +415,13 @@ function Icon.new(order)
 			[Enum.UserInputType.MouseButton3] = true,
 			[Enum.UserInputType.Touch] = true,
 		}
-		if self.dropdownOpen and not touchingAnObject and validTapAwayInputs[input.UserInputType] then
+		if not touchingAnObject and validTapAwayInputs[input.UserInputType] then
 			self._tappingAway = true
-			if self:get("dropdownCloseOnTapAway") == true then
+			if self.dropdownOpen and self:get("dropdownCloseOnTapAway") == true then
 				self:_update("dropdownSize")
+			end
+			if self.menuOpen and self:get("menuCloseOnTapAway") == true then
+				self:_update("menuSize")
 			end
 			self._tappingAway = false
 		end
@@ -378,6 +474,9 @@ function Icon.new(order)
 				if self:get("dropdownToggleOnLongPress") == true then
 					self:_update("dropdownSize")
 				end
+				if self:get("menuToggleOnLongPress") == true then
+					self:_update("menuSize")
+				end
 				self._longPressing = false
 			end
 		end)
@@ -426,6 +525,16 @@ function Icon.mimic(coreIconToMimic)
 	icon:setName(iconName)
 
 	if coreIconToMimic == "Chat" then
+		icon:setOrder(-1)
+		icon:setImage("rbxasset://textures/ui/TopBar/chatOff.png", "deselected")
+		icon:setImage("rbxasset://textures/ui/TopBar/chatOn.png", "selected")
+		icon:setImageYScale(0.625)
+		-- Since roblox's core gui api sucks melons I reverted to listening for signals within the chat modules
+		-- But now they've just gone and removed some critical signals without warning!! wth!!
+		-- this mimic chat and similar features are now impossible to recreate accurately, so I'm disabling for now
+		-- ill go ahead and post a feature request; fingers crossed we get something by the next decade
+
+		--[[
 		-- Setup maid and cleanup actioon
 		local maid = icon._maid
 		icon._fakeChatMaid = maid:give(Maid.new())
@@ -452,7 +561,7 @@ function Icon.mimic(coreIconToMimic)
 			icon.ignoreVisibilityStateChange = nil
 		end
 		-- Open chat via Slash key
-		icon._fakeChatMaid:give(userInputService.InputEnded:connect(function(inputObject, gameProcessedEvent)
+		icon._fakeChatMaid:give(userInputService.InputEnded:Connect(function(inputObject, gameProcessedEvent)
 			if gameProcessedEvent then
 				return "Another menu has priority"
 			elseif not(inputObject.KeyCode == Enum.KeyCode.Slash or inputObject.KeyCode == Enum.SpecialKey.ChatHotkey) then
@@ -466,7 +575,7 @@ function Icon.mimic(coreIconToMimic)
 			icon:select()
 		end))
 		-- ChatActive
-		icon._fakeChatMaid:give(ChatMain.VisibilityStateChanged:connect(function(visibility)
+		icon._fakeChatMaid:give(ChatMain.VisibilityStateChanged:Connect(function(visibility)
 			if not icon.ignoreVisibilityStateChange then
 				if visibility == true then
 					icon:select()
@@ -502,10 +611,6 @@ function Icon.mimic(coreIconToMimic)
 				end
 			end))
 		end)()
-		icon:setOrder(-1)
-		icon:setImage("rbxasset://textures/ui/TopBar/chatOff.png", "deselected")
-		icon:setImage("rbxasset://textures/ui/TopBar/chatOn.png", "selected")
-		icon:setImageYScale(0.625)
 		icon.deselected:Connect(function()
 			displayChatBar(false)
 		end)
@@ -513,7 +618,7 @@ function Icon.mimic(coreIconToMimic)
 			displayChatBar(true)
 		end)
 		setIconEnabled(starterGui:GetCoreGuiEnabled("Chat"))
-
+		--]]
 	end
 	return icon
 end
@@ -1123,7 +1228,6 @@ function Icon:join(parentIcon, featureName, dontUpdate)
 		end
 		self:set("captionBlockerTransparency", 0.4, nil, beforeName)
 	end
-	
 	local array = parentIcon[newFeatureName.."Icons"]
 	table.insert(array, self)
 	if not dontUpdate then
@@ -1132,7 +1236,10 @@ function Icon:join(parentIcon, featureName, dontUpdate)
 	parentIcon.deselectWhenOtherIconSelected = false
 	--
 	IconController:_updateSelectionGroup()
+	self:_decideToCallSignal("dropdown")
+	self:_decideToCallSignal("menu")
 	--
+	return self
 end
 
 function Icon:leave()
@@ -1175,7 +1282,72 @@ function Icon:leave()
 	self._parentIcon = nil
 	--
 	IconController:_updateSelectionGroup()
+	self:_decideToCallSignal("dropdown")
+	self:_decideToCallSignal("menu")
 	--
+	return self
+end
+
+function Icon:_decideToCallSignal(featureName)
+	local isOpen = self[featureName.."Open"]
+	local previousIsOpenName = "_previous"..string.sub(featureName, 1, 1):upper()..featureName:sub(2).."Open"
+	local previousIsOpen = self[previousIsOpenName]
+	local totalIcons = #self[featureName.."Icons"]
+	if isOpen and totalIcons > 0 and previousIsOpen == false then
+		self[previousIsOpenName] = true
+		self[featureName.."Opened"]:Fire()
+	elseif (not isOpen or totalIcons == 0) and previousIsOpen == true then
+		self[previousIsOpenName] = false
+		self[featureName.."Closed"]:Fire()
+	end
+end
+
+function Icon:_ignoreClipping(featureName)
+	local ignoreClipping = self:get(featureName.."IgnoreClipping")
+	if self._parentIcon then
+		local maid = self["_"..featureName.."ClippingMaid"]
+		local frame = self.instances[featureName.."Container"]
+		maid:clean()
+		if ignoreClipping then
+			local fakeFrame = Instance.new("Frame")--maid:give(Instance.new("Frame"))
+			fakeFrame.Name = frame.Name.."FakeFrame"
+			fakeFrame.ClipsDescendants = true
+			fakeFrame.BackgroundTransparency = 1
+			fakeFrame.Size = frame.Size
+			fakeFrame.Position = frame.Position
+			fakeFrame.Parent = activeItems
+			--
+			for a,b in pairs(frame:GetChildren()) do
+				b.Parent = fakeFrame
+			end
+			--
+			local function updateSize()
+				local absoluteSize = frame.AbsoluteSize
+				fakeFrame.Size = UDim2.new(0, absoluteSize.X, 0, absoluteSize.Y)
+			end
+			maid:give(frame:GetPropertyChangedSignal("AbsoluteSize"):Connect(function()
+				updateSize()
+			end))
+			updateSize()
+			local function updatePos()
+				local absolutePosition = frame.absolutePosition
+				fakeFrame.Position = UDim2.new(0, absolutePosition.X, 0, absolutePosition.Y+36)
+			end
+			maid:give(frame:GetPropertyChangedSignal("AbsolutePosition"):Connect(function()
+				updatePos()
+			end))
+			updatePos()
+			maid:give(function()
+				for a,b in pairs(fakeFrame:GetChildren()) do
+					b.Parent = frame
+				end
+				fakeFrame.Name = "Destroying..."
+				--wait(4)
+				fakeFrame:Destroy()
+			end)
+		end
+	end
+	self._ignoreClippingChanged:Fire(featureName, ignoreClipping)
 end
 
 -- Dropdowns
@@ -1190,6 +1362,7 @@ function Icon:setDropdown(arrayOfIcons)
 	end
 	-- Update dropdown
 	self:_updateDropdown()
+	return self
 end
 
 function Icon:_updateDropdown()
@@ -1213,6 +1386,7 @@ function Icon:_updateDropdown()
 	local newCanvasSizeY = -YPadding
 	local newFrameSizeY = 0
 	local newMinWidth = values.minWidth
+	table.sort(self.dropdownIcons, function(a,b) return a:get("order") < b:get("order") end)
 	for i = 1, totalIcons do
 		local otherIcon = self.dropdownIcons[i]
 		local _, otherIconSize = otherIcon:get("iconSize", nil, "beforeDropdown")
@@ -1230,7 +1404,8 @@ function Icon:_updateDropdown()
 		end
 	end
 
-	self:set("dropdownCanvasSize", UDim2.new(0, 0, 0, newCanvasSizeY))
+	local finalCanvasSizeY = (lastVisibleIconIndex == totalIcons and 0) or newCanvasSizeY
+	self:set("dropdownCanvasSize", UDim2.new(0, 0, 0, finalCanvasSizeY))
 	self:set("dropdownSize", UDim2.new(0, newMinWidth, 0, newFrameSizeY))
 
 	-- Set alignment while considering screen bounds
@@ -1261,7 +1436,13 @@ function Icon:_updateDropdown()
 	local additionalOffset = (dropdownFrame.VerticalScrollBarPosition == Enum.VerticalScrollBarPosition.Right and thicknessHalf) or -thicknessHalf
 	dropdownFrame.AnchorPoint = alignmentDetail.FrameAnchorPoint or alignmentDetail.AnchorPoint
 	dropdownFrame.Position = UDim2.new(alignmentDetail.FramePositionXScale or alignmentDetail.PositionXScale, additionalOffset, 0, 0)
+	self._dropdownCanvasPos = Vector2.new(0, 0)
 end
+
+function Icon:_dropdownIgnoreClipping()
+	self:_ignoreClipping("dropdown")
+end
+
 
 -- Menus
 function Icon:setMenu(arrayOfIcons)
@@ -1273,12 +1454,85 @@ function Icon:setMenu(arrayOfIcons)
 	for i, otherIcon in pairs(arrayOfIcons) do
 		otherIcon:join(self, "menu", true)
 	end
-	-- Update dropdown
+	-- Update menu
 	self:_updateMenu()
+	return self
+end
+
+function Icon:_getMenuDirection()
+	local direction = (self:get("menuDirection") or "_NIL"):lower()
+	local alignment = (self:get("alignment") or "_NIL"):lower()
+	if direction ~= "left" and direction ~= "right" then
+		direction = (alignment == "left" and "right") or "left" 
+	end
+	return direction
 end
 
 function Icon:_updateMenu()
+	local values = {
+		maxIconsBeforeScroll = self:get("menuMaxIconsBeforeScroll") or "_NIL",
+		direction = self:get("menuDirection") or "_NIL",
+		iconAlignment = self:get("alignment") or "_NIL",
+		scrollBarThickness = self:get("menuScrollBarThickness") or "_NIL",
+	}
+	for k, v in pairs(values) do if v == "_NIL" then return end end
 	
+	local XPadding = 12
+	local menuContainer = self.instances.menuContainer
+	local menuFrame = self.instances.menuFrame
+	local menuList = self.instances.menuList
+	local totalIcons = #self.menuIcons
+
+	local direction = self:_getMenuDirection()
+	local lastVisibleIconIndex = (totalIcons > values.maxIconsBeforeScroll and values.maxIconsBeforeScroll) or totalIcons
+	local newCanvasSizeX = -XPadding
+	local newFrameSizeX = 0
+	local newMinHeight = 0
+	local sortFunc = (direction == "right" and function(a,b) return a:get("order") < b:get("order") end) or function(a,b) return a:get("order") > b:get("order") end
+	table.sort(self.menuIcons, sortFunc)
+	for i = 1, totalIcons do
+		local otherIcon = self.menuIcons[i]
+		local otherIconSize = otherIcon:get("iconSize")
+		local increment = otherIconSize.X.Offset + XPadding
+		if i <= lastVisibleIconIndex then
+			newFrameSizeX = newFrameSizeX + increment
+		end
+		if i == lastVisibleIconIndex and i ~= totalIcons then
+			newFrameSizeX = newFrameSizeX -2--(increment/4)
+		end
+		newCanvasSizeX = newCanvasSizeX + increment
+		local otherIconHeight = otherIconSize.Y.Offset
+		if otherIconHeight > newMinHeight then
+			newMinHeight = otherIconHeight
+		end
+	end
+
+	local canvasSize = (lastVisibleIconIndex == totalIcons and 0) or newCanvasSizeX + XPadding
+	self:set("menuCanvasSize", UDim2.new(0, canvasSize, 0, 0))
+	self:set("menuSize", UDim2.new(0, newFrameSizeX, 0, newMinHeight + values.scrollBarThickness + 3))
+
+	-- Set direction
+	local directionDetails = {
+		left = {
+			containerAnchorPoint = Vector2.new(1, 0),
+			containerPosition = UDim2.new(0, -4, 0, 0),
+			canvasPosition = Vector2.new(canvasSize, 0)
+		},
+		right = {
+			containerAnchorPoint = Vector2.new(0, 0),
+			containerPosition = UDim2.new(1, 10, 0, 0),
+			canvasPosition = Vector2.new(0, 0),
+		}
+	}
+	local directionDetail = directionDetails[direction]
+	menuContainer.AnchorPoint = directionDetail.containerAnchorPoint
+	menuContainer.Position = directionDetail.containerPosition
+	menuFrame.CanvasPosition = directionDetail.canvasPosition
+	self._menuCanvasPos = directionDetail.canvasPosition
+end
+
+function Icon:_menuIgnoreClipping()
+	self:_ignoreClipping("menu")
 end
 
 
