@@ -301,7 +301,6 @@ menuList.Name = "MenuList"
 menuList.FillDirection = Enum.FillDirection.Horizontal
 menuList.HorizontalAlignment = Enum.HorizontalAlignment.Right
 menuList.SortOrder = Enum.SortOrder.LayoutOrder
-menuList.Padding = UDim.new(0, 12)
 menuList.Parent = menuFrame
 
 local menuInvisBlocker = Instance.new("Frame")

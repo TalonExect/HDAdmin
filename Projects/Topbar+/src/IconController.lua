@@ -15,7 +15,7 @@ local fakeChatName = "_FakeChat"
 local forceTopbarDisabled = false
 local menuOpen
 local topbarUpdating = false
-local robloxStupidOffset = 32
+local STUPID_ROBLOX_CONTROLLER_OFFSET = 32
 
 
 
@@ -42,6 +42,9 @@ end
 IconController.topbarEnabled = true
 IconController.controllerModeEnabled = false
 IconController.previousTopbarEnabled = checkTopbarEnabled()
+IconController.leftGap = 24
+IconController.midGap = 12
+IconController.rightGap = 12
 
 
 
@@ -130,13 +133,13 @@ end
 
 -- This is responsible for positioning the topbar icons
 function IconController.updateTopbar(toggleTransitionInfo)
-	local gap = 12
-	local function getIncrement(otherIcon)
+	local function getIncrement(otherIcon, alignment)
 		--local container = otherIcon.instances.iconContainer
 		--local sizeX = container.Size.X.Offset
 		local iconSize = otherIcon:get("iconSize") or UDim2.new(0, 32, 0, 32)
 		local sizeX = iconSize.X.Offset
-		local iconWidthAndGap = (sizeX + gap)
+		local alignmentGap = IconController[alignment.."Gap"]
+		local iconWidthAndGap = (sizeX + alignmentGap)
 		local increment = iconWidthAndGap
 		local preOffset = 0
 		--
@@ -145,14 +148,25 @@ function IconController.updateTopbar(toggleTransitionInfo)
 			local direction = otherIcon:_getMenuDirection()
 			increment = increment + menuSize.X.Offset
 			if direction == "right" then
-				increment += 2
+				increment += alignmentGap/6--2
 			elseif direction == "left" then
 				preOffset = increment - iconWidthAndGap + 4
-				increment += 4
+				increment += alignmentGap/3--4
 			end
 		end
 		--
 		return increment, preOffset
+	end
+	local furthestRightIcon
+	local furthestLeftIcon
+	local function overflowCheck(otherIcon, newPositon)
+		local Icon = require(script.Parent.Icon)
+		local overflowIcon = IconController.getIcon("_overFlowIcon")
+		if not overflowIcon then
+			overflowIcon = Icon.new()
+				:setImage(6069276526)
+				:setName("_overFlowIcon")
+		end
 	end
 	coroutine.wrap(function()
 		if topbarUpdating then -- This prevents the topbar updating and shifting icons more than it needs to
@@ -162,14 +176,14 @@ function IconController.updateTopbar(toggleTransitionInfo)
 		runService.Heartbeat:Wait()
 		topbarUpdating = false
 		
-		local defaultIncrement = 44
 		local alignmentDetails = {
 			left = {
 				startScale = 0,
-				getStartOffset = function() 
-					local offset = 104
-					if not starterGui:GetCoreGuiEnabled("Chat") then
-						offset = offset - defaultIncrement
+				getStartOffset = function(_, alignment)
+					local alignmentGap = IconController[alignment.."Gap"]
+					local offset = 48 + alignmentGap
+					if starterGui:GetCoreGuiEnabled("Chat") then
+						offset = offset + 12 + 32
 					end
 					return offset
 				end,
@@ -177,17 +191,19 @@ function IconController.updateTopbar(toggleTransitionInfo)
 			},
 			mid = {
 				startScale = 0.5,
-				getStartOffset = function(totalIconX) 
-					return -totalIconX/2 + (gap/2)
+				getStartOffset = function(totalIconX, alignment) 
+					local alignmentGap = IconController[alignment.."Gap"]
+					return -totalIconX/2 + (alignmentGap/2)
 				end,
 				records = {}
 			},
 			right = {
 				startScale = 1,
-				getStartOffset = function(totalIconX) 
-					local offset = -totalIconX
+				getStartOffset = function(totalIconX, alignment) 
+					local alignmentGap = IconController[alignment.."Gap"]
+					local offset = -totalIconX + alignmentGap - 48
 					if starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.PlayerList) or starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.Backpack) or starterGui:GetCoreGuiEnabled(Enum.CoreGuiType.EmotesMenu) then
-						offset = offset - defaultIncrement
+						offset = offset - alignmentGap
 					end
 					return offset
 				end,
@@ -197,7 +213,8 @@ function IconController.updateTopbar(toggleTransitionInfo)
 		}
 		for otherIcon, _ in pairs(topbarIcons) do
 			if otherIcon.enabled == true and otherIcon.presentOnTopbar then
-				table.insert(alignmentDetails[otherIcon:get("alignment")].records, otherIcon)
+				local alignment = otherIcon:get("alignment")
+				table.insert(alignmentDetails[alignment].records, otherIcon)
 			end
 		end
 		for alignment, alignmentInfo in pairs(alignmentDetails) do
@@ -211,19 +228,33 @@ function IconController.updateTopbar(toggleTransitionInfo)
 			end
 			local totalIconX = 0
 			for i, otherIcon in pairs(records) do
-				local increment = getIncrement(otherIcon)
+				local increment = getIncrement(otherIcon, alignment)
 				totalIconX = totalIconX + increment
 			end
-			local offsetX = alignmentInfo.getStartOffset(totalIconX)
+			local offsetX = alignmentInfo.getStartOffset(totalIconX, alignment)
+			local preOffsetX = offsetX
+			local topbar = getTopbarPlusGui()
+			local containerX = topbar.TopbarContainer.AbsoluteSize.X
+			for i, otherIcon in pairs(records) do
+				local increment, preOffset = getIncrement(otherIcon, alignment)
+				local newAbsoluteX = alignmentInfo.startScale*containerX + preOffsetX+preOffset
+				local thisOverflowBoundary = 0
+				local currentOverflowBoundary = alignmentInfo.overflowBoundary
+				if currentOverflowBoundary == nil or currentOverflowBoundary then
+					alignmentInfo.overflowBoundary = thisOverflowBoundary
+				end
+				preOffsetX = preOffsetX + increment
+			end
 			for i, otherIcon in pairs(records) do
 				local container = otherIcon.instances.iconContainer
-				local increment, preOffset = getIncrement(otherIcon)
+				local increment, preOffset = getIncrement(otherIcon, alignment)
 				local newPositon = UDim2.new(alignmentInfo.startScale, offsetX+preOffset, 0, 4)
 				if toggleTransitionInfo then
 					tweenService:Create(container, toggleTransitionInfo, {Position = newPositon}):Play()
 				else
 					container.Position = newPositon
 				end
+				overflowCheck(otherIcon, newPositon)
 				offsetX = offsetX + increment
 			end
 		end
@@ -259,7 +290,7 @@ function IconController.setTopbarEnabled(bool, forceBool)
 				end
 				topbar.TopbarContainer.Visible = true
 				topbar.TopbarContainer:TweenPosition(
-					UDim2.new(0,0,0,5 + robloxStupidOffset),
+					UDim2.new(0,0,0,5 + STUPID_ROBLOX_CONTROLLER_OFFSET),
 					Enum.EasingDirection.Out,
 					Enum.EasingStyle.Quad,
 					0.1,
@@ -292,7 +323,7 @@ function IconController.setTopbarEnabled(bool, forceBool)
 				IconController._setControllerSelectedObject(newSelectedObject)
 				indicator.Image = "rbxassetid://5278151071"
 				indicator:TweenPosition(
-					UDim2.new(0.5,0,0,targetOffset + robloxStupidOffset),
+					UDim2.new(0.5,0,0,targetOffset + STUPID_ROBLOX_CONTROLLER_OFFSET),
 					Enum.EasingDirection.Out,
 					Enum.EasingStyle.Quad,
 					0.1,
@@ -309,7 +340,7 @@ function IconController.setTopbarEnabled(bool, forceBool)
 			guiService.AutoSelectGuiEnabled = true
 			IconController:_updateSelectionGroup(true)
 			topbar.TopbarContainer:TweenPosition(
-				UDim2.new(0,0,0,-topbar.TopbarContainer.Size.Y.Offset + robloxStupidOffset),
+				UDim2.new(0,0,0,-topbar.TopbarContainer.Size.Y.Offset + STUPID_ROBLOX_CONTROLLER_OFFSET),
 				Enum.EasingDirection.Out,
 				Enum.EasingStyle.Quad,
 				0.1,
@@ -335,6 +366,19 @@ function IconController.setTopbarEnabled(bool, forceBool)
 			topbarContainer.Visible = false
 		end
 	end
+end
+
+function IconController.setGap(value, alignment)
+	local newValue = tonumber(value) or 12
+	local newAlignment = tostring(alignment):lower()
+	if newAlignment == "left" or newAlignment == "mid" or newAlignment == "right" then
+		IconController[newAlignment.."Gap"] = newValue
+		return
+	end
+	IconController.leftGap = newValue
+	IconController.midGap = newValue
+	IconController.rightGap = newValue
+	IconController.updateTopbar()
 end
 
 
@@ -552,6 +596,12 @@ guiService.MenuOpened:Connect(function()
 	menuOpen = true
 	IconController.setTopbarEnabled(false,false)
 end)
+
+-- Add icons to an overflow if they overlap the screen bounds or other icons
+workspace.CurrentCamera:GetPropertyChangedSignal("ViewportSize"):Connect(function()
+	IconController.updateTopbar()
+end)
+
 
 
 return IconController

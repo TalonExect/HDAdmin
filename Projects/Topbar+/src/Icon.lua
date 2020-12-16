@@ -266,6 +266,9 @@ function Icon.new(order)
 			if isOpen ~= self.menuOpen then
 				self.updated:Fire()
 			end
+			if isOpen and tweenInfo.EasingDirection == Enum.EasingDirection.Out then
+				tweenInfo = TweenInfo.new(tweenInfo.Time, tweenInfo.EasingStyle, Enum.EasingDirection.In)
+			end
 			local tween = tweenService:Create(instance, tweenInfo, {[propertyName] = newValue})
 			local connection
 			connection = tween.Completed:Connect(function()
@@ -1309,7 +1312,7 @@ function Icon:_ignoreClipping(featureName)
 		local frame = self.instances[featureName.."Container"]
 		maid:clean()
 		if ignoreClipping then
-			local fakeFrame = Instance.new("Frame")--maid:give(Instance.new("Frame"))
+			local fakeFrame = Instance.new("Frame")
 			fakeFrame.Name = frame.Name.."FakeFrame"
 			fakeFrame.ClipsDescendants = true
 			fakeFrame.BackgroundTransparency = 1
@@ -1342,7 +1345,6 @@ function Icon:_ignoreClipping(featureName)
 					b.Parent = frame
 				end
 				fakeFrame.Name = "Destroying..."
-				--wait(4)
 				fakeFrame:Destroy()
 			end)
 		end
@@ -1477,7 +1479,7 @@ function Icon:_updateMenu()
 	}
 	for k, v in pairs(values) do if v == "_NIL" then return end end
 	
-	local XPadding = 12
+	local XPadding = IconController[values.iconAlignment.."Gap"]--12
 	local menuContainer = self.instances.menuContainer
 	local menuFrame = self.instances.menuFrame
 	local menuList = self.instances.menuList
@@ -1515,12 +1517,12 @@ function Icon:_updateMenu()
 	local directionDetails = {
 		left = {
 			containerAnchorPoint = Vector2.new(1, 0),
-			containerPosition = UDim2.new(0, -4, 0, 0),
+			containerPosition = UDim2.new(0, -4, 0, 0), --!!!
 			canvasPosition = Vector2.new(canvasSize, 0)
 		},
 		right = {
 			containerAnchorPoint = Vector2.new(0, 0),
-			containerPosition = UDim2.new(1, 10, 0, 0),
+			containerPosition = UDim2.new(1, XPadding-2, 0, 0),
 			canvasPosition = Vector2.new(0, 0),
 		}
 	}
@@ -1529,6 +1531,8 @@ function Icon:_updateMenu()
 	menuContainer.Position = directionDetail.containerPosition
 	menuFrame.CanvasPosition = directionDetail.canvasPosition
 	self._menuCanvasPos = directionDetail.canvasPosition
+
+	menuList.Padding = UDim.new(0, XPadding)
 end
 
 function Icon:_menuIgnoreClipping()
@@ -1541,8 +1545,11 @@ end
 function Icon:destroy()
 	IconController.iconRemoved:Fire(self)
 	self:clearNotices()
+	self:setDropdown()
+	self:setMenu()
 	self._maid:clean()
 end
+Icon.Destroy = Icon.destroy -- an alias for you maid-using Pascal lovers
 
 
 
